@@ -1,9 +1,9 @@
-import App.Game;
+import game.Game;
 import processing.core.PApplet;
 
 public class MainMenu extends PApplet {
 
-	private String play = "Start Playing";
+	private final String play = "Start Playing";
 
 	public void settings() {
 		size(360, 300);
@@ -49,7 +49,7 @@ public class MainMenu extends PApplet {
 		return mouseX > x - w / 2 && mouseX < x + w / 2 && mouseY > buttonY - h / 2 && mouseY < buttonY + h / 2;
 	}
 
-	public static void main(String[] args) {
+	static void main(String[] args) {
 		PApplet.main(MainMenu.class.getName());
 	}
 }
