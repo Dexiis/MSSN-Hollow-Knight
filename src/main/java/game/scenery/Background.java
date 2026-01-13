@@ -1,5 +1,5 @@
 package game.scenery;
 
-public class Background{
+public class Background {
 
 }

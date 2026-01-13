@@ -5,12 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/LineDrawer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/game/scenery/GUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/MainMenu.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/Game.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/Entity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/Hitbox.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/Hitbox.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/Movement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/Movement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/Behaviour.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/Behaviour.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/DNA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/DNA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/Eye.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/Eye.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/IBehaviour.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/IBehaviour.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Align.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Align.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Cohesion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Cohesion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Flee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Flee.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Patrol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Patrol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Seek.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Seek.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Separate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Separate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Wander.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Wander.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/Hitbox.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/LineDrawer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/LineEquation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/LinePainter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/LineSegment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/Point.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/Boss.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/Boss.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/Enemy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/Enemy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/TheKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/TheKnight.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/bosses/FalseKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/bosses/FalseKnight.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/bosses/GruzMother.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/bosses/GruzMother.java" afterDir="false" />
@@ -19,6 +38,8 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Gruzzer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Gruzzer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Tiktik.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Tiktik.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Vengefly.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Vengefly.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/core/SubPlot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/core/SubPlot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/Background.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/Background.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -48,12 +69,12 @@
     &quot;assignee&quot;: &quot;rnaguiar&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Dexiis/MSSN-Hollow-Knight.git",
-    "accountId": "d0088d2c-32c9-4b17-86c7-48b0939a96cf"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Dexiis/MSSN-Hollow-Knight.git&quot;,
+    &quot;accountId&quot;: &quot;d0088d2c-32c9-4b17-86c7-48b0939a96cf&quot;
   }
-}]]></component>
+}</component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -65,28 +86,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.MainMenu.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "BD",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/bagui/Desktop/Pastas/Faculdade/GitHub/MSSN-Hollow-Knight",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.40386385",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.MainMenu.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;BD&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/bagui/Desktop/Pastas/Faculdade/GitHub/MSSN-Hollow-Knight&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.40386385&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -130,7 +151,9 @@
       <workItem from="1767634479108" duration="1874000" />
       <workItem from="1767821707599" duration="36000" />
       <workItem from="1768049931896" duration="109000" />
-      <workItem from="1768262067559" duration="7704000" />
+      <workItem from="1768262067559" duration="7775000" />
+      <workItem from="1768317103072" duration="353000" />
+      <workItem from="1768317466198" duration="10228000" />
     </task>
     <task id="LOCAL-00001" summary="File restructure.">
       <option name="closed" value="true" />

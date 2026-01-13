@@ -1,9 +1,11 @@
 package game.characters;
 
-import game.characters.attributes.*;
-import game.core.*;
-import game.characters.hitbox.Hitbox;
-import game.characters.hitbox.Point;
+import game.characters.attributes.Behaviour;
+import game.characters.attributes.DNA;
+import game.characters.attributes.Eye;
+import game.core.SubPlot;
+import game.hitbox.Hitbox;
+import game.hitbox.Point;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -25,7 +27,7 @@ public abstract class Entity extends Movement implements IVisualizable, Runnable
     }
 
     //TODO isDead(), hurt()
-    
+
     @Override
     public void run() {
 

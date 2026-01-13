@@ -2,19 +2,19 @@ package game.characters.attributes;
 
 public abstract class Behaviour implements IBehaviour {
 
-	protected float weight;
+    protected float weight;
 
-	public Behaviour(float weight) {
-		this.weight = weight;
-	}
+    public Behaviour(float weight) {
+        this.weight = weight;
+    }
 
-	@Override
-	public void setWeight(float weight) {
-		this.weight = weight;
-	}
+    @Override
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
 
-	@Override
-	public float getWeight() {
-		return weight;
-	}
+    @Override
+    public float getWeight() {
+        return weight;
+    }
 }
