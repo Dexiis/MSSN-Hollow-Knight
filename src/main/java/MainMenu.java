@@ -49,7 +49,7 @@ public class MainMenu extends PApplet {
 		return mouseX > x - w / 2 && mouseX < x + w / 2 && mouseY > buttonY - h / 2 && mouseY < buttonY + h / 2;
 	}
 
-	static void main(String[] args) {
-		PApplet.main(MainMenu.class.getName());
+	public static void main(String[] args) {
+		PApplet.main(Game.class.getName());
 	}
 }

@@ -5,17 +5,12 @@ import game.characters.Entity;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class Boss extends Entity {
+public abstract class Boss extends Entity {
 
-	protected Boss(PVector posisiton, PVector velocity, float mass, float radius, int color) {
-		super(posisiton, velocity, mass, radius, color);
-		// TODO Auto-generated constructor stub
+	protected Boss(PVector posisiton) {
+		super(posisiton);
+		this.mass = 1; //Todo Escolher a massa
 	}
 
-	@Override
-	public void display(PApplet p, SubPlot plt) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public abstract void display(PApplet p, SubPlot plt);
 }

@@ -1,7 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes." />
+    <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes.">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MSSN-Hollow-Knight.iml" beforeDir="false" afterPath="$PROJECT_DIR$/MSSN-Hollow-Knight.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/MainMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/Entity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/Movement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/Movement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/DNA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/DNA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/Point.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/Point.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/Boss.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/Boss.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/Enemy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/Enemy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/TheKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/TheKnight.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/bosses/FalseKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/bosses/FalseKnight.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/bosses/GruzMother.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/bosses/GruzMother.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Aspids.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Aspids.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Crawlid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Crawlid.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Gruzzer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Gruzzer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Tiktik.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Tiktik.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Vengefly.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Vengefly.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,14 +53,14 @@
     &quot;assignee&quot;: &quot;rnaguiar&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Dexiis/MSSN-Hollow-Knight.git&quot;,
-    &quot;accountId&quot;: &quot;4ae81eb2-72cd-4613-8b3f-a7582ab010c8&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Dexiis/MSSN-Hollow-Knight.git",
+    "accountId": "d0088d2c-32c9-4b17-86c7-48b0939a96cf"
   }
-}</component>
+}]]></component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
@@ -52,8 +76,14 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "BD",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/raguiar/Development",
+    "last_opened_file_path": "C:/Users/bagui/Desktop/Pastas/Faculdade/GitHub/MSSN-Hollow-Knight",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
@@ -84,11 +114,12 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.240" />
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.29346.240" />
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
       </set>
     </attachedChunks>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="" />
@@ -104,6 +135,7 @@
       <workItem from="1767634479108" duration="1874000" />
       <workItem from="1767821707599" duration="36000" />
       <workItem from="1768049931896" duration="109000" />
+      <workItem from="1768262067559" duration="4976000" />
     </task>
     <task id="LOCAL-00001" summary="File restructure.">
       <option name="closed" value="true" />

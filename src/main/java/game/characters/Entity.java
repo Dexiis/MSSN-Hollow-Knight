@@ -2,61 +2,31 @@ package game.characters;
 
 import game.characters.attributes.*;
 import game.core.*;
+import game.characters.hitbox.Hitbox;
 import processing.core.PApplet;
-import processing.core.PConstants;
-import processing.core.PShape;
 import processing.core.PVector;
 
 import java.util.List;
 
-public abstract class Entity extends Movement implements Runnable, IVisualizable {
+public abstract class Entity extends Movement implements IVisualizable, Runnable {
 
-    protected int color;
-    protected float radius;
     protected float[] positions;
-    protected DNA dna;
     protected Eye eye;
+    protected DNA dna;
     protected float phiWander;
-    private PShape shape;
-    private int life;
     private double[] window;
 
-    protected Entity(PVector position, PVector velocity, float mass, float radius, int color, int life) {
-        super(position, velocity, mass);
-        this.color = color;
-        this.radius = radius;
-        this.life = life;
+    protected int health;
+    protected Hitbox hitbox;
+
+    protected Entity(PVector position) {
+        super(position);
     }
 
-    public float getRadius() {
-        return radius;
-    }
+    //TODO isDead(), hurt()
 
-    public PShape getShape() {
-        return shape;
-    }
-
-    public void setShape(PShape shape) {
-        this.shape = shape;
-    }
-
-    public void setShape(PApplet p, SubPlot plt, float radius, int color) {
-        this.radius = radius;
-        this.color = color;
-        setShape(p, plt);
-    }
-
-    public void setShape(PApplet p, SubPlot plt) {
-        float[] rr = plt.getVectorCoord(radius, radius);
-        shape = p.createShape();
-        shape.beginShape();
-        shape.noStroke();
-        shape.fill(color);
-        shape.vertex(-rr[0], rr[0] / 2);
-        shape.vertex(rr[0], 0);
-        shape.vertex(-rr[0], -rr[0] / 2);
-        shape.vertex(-rr[0] / 2, 0);
-        shape.endShape(PConstants.CLOSE);
+    public Hitbox getHitbox() {
+        return hitbox;
     }
 
     public Eye getEye() {
@@ -65,18 +35,6 @@ public abstract class Entity extends Movement implements Runnable, IVisualizable
 
     public void setEye(Eye eye) {
         this.eye = eye;
-    }
-
-    public float getPhiWander() {
-        return phiWander;
-    }
-
-    public void setPhiWander(float newPhiWander) {
-        this.phiWander = newPhiWander;
-    }
-
-    public DNA getDNA() {
-        return dna;
     }
 
     public void applyBehaviour(Behaviour behaviour, float dt) {
@@ -102,6 +60,18 @@ public abstract class Entity extends Movement implements Runnable, IVisualizable
         move(dt, vd);
     }
 
+    public float getPhiWander() {
+        return phiWander;
+    }
+
+    public void setPhiWander(float newPhiWander) {
+        this.phiWander = newPhiWander;
+    }
+
+    public DNA getDNA() {
+        return dna;
+    }
+
     public void move(float dt, PVector vd) {
         vd.normalize().mult(dna.getMaxSpeed());
         PVector fs = PVector.sub(vd, velocity);
@@ -118,11 +88,5 @@ public abstract class Entity extends Movement implements Runnable, IVisualizable
             position.y -= (float) (window[3] - window[2]);
     }
 
-    public void hit(int hitPoints) {
-        this.life = -hitPoints;
-    }
-
-    public boolean isDead() {
-        return this.life <= 0;
-    }
+    public abstract void display(PApplet p, SubPlot plt);
 }

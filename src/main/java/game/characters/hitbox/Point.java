@@ -1,5 +1,7 @@
 package game.characters.hitbox;
 
+import processing.core.PVector;
+
 import java.io.Serializable;
 
 /**
@@ -26,6 +28,11 @@ public class Point implements Serializable {
 	public Point(float x, float y) {
 		this.x = x;
 		this.y = y;
+	}
+
+	public Point(PVector position) {
+		this.x = position.x;
+		this.y = position.y;
 	}
 	
 	/**

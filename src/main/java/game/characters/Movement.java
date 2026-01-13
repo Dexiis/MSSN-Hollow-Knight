@@ -8,16 +8,13 @@ import processing.core.PVector;
 public abstract class Movement {
 
 	protected PVector position;
-	protected PVector velocity;
-	protected PVector acceleration;
+	protected PVector velocity = new PVector(0,0);
+	protected PVector acceleration = new PVector();
 	protected float mass;
 	private static final double G = 6.67e-11;
 
-	protected Movement(PVector position, PVector velocity, float mass) {
+	protected Movement(PVector position) {
 		this.position = position.copy();
-		this.velocity = velocity;
-		acceleration = new PVector();
-		this.mass = mass;
 	}
 
 	public void applyForce(PVector force) {

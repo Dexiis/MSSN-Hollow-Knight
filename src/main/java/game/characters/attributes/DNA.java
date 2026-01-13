@@ -15,8 +15,10 @@ public class DNA {
 	protected float radiusWander;
 	protected float deltaPhiWander;
 	protected float visionNearAngle;
+ 	// TODO MUITOS DESTES ATRIBUTOS VAO DESAPARECER OU SER MUDADOS
 
-	public DNA(Entity boid) { //TODO ESTA CLASSE PROVAVELMENTE VAI DESAPARECER
+
+	public DNA() { //TODO APLICAR ESTA CLASSE À CADA GAJO INDIVIDUALMENTE
 			maxSpeed = random(3f, 5f);
 			maxForce = random(7f, 10f);
 

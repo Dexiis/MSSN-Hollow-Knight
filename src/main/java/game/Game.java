@@ -2,6 +2,7 @@ package game;
 
 import game.core.*;
 
+import game.scenery.*;
 import processing.core.PApplet;
 
 public class Game extends PApplet {
@@ -10,6 +11,8 @@ public class Game extends PApplet {
 	private final double[] window = { -16, 9, -9, 16 };
 	private final float[] viewport = { 0f, 0f, 1f, 1f };
 	private SubPlot plt;
+	private Map map;
+	private Background background;
 
 	public void settings() {
 		size(1600, 900);
@@ -19,6 +22,8 @@ public class Game extends PApplet {
 		lastUpdateTime = millis();
 		plt = new SubPlot(window, viewport, width, height);
 		background(0);
+		this.map = new Map();
+		this.background = new Background();
 	}
 
 	public void draw() {
