@@ -3,6 +3,7 @@ package game.characters;
 import game.characters.attributes.*;
 import game.core.*;
 import game.characters.hitbox.Hitbox;
+import game.characters.hitbox.Point;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -24,6 +25,19 @@ public abstract class Entity extends Movement implements IVisualizable, Runnable
     }
 
     //TODO isDead(), hurt()
+    
+    @Override
+    public void run() {
+
+    }
+
+    @Override
+    public void move(float dt) {
+        super.move(dt);
+        if (hitbox != null) {
+            hitbox.setPosition(new Point(position.x, position.y));
+        }
+    }
 
     public Hitbox getHitbox() {
         return hitbox;
@@ -76,16 +90,7 @@ public abstract class Entity extends Movement implements IVisualizable, Runnable
         vd.normalize().mult(dna.getMaxSpeed());
         PVector fs = PVector.sub(vd, velocity);
         applyForce(fs.limit(dna.getMaxForce()));
-        super.move(dt);
-
-        if (position.x < window[0])
-            position.x += (float) (window[1] - window[0]);
-        if (position.y < window[2])
-            position.y += (float) (window[3] - window[2]);
-        if (position.x >= window[1])
-            position.x -= (float) (window[1] - window[0]);
-        if (position.y >= window[3])
-            position.y -= (float) (window[3] - window[2]);
+        move(dt);
     }
 
     public abstract void display(PApplet p, SubPlot plt);

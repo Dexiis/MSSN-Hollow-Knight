@@ -9,7 +9,7 @@ import processing.core.PVector;
 
 import java.util.ArrayList;
 
-public abstract class Aspids extends Enemy {
+public class Aspids extends Enemy {
 
 	public Aspids(PVector position, PVector velocity, float mass, float radius, int color) {
 		super(position);

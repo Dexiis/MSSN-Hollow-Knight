@@ -9,7 +9,7 @@ import processing.core.PVector;
 
 import java.util.ArrayList;
 
-public abstract class GruzMother extends Boss {
+public class GruzMother extends Boss {
 
 	public GruzMother(PVector position) {
 		super(position);

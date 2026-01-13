@@ -41,6 +41,7 @@ public class MainMenu extends PApplet {
 		float h = 40;
 
 		if (checkButton(80, x, w, h)) {
+			surface.setVisible(false);
 			PApplet.main(Game.class);
 		}
 	}

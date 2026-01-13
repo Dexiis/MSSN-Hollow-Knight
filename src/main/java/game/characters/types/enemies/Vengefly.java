@@ -9,7 +9,7 @@ import processing.core.PVector;
 
 import java.util.ArrayList;
 
-public abstract class Vengefly extends Enemy {
+public class Vengefly extends Enemy {
 
 	public Vengefly(PVector position) {
 		super(position);

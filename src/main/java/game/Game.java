@@ -1,49 +1,52 @@
 package game;
 
-import game.core.*;
-
-import game.scenery.*;
+import game.characters.hitbox.LineDrawer;
+import game.characters.hitbox.Point;
+import game.characters.types.TheKnight;
+import game.scenery.Map;
 import processing.core.PApplet;
+import processing.core.PVector;
 
 public class Game extends PApplet {
 
-	private float lastUpdateTime;
-	private final double[] window = { -16, 9, -9, 16 };
-	private final float[] viewport = { 0f, 0f, 1f, 1f };
-	private SubPlot plt;
 	private Map map;
-	private Background background;
+	private TheKnight player;
+	private LineDrawer painter;
 
 	public void settings() {
-		size(1600, 900);
+		size(1280, 720);
 	}
 
 	public void setup() {
-		lastUpdateTime = millis();
-		plt = new SubPlot(window, viewport, width, height);
-		background(0);
-		this.map = new Map();
-		this.background = new Background();
+		map = new Map();
+		painter = new LineDrawer(this);
+		player = map.getPlayer();
 	}
 
 	public void draw() {
+		background(255);
 
+		PVector gravity = new PVector(0, 980 * player.getMass());
+		player.applyForce(gravity);
+
+		player.move(1.0f / 60.0f);
+		checkCollisions();
+
+		map.draw(painter);
 	}
 
-	private void setWindow(double x1, double y1, double x2, double y2) {
-		window[0] = x1;
-		window[1] = y1;
-		window[2] = x2;
-		window[3] = y2;
-		plt.setWindow(window);
+	private void checkCollisions() {
+		if (player.getHitbox().intersects(map.getGround())) {
+			player.setVelocity(new PVector(player.getVelocity().x, 0));
+
+			float groundY = map.getGround().getPosition().y;
+			player.setPosition(new PVector(player.getPosition().x, groundY - 50));
+
+			player.getHitbox().setPosition(new Point(player.getPosition().x, player.getPosition().y));
+		}
 	}
 
-	public void keyPressed() {
-
+	public static void main(String[] args) {
+		PApplet.main("game.Game");
 	}
-
-	public void mousePressed() {
-
-	}
-
 }

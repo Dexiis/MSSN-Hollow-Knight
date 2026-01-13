@@ -9,7 +9,7 @@ import processing.core.PVector;
 
 import java.util.ArrayList;
 
-public abstract class Gruzzer extends Enemy {
+public class Gruzzer extends Enemy {
 
 	public Gruzzer(PVector position, PVector velocity, float mass, float radius, int color) {
 		super(position);

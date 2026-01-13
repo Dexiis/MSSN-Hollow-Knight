@@ -149,6 +149,10 @@ public class Hitbox implements Serializable {
 	public List<LineSegment> getLines() {
 		return lines;
 	}
+
+	public Point getPosition() {
+		return position;
+	}
 	
 	/**
 	 * A rectangular hitbox which is formed around the polygon hitbox.

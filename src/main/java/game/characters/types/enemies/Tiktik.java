@@ -9,7 +9,7 @@ import processing.core.PVector;
 
 import java.util.ArrayList;
 
-public abstract class Tiktik extends Enemy {
+public class Tiktik extends Enemy {
 
 	public Tiktik(PVector position) {
 		super(position);

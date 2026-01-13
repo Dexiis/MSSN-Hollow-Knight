@@ -9,7 +9,7 @@ import processing.core.PVector;
 
 import java.util.ArrayList;
 
-public abstract class FalseKnight extends Boss {
+public class FalseKnight extends Boss {
 
 	public FalseKnight(PVector position) {
 		super(position);
