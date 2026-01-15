@@ -77,7 +77,7 @@ public class Game extends PApplet {
      * @return true se estiver no chão.
      */
     private boolean checkCollisions(float dt) {
-        if (player.getHitbox().intersects(map.getGround())) {
+        if (player.getHitbox().intersects(map.getGround())) { //TODO ESTE IF TEM DE IR PARA DENTRO DO TERRAIN
             // Pára a queda (Vy = 0)
             // Mantemos a velocidade X (player.getVelocity().x)
             player.setVelocity(new PVector(player.getVelocity().x, 0));

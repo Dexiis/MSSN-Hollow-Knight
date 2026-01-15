@@ -5,41 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/game/scenery/GUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/game/scenery/Terrain.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/MainMenu.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/Entity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/Movement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/Movement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/Behaviour.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/Behaviour.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/DNA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/DNA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/Eye.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/Eye.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/IBehaviour.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/IBehaviour.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Align.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Align.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Cohesion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Cohesion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Flee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Flee.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Patrol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Patrol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Seek.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Seek.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Separate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Separate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Wander.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/attributes/behaviours/Wander.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/Hitbox.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/LineDrawer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/LineEquation.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/LinePainter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/LineSegment.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/hitbox/Point.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/Boss.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/Boss.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/Enemy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/Enemy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/TheKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/TheKnight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/bosses/FalseKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/bosses/FalseKnight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/bosses/GruzMother.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/bosses/GruzMother.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Aspids.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Aspids.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Crawlid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Crawlid.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Gruzzer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Gruzzer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Tiktik.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Tiktik.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Vengefly.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/characters/types/enemies/Vengefly.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/core/SubPlot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/core/SubPlot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/Background.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/Background.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -153,7 +121,9 @@
       <workItem from="1768049931896" duration="109000" />
       <workItem from="1768262067559" duration="7775000" />
       <workItem from="1768317103072" duration="353000" />
-      <workItem from="1768317466198" duration="10228000" />
+      <workItem from="1768317466198" duration="11188000" />
+      <workItem from="1768431156731" duration="659000" />
+      <workItem from="1768432789151" duration="1269000" />
     </task>
     <task id="LOCAL-00001" summary="File restructure.">
       <option name="closed" value="true" />
