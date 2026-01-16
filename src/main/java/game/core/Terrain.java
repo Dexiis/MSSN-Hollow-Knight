@@ -11,6 +11,7 @@ import java.util.List;
 
 public class Terrain extends Hitbox {
     private final static int PIXEL_CORRECTION = 1;
+
     public Terrain(List<PVector> points) {
         super(points);
     }
@@ -19,22 +20,16 @@ public class Terrain extends Hitbox {
         super(center, width, height);
     }
 
-    public void intersects(Entity entity) {
+    public void elaborateIntersects(Entity entity) {
         Hitbox otherHitbox = entity.getHitbox();
 
-        boolean[] results = intersects(otherHitbox);
+        boolean[] results = elaborateIntersects(otherHitbox);
         boolean intersected = results[0];
         if (intersected) {
             boolean onTop = results[1];
             boolean onRight = results[2];
             boolean onBottom = results[3];
             boolean onLeft = results[4];
-
-            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-            System.out.println(results[1]);
-            System.out.println("Right - " + results[2]);
-            System.out.println("Left - " + results[3]);
-            System.out.println(results[4]);
 
             float xDistance = Math.abs(otherHitbox.getPosition().x - this.getPosition().x);
             float yDistance = Math.abs(otherHitbox.getPosition().y - this.getPosition().y);
@@ -43,7 +38,7 @@ public class Terrain extends Hitbox {
             if (onTop && onBottom) onTop = onBottom = false;
             if (onRight && onLeft) onRight = onLeft = false;
 
-            float xDifference = Math.abs(otherHitbox.getWidth() / 2 - (xDistance - this.width / 2));
+            float xDifference = Math.abs((otherHitbox.getWidth() / 2) - (xDistance - (this.width / 2)));
             float yDifference = Math.abs(otherHitbox.getHeight() / 2 - (yDistance - this.height / 2));
 
             //Eixo vencedor Top - Right
@@ -97,19 +92,15 @@ public class Terrain extends Hitbox {
         }
     }
 
-    public boolean[] intersects(Hitbox other) {
+    public boolean[] elaborateIntersects(Hitbox other) {
         boolean[] intersects = {false, false, false, false, false};
-        if (!this.roughHitbox.intersected(other.getRoughHitbox())) {
-            intersects[0] = true;
-        } else {
-            return intersects;
-        }
+        if (!this.roughHitbox.intersected(other.getRoughHitbox())) intersects[0] = true;
+        else return intersects;
 
-        for (int i = 0; i < this.lines.size() - 1; i++) {
+        for (int i = 0; i < this.lines.size(); i++) {
             LineSegment line = lines.get(i);
-            for (LineSegment otherLine : other.getLines()) {
+            for (LineSegment otherLine : other.getLines())
                 if (line.intersects(otherLine)) intersects[i + 1] = true;
-            }
         }
 
         return intersects;

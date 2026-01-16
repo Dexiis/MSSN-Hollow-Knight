@@ -2,6 +2,7 @@ package game;
 
 import game.characters.types.TheKnight;
 import game.core.SubPlot;
+import game.core.Terrain;
 import game.scenery.Map;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -18,6 +19,7 @@ public class Game extends PApplet {
 
     private boolean moveLeft = false;
     private boolean moveRight = false;
+    private boolean jumping = false;
 
     @Override
     public void settings() {
@@ -51,23 +53,25 @@ public class Game extends PApplet {
     }
 
     private PVector gravity(float mass) {
-        return new PVector(0, 980 * mass);
+        if (player.getAcceleration().mag() < 9.8f) return new PVector(0, 980 * mass);
+        else return new PVector(0, 0 * mass);
     }
 
     /**
      * Gere a velocidade horizontal baseada nas teclas pressionadas.
      */
     private void handleInputMovement() {
+        if (moveRight) player.moveRight();
         if (moveLeft) player.moveLeft();
-        else if (moveRight) player.moveRight();
-        else player.stopMovement();
+        if ((!moveRight && !moveLeft) || (moveRight && moveLeft)) player.stopMovement();
+        if (player.getIsGrounded() && jumping) player.jump();
     }
 
     /**
      * Verifica as colisões do jogador.
      */
     private void checkCollisions(float dt) {
-        map.getGround().intersects(player);
+        for (Terrain terrain : map.getTerrain()) terrain.elaborateIntersects(player);
     }
 
     private void setWindow(PVector playerPosition) {
@@ -81,25 +85,21 @@ public class Game extends PApplet {
 
     @Override
     public void keyPressed() {
-        if (key == 'a' || key == 'A') {
-            moveLeft = true;
-        }
-        if (key == 'd' || key == 'D') {
-            moveRight = true;
-        }
-        if (key == 'w' || key == 'W') {
-            // Só salta se estiver no chão!
-            if (player.getIsGrounded()) player.jump();
-        }
+        if (key == 'a' || key == 'A') moveLeft = true;
+        if (key == 'd' || key == 'D') moveRight = true;
+        if (key == 'w' || key == 'W') jumping = true;
     }
 
     @Override
     public void keyReleased() {
-        if (key == 'a' || key == 'A') {
-            moveLeft = false;
-        }
-        if (key == 'd' || key == 'D') {
-            moveRight = false;
-        }
+        if (key == 'a' || key == 'A') moveLeft = false;
+        if (key == 'd' || key == 'D') moveRight = false;
+        if (key == 'w' || key == 'W') jumping = false;
+    }
+
+    @Override
+    public void mousePressed() {
+        player.setPosition(new PVector(0, 0));
+        player.setVelocity(new PVector(0, 0));
     }
 }

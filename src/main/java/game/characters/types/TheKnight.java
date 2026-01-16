@@ -24,6 +24,7 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     public void moveRight() {
+
         setVelocity(new PVector(SPEED, getVelocity().y));
     }
 
@@ -32,7 +33,7 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     public void stopMovement() {
-        setVelocity(new PVector(0.1f * getVelocity().x, getVelocity().y));
+        setVelocity(new PVector(0, getVelocity().y));
     }
 
     public void setIsGrounded(boolean isGrounded) {
