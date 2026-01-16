@@ -1,0 +1,132 @@
+package game.core;
+
+import game.characters.Entity;
+import game.characters.types.TheKnight;
+import game.hitbox.Hitbox;
+import game.hitbox.LineSegment;
+import processing.core.PApplet;
+import processing.core.PVector;
+
+import java.util.List;
+
+public class Terrain extends Hitbox {
+    private final static int PIXEL_CORRECTION = 1;
+    public Terrain(List<PVector> points) {
+        super(points);
+    }
+
+    public Terrain(PVector center, float width, float height) {
+        super(center, width, height);
+    }
+
+    public void intersects(Entity entity) {
+        Hitbox otherHitbox = entity.getHitbox();
+
+        boolean[] results = intersects(otherHitbox);
+        boolean intersected = results[0];
+        if (intersected) {
+            boolean onTop = results[1];
+            boolean onRight = results[2];
+            boolean onBottom = results[3];
+            boolean onLeft = results[4];
+
+            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            System.out.println(results[1]);
+            System.out.println("Right - " + results[2]);
+            System.out.println("Left - " + results[3]);
+            System.out.println(results[4]);
+
+            float xDistance = Math.abs(otherHitbox.getPosition().x - this.getPosition().x);
+            float yDistance = Math.abs(otherHitbox.getPosition().y - this.getPosition().y);
+
+            //Anulações
+            if (onTop && onBottom) onTop = onBottom = false;
+            if (onRight && onLeft) onRight = onLeft = false;
+
+            float xDifference = Math.abs(otherHitbox.getWidth() / 2 - (xDistance - this.width / 2));
+            float yDifference = Math.abs(otherHitbox.getHeight() / 2 - (yDistance - this.height / 2));
+
+            //Eixo vencedor Top - Right
+            if (onTop && onRight) {
+                if (xDifference > yDifference) onRight = false;
+                else onTop = false;
+            }
+
+            //Eixo vencedor Top - Left
+            if (onTop && onLeft) {
+                if (xDifference > yDifference) onLeft = false;
+                else onTop = false;
+            }
+
+            //Eixo vencedor Bottom - Right
+            if (onBottom && onRight) {
+                if (xDifference > yDifference) onRight = false;
+                else onBottom = false;
+            }
+
+            //Eixo vencedor Bottom - Left
+            if (onBottom && onLeft) {
+                if (xDifference > yDifference) onLeft = false;
+                else onBottom = false;
+            }
+
+            //Lógica em cima
+            if (onTop) {
+                entity.setVelocity(new PVector(entity.getVelocity().x, 0));
+                entity.setPosition(new PVector(entity.getPosition().x, this.getPosition().y - this.height / 2 - entity.getHitbox().getHeight() / 2 + PIXEL_CORRECTION));
+                if (entity instanceof TheKnight) ((TheKnight) entity).setIsGrounded(true);
+            }
+
+            //Lógica em baixo
+            if (onBottom) {
+                entity.setVelocity(new PVector(entity.getVelocity().x, 0));
+                entity.setPosition(new PVector(entity.getPosition().x, this.getPosition().y + this.height / 2 + entity.getHitbox().getHeight() / 2 + PIXEL_CORRECTION));
+            }
+
+            //Lógica à direita
+            if (onRight) {
+                entity.setVelocity(new PVector(0, entity.getVelocity().y));
+                entity.setPosition(new PVector(this.getPosition().x + this.width / 2 + entity.getHitbox().getWidth() / 2 -ddd PIXEL_CORRECTION, entity.getPosition().y));
+            }
+
+            //Lógica à esquerda
+            if (onLeft) {
+                entity.setVelocity(new PVector(0, entity.getVelocity().y));
+                entity.setPosition(new PVector(this.getPosition().x - this.width / 2 - entity.getHitbox().getWidth() / 2 - PIXEL_CORRECTION, entity.getPosition().y));
+            }
+        }
+    }
+
+    public boolean[] intersects(Hitbox other) {
+        boolean[] intersects = {false, false, false, false, false};
+        if (!this.roughHitbox.intersected(other.getRoughHitbox())) {
+            intersects[0] = true;
+        } else {
+            return intersects;
+        }
+
+        for (int i = 0; i < this.lines.size() - 1; i++) {
+            LineSegment line = lines.get(i);
+            for (LineSegment otherLine : other.getLines()) {
+                if (line.intersects(otherLine)) intersects[i + 1] = true;
+            }
+        }
+
+        return intersects;
+    }
+
+    @Override
+    public void display(PApplet p, SubPlot plt) {
+        //TODO SPRITES??
+        p.pushStyle();
+        p.stroke(255, 0, 0);
+        p.strokeWeight(5);
+
+        float[] pp = plt.getPixelCoord(position.x, position.y);
+        p.point(pp[0], pp[1]);
+
+        p.popStyle();
+
+        super.display(p, plt);
+    }
+}

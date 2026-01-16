@@ -2,7 +2,6 @@ package game;
 
 import game.characters.types.TheKnight;
 import game.core.SubPlot;
-import game.hitbox.Point;
 import game.scenery.Map;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -19,7 +18,6 @@ public class Game extends PApplet {
 
     private boolean moveLeft = false;
     private boolean moveRight = false;
-    private boolean isGrounded = false; // Sabemos se ele está no chão?
 
     @Override
     public void settings() {
@@ -43,55 +41,33 @@ public class Game extends PApplet {
 
         background(255);
 
-        PVector gravity = new PVector(0, 980 * player.getMass());
-
-        player.applyForce(gravity);
+        player.applyForce(gravity(player.getMass()));
         handleInputMovement();
         player.move(dt);
-        isGrounded = checkCollisions(dt);
+        checkCollisions(dt);
 
-        map.display(this, plt);
         setWindow(player.getPosition());
+        map.display(this, plt);
+    }
+
+    private PVector gravity(float mass) {
+        return new PVector(0, 980 * mass);
     }
 
     /**
      * Gere a velocidade horizontal baseada nas teclas pressionadas.
      */
     private void handleInputMovement() {
-        float speed = 200f; // Velocidade de movimento lateral
-        float currentVy = player.getVelocity().y; // Mantemos a velocidade vertical atual
-
-        if (moveLeft) {
-            player.setVelocity(new PVector(-speed, currentVy));
-        } else if (moveRight) {
-            player.setVelocity(new PVector(speed, currentVy));
-        } else {
-            // Se não carregar em nada, para (Fricção instantânea)
-            player.setVelocity(new PVector(0, currentVy));
-        }
+        if (moveLeft) player.moveLeft();
+        else if (moveRight) player.moveRight();
+        else player.stopMovement();
     }
 
     /**
-     * Verifica se o jogador tocou no chão.
-     *
-     * @return true se estiver no chão.
+     * Verifica as colisões do jogador.
      */
-    private boolean checkCollisions(float dt) {
-        if (player.getHitbox().intersects(map.getGround())) { //TODO ESTE IF TEM DE IR PARA DENTRO DO TERRAIN
-            // Pára a queda (Vy = 0)
-            // Mantemos a velocidade X (player.getVelocity().x)
-            player.setVelocity(new PVector(player.getVelocity().x, 0));
-
-            Point groundPos = map.getGround().getRoughHitbox().getPosition();
-            float groundY = groundPos.pos.y;
-
-            // Assumindo que o player tem 50px de altura, subtraímos 49
-            player.setPosition(new PVector(player.getPosition().x, groundY - 49));
-            player.getHitbox().setPosition(new Point(player.getPosition().x, player.getPosition().y));
-            System.out.println("TO NO CHAO");
-            return true; // Está no chão
-        }
-        return false;
+    private void checkCollisions(float dt) {
+        map.getGround().intersects(player);
     }
 
     private void setWindow(PVector playerPosition) {
@@ -113,12 +89,7 @@ public class Game extends PApplet {
         }
         if (key == 'w' || key == 'W') {
             // Só salta se estiver no chão!
-            if (isGrounded) {
-                float jumpStrength = -600f;
-                player.setPosition(player.getPosition().add(new PVector(0, 0)));
-                player.setVelocity(new PVector(player.getVelocity().x, jumpStrength));
-                isGrounded = false; // Deixa de estar no chão assim que salta
-            }
+            if (player.getIsGrounded()) player.jump();
         }
     }
 

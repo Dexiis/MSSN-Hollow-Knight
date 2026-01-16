@@ -3,15 +3,12 @@ package game.characters;
 import game.characters.attributes.Behaviour;
 import game.characters.attributes.DNA;
 import game.characters.attributes.Eye;
-import game.core.SubPlot;
 import game.hitbox.Hitbox;
-import game.hitbox.Point;
-import processing.core.PApplet;
 import processing.core.PVector;
 
 import java.util.List;
 
-public abstract class Entity extends Movement implements IVisualizable, Runnable {
+public class Entity extends Movement {
 
     protected float[] positions;
     protected Eye eye;
@@ -26,19 +23,20 @@ public abstract class Entity extends Movement implements IVisualizable, Runnable
         super(position);
     }
 
-    //TODO isDead(), hurt()
-
-    @Override
-    public void run() {
-
-    }
+    //TODO isDead()
 
     @Override
     public void move(float dt) {
         super.move(dt);
         if (hitbox != null) {
-            hitbox.setPosition(new Point(position.x, position.y));
+            hitbox.setPosition(position);
         }
+    }
+
+    @Override
+    public void setPosition(PVector position) {
+        this.position = position;
+        this.hitbox.setPosition(position);
     }
 
     public Hitbox getHitbox() {
@@ -54,15 +52,13 @@ public abstract class Entity extends Movement implements IVisualizable, Runnable
     }
 
     public void applyBehaviour(Behaviour behaviour, float dt) {
-        if (eye != null)
-            eye.look();
+        if (eye != null) eye.look();
         PVector vd = behaviour.getDesiredVelocity(this);
         move(dt, vd);
     }
 
     public void applyBehaviours(List<Behaviour> behaviours, float dt) {
-        if (eye != null)
-            eye.look();
+        if (eye != null) eye.look();
         PVector vd = new PVector();
         float sumWeights = 0;
         for (Behaviour behaviour : behaviours)
@@ -95,5 +91,4 @@ public abstract class Entity extends Movement implements IVisualizable, Runnable
         move(dt);
     }
 
-    public abstract void display(PApplet p, SubPlot plt);
 }

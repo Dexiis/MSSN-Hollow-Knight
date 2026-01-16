@@ -1,24 +1,24 @@
 package game.characters.types.enemies;
 
+import game.characters.IVisualizable;
 import game.characters.types.Enemy;
 import game.core.SubPlot;
 import game.hitbox.Hitbox;
-import game.hitbox.Point;
 import processing.core.PApplet;
 import processing.core.PVector;
 
 import java.util.ArrayList;
 
-public class Vengefly extends Enemy {
+public class Vengefly extends Enemy implements IVisualizable {
 
     public Vengefly(PVector position) {
         super(position);
 
-        ArrayList<Point> points = new ArrayList<>();
-        points.add(new Point(0, 0));
-        points.add(new Point(20, 0));
-        points.add(new Point(20, 20));
-        points.add(new Point(0, 20)); //TODO Escolher o tamanho
+        ArrayList<PVector> points = new ArrayList<>();
+        points.add(new PVector(0, 0));
+        points.add(new PVector(20, 0));
+        points.add(new PVector(20, 20));
+        points.add(new PVector(0, 20)); //TODO Escolher o tamanho
 
         this.hitbox = new Hitbox(points);
         this.health = 1; //Todo Escolher a vida
@@ -28,5 +28,4 @@ public class Vengefly extends Enemy {
     public void display(PApplet p, SubPlot plt) {
         //TODO Associar Sprites
     }
-
 }

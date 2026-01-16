@@ -2,63 +2,54 @@ package game.hitbox;
 
 import game.core.SubPlot;
 import processing.core.PApplet;
+import processing.core.PVector;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Representa uma área de colisão (Hitbox) composta por segmentos de reta.
- * <p>
- * Esta classe utiliza uma abordagem de duas etapas para detetar colisões:
- * 1. Verifica uma "RoughHitbox" (caixa delimitadora simples) para rejeição rápida.
- * 2. Verifica interseções detalhadas segmento por segmento se a primeira verificação passar.
- */
 public class Hitbox {
-    private final RoughHitbox roughHitbox;
-    private Point position = new Point(0.0f, 0.0f);
-    private final List<LineSegment> lines = new ArrayList<LineSegment>();
+    protected final RoughHitbox roughHitbox;
+    protected final List<LineSegment> lines = new ArrayList<>();
+    protected PVector position = new PVector(0.0f, 0.0f);
+    protected float width, height;
 
-    /**
-     * Construtor da Hitbox.
-     * Cria as linhas de colisão com base numa lista ordenada de pontos (vértices).
-     *
-     * @param points Lista de pontos que definem o polígono da Hitbox.
-     */
-    public Hitbox(List<Point> points) {
+    public Hitbox(List<PVector> points) {
         formLines(points);
         roughHitbox = new RoughHitbox(lines, position);
+        this.width = Math.abs(points.get(1).x - points.get(0).x);
+        this.height = Math.abs(points.get(1).y - points.get(2).y);
     }
 
-    private void formLines(List<Point> points) {
+    public Hitbox(PVector position, float width, float height) {
+        this.width = width;
+        this.height = height;
+
+        ArrayList<PVector> points = new ArrayList<>();
+        points.add(new PVector(position.x - width / 2, position.y - height / 2));
+        points.add(new PVector(position.x + width / 2, position.y - height / 2));
+        points.add(new PVector(position.x + width / 2, position.y + height / 2));
+        points.add(new PVector(position.x - width / 2, position.y + height / 2));
+        formLines(points);
+
+        this.position = position;
+        this.roughHitbox = new RoughHitbox(lines, this.position);
+    }
+
+    private void formLines(List<PVector> points) {
         for (int i = 0; i < points.size(); ++i) {
-            Point p1 = points.get(i);
-            Point p2 = points.get((i + 1) % points.size());
+            PVector p1 = points.get(i);
+            PVector p2 = points.get((i + 1) % points.size());
 
             lines.add(new LineSegment(position, p1, p2));
         }
     }
 
-    /**
-     * Obtém a caixa de colisão aproximada (Bounding Box).
-     * Útil para verificações rápidas de interseção ou renderização de depuração.
-     *
-     * @return A instância de {@link RoughHitbox} associada a esta Hitbox.
-     */
     public RoughHitbox getRoughHitbox() {
         return roughHitbox;
     }
 
-    /**
-     * Verifica se esta Hitbox interseta (colide) com outra Hitbox.
-     * <p>
-     * Primeiro verifica a interseção das caixas aproximadas (RoughHitbox).
-     * Se estas colidirem, verifica a interseção detalhada entre cada segmento de reta.
-     *
-     * @param other A outra Hitbox para verificar a colisão.
-     * @return {@code true} se houver colisão, {@code false} caso contrário.
-     */
-    public boolean intersects(Hitbox other) {
-        if (!this.roughHitbox.intersects(other.getRoughHitbox())) {
+    public boolean intersected(Hitbox other) {
+        if (!this.roughHitbox.intersected(other.getRoughHitbox())) {
             return false;
         }
         for (LineSegment line : lines) {
@@ -69,13 +60,7 @@ public class Hitbox {
         return false;
     }
 
-    /**
-     * Define a nova posição da Hitbox no mundo.
-     * Atualiza tanto a posição central como a posição de todos os segmentos de reta e da RoughHitbox.
-     *
-     * @param position O novo ponto de posição (x, y).
-     */
-    public void setPosition(Point position) {
+    public void setPosition(PVector position) {
         this.position = position;
         this.roughHitbox.position = position;
         for (LineSegment line : lines) {
@@ -83,134 +68,84 @@ public class Hitbox {
         }
     }
 
-    /**
-     * Desenha a Hitbox utilizando um pintor de linhas abstrato.
-     * Útil para sistemas gráficos que não dependem diretamente do Processing.
-     *
-     * @param painter O objeto responsável por desenhar as linhas.
-     */
-    public void draw(LinePainter painter) {
-        for (LineSegment line : lines) {
-            Point p1 = line.getStart();
-            Point p2 = line.getStop();
-            Point posOffset = line.getPosition();
-
-            float x1 = p1.pos.x + posOffset.pos.x;
-            float y1 = p1.pos.y + posOffset.pos.y;
-            float x2 = p2.pos.x + posOffset.pos.x;
-            float y2 = p2.pos.y + posOffset.pos.y;
-
-            painter.paintLine(x1, y1, x2, y2);
-        }
+    public PVector getPosition() {
+        return position;
     }
 
-    /**
-     * Desenha a Hitbox na tela utilizando a biblioteca Processing.
-     * Converte as coordenadas do mundo para coordenadas de pixel utilizando o SubPlot.
-     *
-     * @param p   A instância da PApplet (contexto gráfico do Processing).
-     * @param plt O objeto SubPlot usado para conversão de coordenadas.
-     */
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
     public void display(PApplet p, SubPlot plt) {
         p.pushStyle();
         p.stroke(255, 0, 255);
         p.strokeWeight(2);
 
         for (LineSegment line : lines) {
-            Point p1 = line.getStart();
-            Point p2 = line.getStop();
-            Point posOffset = line.getPosition();
+            PVector p1 = line.getStart();
+            PVector p2 = line.getStop();
+            PVector posOffset = line.getPosition();
 
-            float wx1 = p1.pos.x + posOffset.pos.x;
-            float wy1 = p1.pos.y + posOffset.pos.y;
-            float wx2 = p2.pos.x + posOffset.pos.x;
-            float wy2 = p2.pos.y + posOffset.pos.y;
+            float wx1 = p1.x + posOffset.x;
+            float wy1 = p1.y + posOffset.y;
+            float wx2 = p2.x + posOffset.x;
+            float wy2 = p2.y + posOffset.y;
 
             float[] c1 = plt.getPixelCoord(wx1, wy1);
             float[] c2 = plt.getPixelCoord(wx2, wy2);
 
             p.line(c1[0], c1[1], c2[0], c2[1]);
         }
+
+        p.stroke(255, 0, 255);
+        p.strokeWeight(5);
+        float[] cPos = plt.getPixelCoord(position.x, position.y);
+        p.point(cPos[0], cPos[1]);
+
         p.popStyle();
+        roughHitbox.display(p, plt);
     }
 
-    /**
-     * Obtém a lista de segmentos de reta que compõem esta Hitbox.
-     *
-     * @return Lista de {@link LineSegment}.
-     */
     public List<LineSegment> getLines() {
         return lines;
     }
 
-    /**
-     * Classe utilitária (Builder Pattern) para facilitar a criação de instâncias de Hitbox.
-     * Permite adicionar pontos sequencialmente antes de criar o objeto final.
-     */
     public static class Builder {
-        private List<Point> points = new ArrayList<>();
+        private List<PVector> points = new ArrayList<>();
 
-        /**
-         * Adiciona um ponto existente à lista de vértices da Hitbox.
-         *
-         * @param point O ponto a adicionar.
-         * @return O próprio Builder para encadeamento de chamadas.
-         */
-        public Builder addPoint(Point point) {
+        public Builder addPoint(PVector point) {
             points.add(point);
             return this;
         }
 
-        /**
-         * Cria e adiciona um novo ponto à lista de vértices da Hitbox com base nas coordenadas.
-         *
-         * @param x Coordenada X.
-         * @param y Coordenada Y.
-         * @return O próprio Builder para encadeamento de chamadas.
-         */
         public Builder addPoint(float x, float y) {
-            points.add(new Point(x, y));
+            points.add(new PVector(x, y));
             return this;
         }
 
-        /**
-         * Finaliza a construção e retorna uma nova instância de Hitbox.
-         *
-         * @return Uma nova Hitbox configurada com os pontos adicionados.
-         */
         public Hitbox build() {
             return new Hitbox(points);
         }
     }
 
-    /**
-     * Representa uma área retangular aproximada (Axis-Aligned Bounding Box - AABB).
-     * Usada para otimizar a deteção de colisões, descartando rapidamente casos onde
-     * não há sobreposição.
-     */
     public class RoughHitbox {
-        private static final long serialVersionUID = 1L;
         float width = 0.0f;
         float height = 0.0f;
-        Point position;
+        PVector position;
 
-        /**
-         * Construtor da RoughHitbox.
-         * Calcula automaticamente a largura e altura baseada nos extremos (mínimo e máximo)
-         * das coordenadas dos segmentos fornecidos.
-         *
-         * @param segments Lista de segmentos que compõem a forma original.
-         * @param position A posição inicial da caixa.
-         */
-        RoughHitbox(List<LineSegment> segments, Point position) {
+        RoughHitbox(List<LineSegment> segments, PVector position) {
             float xMin = Float.MAX_VALUE, xMax = Float.MIN_VALUE;
             float yMin = Float.MAX_VALUE, yMax = Float.MIN_VALUE;
 
             for (LineSegment seg : segments) {
-                float startX = seg.getStart().pos.x;
-                float startY = seg.getStart().pos.y;
-                float stopX = seg.getStop().pos.x;
-                float stopY = seg.getStop().pos.y;
+                float startX = seg.getStart().x;
+                float startY = seg.getStart().y;
+                float stopX = seg.getStop().x;
+                float stopY = seg.getStop().y;
 
                 xMax = Math.max(xMax, Math.max(startX, stopX));
                 xMin = Math.min(xMin, Math.min(startX, stopX));
@@ -223,27 +158,45 @@ public class Hitbox {
             this.position = position;
         }
 
-        /**
-         * Verifica a interseção entre duas RoughHitboxes (lógica AABB).
-         *
-         * @param other A outra RoughHitbox para verificar.
-         * @return {@code true} se os retângulos se sobrepõem, {@code false} caso contrário.
-         */
-        public boolean intersects(RoughHitbox other) {
-            float thisX = this.position.pos.x;
-            float thisY = this.position.pos.y;
-            float otherX = other.position.pos.x;
-            float otherY = other.position.pos.y;
+        public boolean intersected(RoughHitbox other) {
+            float thisX = this.position.x;
+            float thisY = this.position.y;
+            float otherX = other.position.x;
+            float otherY = other.position.y;
 
             return (thisX < otherX + other.width && thisX + this.width > otherX && thisY < otherY + other.height && thisY + this.height > otherY);
         }
 
-        /**
-         * Obtém a posição atual da RoughHitbox.
-         *
-         * @return O ponto representando a posição (canto superior esquerdo ou centro, dependendo da implementação do Point).
-         */
-        public Point getPosition() {
+        public void display(PApplet p, SubPlot plt) {
+            p.pushStyle();
+            p.stroke(0, 255, 0);
+            p.strokeWeight(2);
+
+            for (LineSegment line : lines) {
+                PVector p1 = line.getStart();
+                PVector p2 = line.getStop();
+                PVector posOffset = line.getPosition();
+
+                float wx1 = p1.x + posOffset.x;
+                float wy1 = p1.y + posOffset.y;
+                float wx2 = p2.x + posOffset.x;
+                float wy2 = p2.y + posOffset.y;
+
+                float[] c1 = plt.getPixelCoord(wx1, wy1);
+                float[] c2 = plt.getPixelCoord(wx2, wy2);
+
+                p.line(c1[0], c1[1], c2[0], c2[1]);
+            }
+
+            p.stroke(0, 255, 0);
+            p.strokeWeight(5);
+            float[] cPos = plt.getPixelCoord(position.x, position.y);
+            p.point(cPos[0], cPos[1]);
+
+            p.popStyle();
+        }
+
+        public PVector getPosition() {
             return position;
         }
     }
