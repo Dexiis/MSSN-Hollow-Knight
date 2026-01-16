@@ -86,7 +86,7 @@ public class Terrain extends Hitbox {
             //Lógica à direita
             if (onRight) {
                 entity.setVelocity(new PVector(0, entity.getVelocity().y));
-                entity.setPosition(new PVector(this.getPosition().x + this.width / 2 + entity.getHitbox().getWidth() / 2 -ddd PIXEL_CORRECTION, entity.getPosition().y));
+                entity.setPosition(new PVector(this.getPosition().x + this.width / 2 + entity.getHitbox().getWidth() / 2 - PIXEL_CORRECTION, entity.getPosition().y));
             }
 
             //Lógica à esquerda
