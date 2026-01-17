@@ -1,9 +1,12 @@
 package game.scenery;
 
-import game.characters.types.TheKnight;
 import game.core.SubPlot;
-import game.core.Terrain;
-import game.hitbox.LinePainter;
+import game.scenery.characters.Entity;
+import game.scenery.characters.types.Enemy;
+import game.scenery.characters.types.TheKnight;
+import game.scenery.characters.types.enemies.Aspids;
+import game.scenery.components.Terrain;
+import game.scenery.hitbox.LinePainter;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -11,39 +14,52 @@ import java.util.ArrayList;
 
 public class Map {
     private final PApplet p;
+    private final LinePainter painter;
 
     private TheKnight player;
+    private Aspids monster;
     private ArrayList<Terrain> terrains = new ArrayList<>();
+    private ArrayList<Enemy> enemies = new ArrayList<>();
+    private ArrayList<Entity> entities = new ArrayList<>();
 
-    public Map(PApplet p) {//TODO ATUALMENTE RAWCODED - TESTE
+    public Map(PApplet p, LinePainter painter) {//TODO ATUALMENTE RAWCODED - TESTE
         this.p = p;
+        this.painter = painter;
 
-        PVector center = new PVector(0, 100);
+        PVector center = new PVector(0, 200);
         terrains.add(new Terrain(center, 1280, 200));
 
         center = new PVector(0, -200);
         terrains.add(new Terrain(center, 1280, 200));
 
         this.player = new TheKnight(new PVector(0, 0));
+        entities.add(player);
+
+        enemies.add(new Aspids(new PVector(0, 0)));
+        entities.add(enemies.getLast());
     }
 
     public void display(SubPlot plt) {
         for (Terrain terrain : terrains) terrain.display(p, painter, plt);
+        for (Entity entity: entities) entity.display(p, painter, plt);
 
-        player.display(p, painter, plt);
     }
-
-    LinePainter painter = new LinePainter() {
-        @Override
-        public void paintLine(float x1, float y1, float x2, float y2, SubPlot plt) {
-            float[] p1 = plt.getPixelCoord(x1, y1);
-            float[] p2 = plt.getPixelCoord(x2, y2);
-            p.line(p1[0], p1[1], p2[0], p2[1]);
-        }
-    };
 
     public ArrayList<Terrain> getTerrains() {
         return terrains;
+    }
+
+    public ArrayList<Enemy> getEnemies() {
+        return enemies;
+    }
+
+    public void removeEnemy (Enemy enemy){
+        enemies.remove(enemy);
+        entities.remove(enemy);
+    }
+
+    public ArrayList<Entity> getEntities() {
+        return entities;
     }
 
     public TheKnight getPlayer() {
