@@ -7,8 +7,13 @@
     <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/core/SubPlot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/core/SubPlot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/core/Terrain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/core/Terrain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/hitbox/Hitbox.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/hitbox/Hitbox.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/hitbox/LineEquation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/hitbox/LineEquation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/hitbox/LinePainter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/hitbox/LinePainter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/hitbox/LineSegment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/hitbox/LineSegment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/hitbox/Point.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/hitbox/Point.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -130,7 +135,7 @@
       <workItem from="1768528925889" duration="571000" />
       <workItem from="1768570787993" duration="31195000" />
       <workItem from="1768663015659" duration="6225000" />
-      <workItem from="1768669283126" duration="2708000" />
+      <workItem from="1768669283126" duration="5465000" />
     </task>
     <task id="LOCAL-00001" summary="File restructure.">
       <option name="closed" value="true" />

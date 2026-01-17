@@ -19,7 +19,8 @@ public class SubPlot {
 
     /**
      * Construtor do SubPlot.
-     * Calcula os coeficientes de transformação linear (declive e deslocamento) para os eixos X e Y.
+     * Calcula os coeficientes de transformação linear (declive e deslocamento) para os eixos X e Y
+     * necessários para converter coordenadas entre o mundo e o ecrã.
      *
      * @param window     Array de 4 doubles definindo os limites do mundo virtual: [minX, maxX, minY, maxY].
      * @param viewport   Array de 4 floats definindo a área do ecrã (em percentagem 0.0-1.0): [x, y, largura, altura].
@@ -96,7 +97,7 @@ public class SubPlot {
      * Versão sobrecarregada que aceita um array de floats (coordenadas de pixel).
      *
      * @param xy Array contendo [xPixel, yPixel].
-     * @return Array de floats convertido (Nota: verifica a implementação interna se necessário).
+     * @return Array de floats convertido.
      */
     public float[] getWorldCoord(float[] xy) {
         return getPixelCoord(xy[0], xy[1]);
@@ -229,5 +230,4 @@ public class SubPlot {
         my = -viewport[3] * fullHeight / (window[3] - window[2]);
         by = (1 - viewport[1]) * fullHeight;
     }
-
 }

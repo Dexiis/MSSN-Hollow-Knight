@@ -3,9 +3,11 @@ package game.hitbox;
 import game.core.SubPlot;
 
 /**
- * Represents a line segment consisting of a start point, an end point and a position.
- * The position is used to offset both the start and stop points, allowing the line
- * segment to be moved around.
+ * Representa um segmento de reta finito definido por um ponto inicial e um final,
+ * relativos a uma posição global.
+ * <p>
+ * Esta classe gere a representação espacial do segmento e delega os cálculos
+ * geométricos analíticos (como interseções de retas infinitas) para a classe {@link LineEquation}.
  */
 public class LineSegment {
     private Point position;
@@ -14,9 +16,13 @@ public class LineSegment {
     private LineEquation equation;
 
     /**
-     * @param start    the start point
-     * @param stop     the end point
-     * @param position the position offset of the line segment
+     * Construtor do segmento de reta.
+     * Inicializa os pontos e cria a equação linear associada, passando a própria instância
+     * para que a equação possa aceder aos dados atualizados.
+     *
+     * @param position A posição global (offset) do segmento.
+     * @param start    O ponto inicial (coordenada local relativa à posição).
+     * @param stop     O ponto final (coordenada local relativa à posição).
      */
     public LineSegment(Point position, Point start, Point stop) {
         this.position = position;
@@ -26,107 +32,94 @@ public class LineSegment {
     }
 
     /**
-     * Returns the {@link LineEquation} describing the line segment. Used to calculate intersection points
-     * with other line segments.
+     * Verifica se este segmento de reta interseta outro segmento.
+     * <p>
+     * Utiliza a equação linear associada para calcular matematicamente se existe
+     * um ponto de interseção entre as duas retas.
+     *
+     * @param other O outro segmento de reta a verificar.
+     * @return {@code true} se houver colisão (interseção), {@code false} caso contrário.
+     */
+    public boolean intersects(LineSegment other) {
+        Point intersection = equation.solveIntersectionPoint(other.getEquation());
+        return intersection != null;
+    }
+
+    /**
+     * Obtém a equação da reta associada a este segmento.
+     *
+     * @return O objeto {@link LineEquation}.
      */
     public LineEquation getEquation() {
         return equation;
     }
 
     /**
-     * @return start point of line segment
+     * Obtém o ponto inicial do segmento (coordenadas locais).
+     *
+     * @return O ponto de início.
      */
     public Point getStart() {
         return start;
     }
 
     /**
-     * @return end point of line segment
+     * Obtém o ponto final do segmento (coordenadas locais).
+     *
+     * @return O ponto de fim.
      */
     public Point getStop() {
         return stop;
     }
 
     /**
-     * Sets the position of the line segment to the given position.
+     * Obtém a posição global de referência do segmento.
      *
-     * @param position
-     */
-    public void setPosition(Point position) {
-        this.position = position;
-        this.equation.setPosition(position);
-    }
-
-    /**
-     * @return position of the line segment
+     * @return O ponto de posição.
      */
     public Point getPosition() {
         return position;
     }
 
     /**
-     * Lines are counted as vertical if the difference between their start and stop X-coordinates is less than 3.0f
-     * This is done to prevent problems caused by too slight angles from the Y-axis.
+     * Define a nova posição global de referência para o segmento.
+     * A atualização reflete-se automaticamente nos cálculos da equação linear associada
+     * na próxima vez que esta for invocada.
      *
-     * @return <b>true</b> if the line segment is approximated as vertical <b>false</b> otherwise
+     * @param position O novo ponto de posição global.
      */
-    public boolean isVertical() {
-        return Math.abs(start.x - stop.x) <= 3.0f;
+    public void setPosition(Point position) {
+        this.position = position;
     }
 
     /**
-     * Checks if two line segments intersect.
+     * Verifica se um ponto específico (x, y) está contido dentro dos limites físicos do segmento (Bounding Box).
+     * <p>
+     * Este método é útil para validar se uma interseção calculada pela equação da reta infinita
+     * ocorre realmente dentro do pedaço finito de reta que este segmento representa.
      *
-     * @return <b>true</b> if line segments intersect <b>false</b> otherwise.
-     */
-    public boolean intersects(LineSegment other) {
-        // If both lines are vertical, they have to have the same x-coordinate and must overlap on the y-axis
-        if (this.isVertical() && other.isVertical()) {
-            return Math.min(this.start.x, this.stop.x) == Math.min(other.start.x, other.stop.x) && (this.isPointOnLine(other.start.x, other.start.y) || this.isPointOnLine(other.stop.x, other.stop.y));
-        }
-
-        // If one line is vertical, solve the non-vertical line equation with
-        // the vertical line's x-coordinate to get intersection point
-        // and check if said point is one both lines
-        if (this.isVertical() || other.isVertical()) {
-            LineSegment vertical = this.isVertical() ? this : other;
-            LineSegment nonVertical = this.isVertical() ? other : this;
-
-            nonVertical.getEquation().formEquation();
-
-            float x = vertical.getStart().x + vertical.getPosition().x;
-            float y = nonVertical.getEquation().calculate(x);
-            return vertical.isPointOnLine(x, y) && nonVertical.isPointOnLine(x, y);
-        }
-
-        // Solve intersection point and find out if the point is on both lines.
-        Point intersectionPoint = equation.solveIntersectionPoint(other.getEquation());
-        float x = intersectionPoint.x;
-        float y = intersectionPoint.y;
-        return this.isPointOnLine(x, y) && other.isPointOnLine(x, y);
-    }
-
-    /**
-     * Checks if a point is found on this line segment.
-     *
-     * @param x
-     * @param y
-     * @return <b>true</b> if the point is on the line segment <b>false</b> otherwise
+     * @param x A coordenada X global do ponto.
+     * @param y A coordenada Y global do ponto.
+     * @return {@code true} se o ponto estiver sobre o segmento (com uma pequena margem de erro), {@code false} caso contrário.
      */
     public boolean isPointOnLine(float x, float y) {
-        float xPos = position.x;
-        float yPos = position.y;
-        boolean betweenX = (x >= start.x + xPos && x <= stop.x + xPos) || (x <= start.x + xPos && x >= stop.x + xPos);
+        float x1 = start.x + position.x;
+        float x2 = stop.x + position.x;
+        float y1 = start.y + position.y;
+        float y2 = stop.y + position.y;
 
-        boolean betweenY = (y >= start.y + yPos && y <= stop.y + yPos) || (y <= start.y + yPos && y >= stop.y + yPos);
+        boolean betweenX = (x >= Math.min(x1, x2) - 0.01f) && (x <= Math.max(x1, x2) + 0.01f);
+        boolean betweenY = (y >= Math.min(y1, y2) - 0.01f) && (y <= Math.max(y1, y2) + 0.01f);
 
         return betweenX && betweenY;
     }
 
     /**
-     * Draws the line segment using the {@link LinePainter} provided.
+     * Desenha o segmento de reta no ecrã.
+     * Converte as coordenadas locais e globais para coordenadas de ecrã utilizando o SubPlot.
      *
-     * @param painter used to draw the line segment
+     * @param painter O objeto responsável pela pintura da linha.
+     * @param plt     O objeto SubPlot usado para a conversão de coordenadas.
      */
     public void draw(LinePainter painter, SubPlot plt) {
         painter.paintLine(start.x + position.x, start.y + position.y, stop.x + position.x, stop.y + position.y, plt);

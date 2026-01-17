@@ -48,20 +48,8 @@ public class Game extends PApplet {
         player.move(dt);
         checkCollisions(dt);
 
-        //setWindow(player.getPosition());
+        setWindow(player.getPosition());
         map.display(plt);
-
-        float[] pStart = plt.getPixelCoord(0, 0);
-        float[] pEnd = plt.getPixelCoord(200, 200);
-
-        line(pStart[0], pStart[1], pEnd[0], pEnd[1]);
-
-        pushMatrix();
-        translate(pEnd[0], pEnd[1]);
-        rotate(atan2(pEnd[1] - pStart[1], pEnd[0] - pStart[0]));
-        line(0, 0, -10, -5);
-        line(0, 0, -10, 5);
-        popMatrix();
     }
 
     private PVector gravity(float mass) {

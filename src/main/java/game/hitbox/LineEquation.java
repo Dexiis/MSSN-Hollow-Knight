@@ -1,24 +1,27 @@
 package game.hitbox;
 
 /**
- * An equation describing a {@link LineSegment}.
- * Used for finding out if two line segments intersect<p>
- * This works by extending the line segment into a 2D line which can be
- * described by the equation of the form: <p>
- * <i>y = k * x + a</i> <p>
- * where <i>k</i> is the derivative of the line and <i>a</i> is a constant
- * describing the distance in from the point (0, 0) in the direction of the y-axis.
+ * Representa e resolve a equação linear na forma y = kx + a.
+ * <p>
+ * Esta classe é responsável pela matemática analítica das linhas, lidando
+ * especificamente com o caso de linhas verticais (paredes) onde o declive é indefinido.
  */
 public class LineEquation {
-    private Point position; // Position of the line segment
-    private Point start; // Start point of the line segment
-    private Point stop; // Stop point of the line segment
-    private Point result = new Point(0.0f, 0.0f);
-    private float k; // Derivative of the line segment
-    private float a; // Constant offset from (0, 0) in the direction of the y-axis
+    private Point position;
+    private Point start;
+    private Point stop;
+
+    private float k;
+    private float a;
+
+    private boolean isVertical;
+    private float verticalX;
 
     /**
-     * @param {@link LineSegment} to form the equation for.
+     * Construtor da equação de reta.
+     * Inicializa os pontos de referência com base num segmento de reta existente.
+     *
+     * @param segment O segmento de reta que servirá de base para a equação.
      */
     public LineEquation(LineSegment segment) {
         this.position = segment.getPosition();
@@ -27,82 +30,100 @@ public class LineEquation {
     }
 
     /**
-     * Forms the equation for the line in the form: <p>
-     * <i>y = k * x + a</i> <p>
-     */
-    public void formEquation() {
-        if (stop.x == start.x) k = 0.0f;
-        else k = (stop.y - start.y) / (stop.x - start.x);
-
-        a = start.y + position.y - k * (start.x + position.x);
-    }
-
-    /**
-     * Sets the position of the line equation
+     * Define a posição global de referência para a equação.
+     * Útil quando o objeto se move e a equação precisa de ser recalculada com base no novo offset.
      *
-     * @param position the new position
+     * @param position O novo ponto de posição global.
      */
     public void setPosition(Point position) {
         this.position = position;
     }
 
     /**
-     * @return k, the derivative of the line
+     * Calcula os coeficientes da equação da reta com base nos pontos atuais.
+     * <p>
+     * Determina automaticamente se a linha é vertical (diferença em X muito pequena)
+     * para evitar erros de divisão por zero e define a flag interna apropriada.
+     */
+    public void formEquation() {
+        float x1 = start.x + position.x;
+        float y1 = start.y + position.y;
+        float x2 = stop.x + position.x;
+        float y2 = stop.y + position.y;
+
+        if (Math.abs(x2 - x1) < 0.001f) {
+            isVertical = true;
+            verticalX = x1;
+            k = 0;
+            a = 0;
+        } else {
+            isVertical = false;
+            k = (y2 - y1) / (x2 - x1);
+            a = y1 - (k * x1);
+        }
+    }
+
+    /**
+     * Calcula o ponto de interseção entre esta reta e outra, considerando-as infinitas.
+     * <p>
+     * Este método gere quatro cenários de interseção:
+     * 1. Ambas verticais (retorna null).
+     * 2. Apenas esta reta é vertical.
+     * 3. Apenas a outra reta é vertical.
+     * 4. Nenhuma é vertical (cálculo algébrico padrão).
+     *
+     * @param other A outra equação de reta para verificar a interseção.
+     * @return Um objeto {@link Point} com as coordenadas da interseção, ou {@code null} se forem paralelas.
+     */
+    public Point solveIntersectionPoint(LineEquation other) {
+        this.formEquation();
+        other.formEquation();
+
+        float intersectX, intersectY;
+
+        if (this.isVertical && other.isVertical) return null;
+
+        else if (this.isVertical) {
+            intersectX = this.verticalX;
+            intersectY = other.calculate(intersectX);
+        } else if (other.isVertical) {
+            intersectX = other.verticalX;
+            intersectY = this.calculate(intersectX);
+        } else {
+            if (Math.abs(this.k - other.k) < 0.001f) return null;
+
+            intersectX = (other.a - this.a) / (this.k - other.k);
+            intersectY = calculate(intersectX);
+        }
+
+        return new Point(intersectX, intersectY);
+    }
+
+    /**
+     * Calcula o valor de Y para uma dada coordenada X utilizando a equação linear.
+     *
+     * @param x A coordenada X de entrada.
+     * @return O valor correspondente de Y (y = kx + a).
+     */
+    public float calculate(float x) {
+        return k * x + a;
+    }
+
+    /**
+     * Obtém o declive (inclinação) da reta.
+     *
+     * @return O valor de k.
      */
     public float getK() {
         return k;
     }
 
     /**
-     * @return a, the constant offset in the y-axis direction from the point (0, 0)
+     * Obtém a ordenada na origem (offset Y).
+     *
+     * @return O valor de a.
      */
     public float getA() {
         return a;
     }
-
-    /**
-     * Uses the equation with the help of another line equation,
-     * solving for y the equation of the following form: <p>
-     * <i>y = k * x + a</i>
-     *
-     * @param other another line equation used for the simultaneous equation
-     * @return a point which satisfies both equations
-     */
-    public Point solveIntersectionPoint(LineEquation other) {
-        // Update the equations to their current values
-        this.formEquation();
-        other.formEquation();
-
-        // Solved by transferring all constants a to the "other" side of the equation
-        // and all factors k to "this" side of the equation
-        // E.g. 2x + 3 = 3x - 1 becomes x = 4
-        float resultK = this.k - other.getK();
-        float resultA = other.getA() - this.a;
-        if (resultK != 0.0f) {
-            resultA /= resultK;
-        } else {
-            resultA = 0.0f;//start.x;
-        }
-
-        // Now the equation is in the form 1*x = A, where A is the remaining constant value
-        float x = resultA;
-
-        // Form the result point (x, y), where y = k * x + a
-        result.x = x;
-        result.y = calculate(x);
-
-        return result;
-    }
-
-    /**
-     * Solves the equation of the form <p>
-     * <i>y = k * x + a</i>
-     *
-     * @param x
-     * @return the result of the equation
-     */
-    public float calculate(float x) {
-        return k * x + a;
-    }
-
 }

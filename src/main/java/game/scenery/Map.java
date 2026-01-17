@@ -19,10 +19,10 @@ public class Map {
         this.p = p;
 
         PVector center = new PVector(0, 100);
-        terrains.add(new Terrain(center, 1280, 200, true));
+        terrains.add(new Terrain(center, 1280, 200));
 
-//        center = new PVector(0, -200);
-//        terrains.add(new Terrain(center, 1280, 200));
+        center = new PVector(0, -200);
+        terrains.add(new Terrain(center, 1280, 200));
 
         this.player = new TheKnight(new PVector(0, 0));
     }
