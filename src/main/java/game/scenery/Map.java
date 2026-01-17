@@ -17,16 +17,12 @@ public class Map {
 
     public Map(PApplet p) {//TODO ATUALMENTE RAWCODED - TESTE
         this.p = p;
-//        Terrain.Builder builder = new Hitbox.Builder();
-//        builder.addPoint(10.0f, 0.0f).addPoint(110.0f, 10.0f).addPoint(100.0f, 100.0f).addPoint(130.0f, 130.0f).addPoint(0.0f, 90.0f);
-//
-//        Terrain hitbox = builder.build();
-//        terrains.add(hitbox);
 
         PVector center = new PVector(0, 100);
-        terrains.add(new Terrain(center, 1280, 200));
-        center = new PVector(0, -200);
         terrains.add(new Terrain(center, 1280, 200, true));
+
+//        center = new PVector(0, -200);
+//        terrains.add(new Terrain(center, 1280, 200));
 
         this.player = new TheKnight(new PVector(0, 0));
     }
@@ -46,7 +42,7 @@ public class Map {
         }
     };
 
-    public ArrayList<Terrain> getTerrain() {
+    public ArrayList<Terrain> getTerrains() {
         return terrains;
     }
 

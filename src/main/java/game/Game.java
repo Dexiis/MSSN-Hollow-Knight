@@ -3,7 +3,6 @@ package game;
 import game.characters.types.TheKnight;
 import game.core.SubPlot;
 import game.core.Terrain;
-import game.hitbox.LinePainter;
 import game.scenery.Map;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -85,7 +84,7 @@ public class Game extends PApplet {
      */
     private void checkCollisions(float dt) {
         player.setIsGrounded(false);
-        for (Terrain terrain : map.getTerrain()) terrain.elaborateIntersects(player);
+        for (Terrain terrain : map.getTerrains()) terrain.elaborateIntersects(player);
     }
 
     private void setWindow(PVector playerPosition) {

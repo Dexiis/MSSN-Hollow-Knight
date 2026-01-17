@@ -10,22 +10,36 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Terrain extends Hitbox {
     private final static int PIXEL_CORRECTION = 1;
     private boolean log = false;
 
-    public Terrain(ArrayList<PVector> points) {
+    public Terrain(List<Point> points) {
         super(points);
     }
 
     public Terrain(PVector center, float width, float height) {
-        super(new Point(center.x,center.y), width, height);
+        super(new Point(center.x, center.y), width, height);
     }
 
     public Terrain(PVector center, float width, float height, boolean log) {
-        super(new Point(center.x,center.y), width, height);
+        super(new Point(center.x, center.y), width, height);
         this.log = log;
+    }
+
+    public static class Builder {
+        private final List<Point> points = new ArrayList<>();
+
+        public Builder addPoint(float x, float y) {
+            points.add(new Point(x, y));
+            return this;
+        }
+
+        public Terrain build() {
+            return new Terrain(points);
+        }
     }
 
     public void elaborateIntersects(Entity entity) {
