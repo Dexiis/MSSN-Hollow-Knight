@@ -3,6 +3,7 @@ package game;
 import game.characters.types.TheKnight;
 import game.core.SubPlot;
 import game.core.Terrain;
+import game.hitbox.LinePainter;
 import game.scenery.Map;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -13,7 +14,7 @@ public class Game extends PApplet {
     private TheKnight player;
 
     private final float[] viewport = {0f, 0f, 1f, 1f};
-    private double[] window = {-800, 800, 450, -450};
+    private double[] window = {-800, 800, -450, 450};
     private SubPlot plt;
     private float lastUpdateTime;
 
@@ -31,7 +32,7 @@ public class Game extends PApplet {
         lastUpdateTime = millis();
         plt = new SubPlot(window, viewport, width, height);
 
-        map = new Map();
+        map = new Map(this);
         player = map.getPlayer();
     }
 
@@ -48,12 +49,24 @@ public class Game extends PApplet {
         player.move(dt);
         checkCollisions(dt);
 
-        setWindow(player.getPosition());
-        map.display(this, plt);
+        //setWindow(player.getPosition());
+        map.display(plt);
+
+        float[] pStart = plt.getPixelCoord(0, 0);
+        float[] pEnd = plt.getPixelCoord(200, 200);
+
+        line(pStart[0], pStart[1], pEnd[0], pEnd[1]);
+
+        pushMatrix();
+        translate(pEnd[0], pEnd[1]);
+        rotate(atan2(pEnd[1] - pStart[1], pEnd[0] - pStart[0]));
+        line(0, 0, -10, -5);
+        line(0, 0, -10, 5);
+        popMatrix();
     }
 
     private PVector gravity(float mass) {
-        if (player.getAcceleration().mag() < 9.8f) return new PVector(0, 980 * mass);
+        if (player.getAcceleration().mag() < 9.8f) return new PVector(0, -980 * mass);
         else return new PVector(0, 0 * mass);
     }
 
@@ -71,6 +84,7 @@ public class Game extends PApplet {
      * Verifica as colisões do jogador.
      */
     private void checkCollisions(float dt) {
+        player.setIsGrounded(false);
         for (Terrain terrain : map.getTerrain()) terrain.elaborateIntersects(player);
     }
 
@@ -99,7 +113,14 @@ public class Game extends PApplet {
 
     @Override
     public void mousePressed() {
-        player.setPosition(new PVector(0, 0));
-        player.setVelocity(new PVector(0, 0));
+        if (mouseButton == RIGHT) {
+            double[] w = plt.getWorldCoord(mouseX, mouseY);
+            player.setPosition(new PVector((float)w[0], (float)w[1]));
+            player.setVelocity(new PVector(0, 0));
+        } else if (mouseButton == LEFT) {
+            player.setPosition(new PVector(0, 0));
+            player.setVelocity(new PVector(0, 0));
+        }
     }
+
 }

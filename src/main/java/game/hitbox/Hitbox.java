@@ -7,49 +7,71 @@ import processing.core.PVector;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * A 2D polygon hitbox which is formed by an arbitrary amount of points.
+ * This works by connecting the points to each other in the order in which
+ * they are given, with the last point connected to the first
+ */
 public class Hitbox {
     protected final RoughHitbox roughHitbox;
     protected final List<LineSegment> lines = new ArrayList<>();
-    protected PVector position = new PVector(0.0f, 0.0f);
+
+    protected Point position = new Point(0.0f, 0.0f);
     protected float width, height;
 
-    public Hitbox(List<PVector> points) {
+    public Hitbox(ArrayList<PVector> points) {
+        List<Point> newPoints = new ArrayList<>();
+        for (PVector point : points) newPoints.add(new Point(point.x, point.y));
+        formLines(newPoints);
+        roughHitbox = new RoughHitbox(lines, position);
+        this.width = Math.abs(points.get(1).x - points.get(0).x);
+        this.height = Math.abs(points.get(1).y - points.get(2).y);
+    }
+
+    public Hitbox(List<Point> points) {
         formLines(points);
         roughHitbox = new RoughHitbox(lines, position);
         this.width = Math.abs(points.get(1).x - points.get(0).x);
         this.height = Math.abs(points.get(1).y - points.get(2).y);
     }
 
-    public Hitbox(PVector position, float width, float height) {
+    public Hitbox(Point position, float width, float height) {
         this.width = width;
         this.height = height;
 
-        ArrayList<PVector> points = new ArrayList<>();
-        points.add(new PVector(position.x - width / 2, position.y - height / 2));
-        points.add(new PVector(position.x + width / 2, position.y - height / 2));
-        points.add(new PVector(position.x + width / 2, position.y + height / 2));
-        points.add(new PVector(position.x - width / 2, position.y + height / 2));
+        ArrayList<Point> points = new ArrayList<>();
+        points.add(new Point(position.x - width / 2, position.y - height / 2));
+        points.add(new Point(position.x + width / 2, position.y - height / 2));
+        points.add(new Point(position.x + width / 2, position.y + height / 2));
+        points.add(new Point(position.x - width / 2, position.y + height / 2));
         formLines(points);
 
         this.position = position;
         this.roughHitbox = new RoughHitbox(lines, this.position);
     }
 
-    private void formLines(List<PVector> points) {
+    /**
+     * Forms the {@link LineSegment}s based on the list of {@link Point}s
+     */
+    private void formLines(List<Point> points) {
         for (int i = 0; i < points.size(); ++i) {
-            PVector p1 = points.get(i);
-            PVector p2 = points.get((i + 1) % points.size());
+            Point p1 = points.get(i);
+            Point p2 = points.get((i + 1) % points.size());
 
             lines.add(new LineSegment(position, p1, p2));
         }
     }
 
+    /**
+     * @return a rectangular hitbox which envelops the polygon hitbox
+     */
     public RoughHitbox getRoughHitbox() {
         return roughHitbox;
     }
 
     public boolean intersected(Hitbox other) {
-        if (!this.roughHitbox.intersected(other.getRoughHitbox())) {
+        if (!this.roughHitbox.isIntersecting(other.getRoughHitbox())) {
             return false;
         }
         for (LineSegment line : lines) {
@@ -61,6 +83,10 @@ public class Hitbox {
     }
 
     public void setPosition(PVector position) {
+        setPosition(new Point(position.x, position.y));
+    }
+
+    public void setPosition(Point position) {
         this.position = position;
         this.roughHitbox.position = position;
         for (LineSegment line : lines) {
@@ -68,7 +94,7 @@ public class Hitbox {
         }
     }
 
-    public PVector getPosition() {
+    public Point getPosition() {
         return position;
     }
 
@@ -80,34 +106,19 @@ public class Hitbox {
         return height;
     }
 
-    public void display(PApplet p, SubPlot plt) {
-        p.pushStyle();
-        p.stroke(255, 0, 255);
-        p.strokeWeight(2);
-
+    /**
+     * Draws the hitbox using the given {@LinePainter}.
+     * Used for visualizing in case of e.g. debugging
+     */
+    public void draw(LinePainter painter, SubPlot plt) {
         for (LineSegment line : lines) {
-            PVector p1 = line.getStart();
-            PVector p2 = line.getStop();
-            PVector posOffset = line.getPosition();
-
-            float wx1 = p1.x + posOffset.x;
-            float wy1 = p1.y + posOffset.y;
-            float wx2 = p2.x + posOffset.x;
-            float wy2 = p2.y + posOffset.y;
-
-            float[] c1 = plt.getPixelCoord(wx1, wy1);
-            float[] c2 = plt.getPixelCoord(wx2, wy2);
-
-            p.line(c1[0], c1[1], c2[0], c2[1]);
+            line.draw(painter, plt);
         }
+    }
 
-        p.stroke(255, 0, 255);
-        p.strokeWeight(5);
-        float[] cPos = plt.getPixelCoord(position.x, position.y);
-        p.point(cPos[0], cPos[1]);
-
-        p.popStyle();
-        roughHitbox.display(p, plt);
+    public void display(PApplet p, LinePainter painter, SubPlot plt) {
+        draw(painter, plt);
+        roughHitbox.draw(p, plt);
     }
 
     public List<LineSegment> getLines() {
@@ -115,15 +126,15 @@ public class Hitbox {
     }
 
     public static class Builder {
-        private List<PVector> points = new ArrayList<>();
+        private List<Point> points = new ArrayList<>();
 
-        public Builder addPoint(PVector point) {
+        public Builder addPoint(Point point) {
             points.add(point);
             return this;
         }
 
         public Builder addPoint(float x, float y) {
-            points.add(new PVector(x, y));
+            points.add(new Point(x, y));
             return this;
         }
 
@@ -135,13 +146,16 @@ public class Hitbox {
     public class RoughHitbox {
         float width = 0.0f;
         float height = 0.0f;
-        PVector position;
+        Point position;
 
-        RoughHitbox(List<LineSegment> segments, PVector position) {
+        // Constructs the rough hitbox so that its height and width conforms to the height,
+        // width and position of the polygon hitbox which it envelops
+        RoughHitbox(List<LineSegment> segments, Point position) {
             float xMin = Float.MAX_VALUE, xMax = Float.MIN_VALUE;
             float yMin = Float.MAX_VALUE, yMax = Float.MIN_VALUE;
 
             for (LineSegment seg : segments) {
+
                 float startX = seg.getStart().x;
                 float startY = seg.getStart().y;
                 float stopX = seg.getStop().x;
@@ -158,45 +172,32 @@ public class Hitbox {
             this.position = position;
         }
 
-        public boolean intersected(RoughHitbox other) {
-            float thisX = this.position.x;
-            float thisY = this.position.y;
-            float otherX = other.position.x;
-            float otherY = other.position.y;
+        public boolean isIntersecting(RoughHitbox other) {
 
-            return (thisX < otherX + other.width && thisX + this.width > otherX && thisY < otherY + other.height && thisY + this.height > otherY);
+            // Check if the the right wall is between the left and right wall of the other hitbox (and vice versa)
+            boolean xOverlap = (this.position.x + this.width >= other.position.x && this.position.x + this.width < other.position.x + other.width) || (other.position.x + other.width >= this.position.x && other.position.x + other.width < this.position.x + this.width);
+
+            // Check if the the bottom wall is between the top and bottom wall of the other hitbox (and vice versa)
+            boolean yOverlap = (this.position.y + this.height >= other.position.y && this.position.y + this.height < other.position.y + other.height) || (other.position.y + other.height >= this.position.y && other.position.y + other.height < this.position.y + this.height);
+
+            return xOverlap && yOverlap;
         }
 
-        public void display(PApplet p, SubPlot plt) {
+        public void draw(PApplet p, SubPlot plt) {
             p.pushStyle();
+            p.noFill();
             p.stroke(0, 255, 0);
-            p.strokeWeight(2);
+            p.strokeWeight(1);
 
-            for (LineSegment line : lines) {
-                PVector p1 = line.getStart();
-                PVector p2 = line.getStop();
-                PVector posOffset = line.getPosition();
-
-                float wx1 = p1.x + posOffset.x;
-                float wy1 = p1.y + posOffset.y;
-                float wx2 = p2.x + posOffset.x;
-                float wy2 = p2.y + posOffset.y;
-
-                float[] c1 = plt.getPixelCoord(wx1, wy1);
-                float[] c2 = plt.getPixelCoord(wx2, wy2);
-
-                p.line(c1[0], c1[1], c2[0], c2[1]);
-            }
-
-            p.stroke(0, 255, 0);
-            p.strokeWeight(5);
-            float[] cPos = plt.getPixelCoord(position.x, position.y);
-            p.point(cPos[0], cPos[1]);
+            float[] c = plt.getPixelCoord(position.x, position.y);
+            float[] dims = plt.getDimInPixel(width, height);
+            p.rectMode(PApplet.CENTER);
+            p.rect(c[0], c[1], dims[0], dims[1]);
 
             p.popStyle();
         }
 
-        public PVector getPosition() {
+        public Point getPosition() {
             return position;
         }
     }

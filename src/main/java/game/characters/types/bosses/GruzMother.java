@@ -4,6 +4,7 @@ import game.characters.IVisualizable;
 import game.characters.types.Boss;
 import game.core.SubPlot;
 import game.hitbox.Hitbox;
+import game.hitbox.LinePainter;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -25,7 +26,7 @@ public class GruzMother extends Boss implements IVisualizable {
     }
 
     @Override
-    public void display(PApplet p, SubPlot plt) {
+    public void display(PApplet p, LinePainter painter, SubPlot plt) {
         //TODO Associar Sprites
     }
 }

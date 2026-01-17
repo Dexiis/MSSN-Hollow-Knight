@@ -15,8 +15,7 @@ public class SubPlot {
     private double bx;
     private double my;
     private double by;
-    private final double fullHeight;
-    private final double fullWidth;
+    private double fullHeight, fullWidth;
 
     /**
      * Construtor do SubPlot.
@@ -32,12 +31,10 @@ public class SubPlot {
         this.viewport = viewport;
         this.fullWidth = fullWidth;
         this.fullHeight = fullHeight;
-
         mx = viewport[2] * fullWidth / (window[1] - window[0]);
         bx = viewport[0] * fullWidth;
-
-        my = viewport[3] * fullHeight / (window[3] - window[2]);
-        by = viewport[1] * fullHeight;
+        my = -viewport[3] * fullHeight / (window[3] - window[2]);
+        by = (1 - viewport[1]) * fullHeight;
     }
 
     /**
@@ -75,7 +72,7 @@ public class SubPlot {
     public float[] getDimInPixel(double dimx, double dimy) {
         float[] d = new float[2];
         d[0] = (float) (dimx * mx);
-        d[1] = (float) (dimy * my);
+        d[1] = (float) (-dimy * my);
 
         return d;
     }
@@ -175,7 +172,7 @@ public class SubPlot {
     public float[] getVectorCoord(double dx, double dy) {
         float[] v = new float[2];
         v[0] = (float) (dx * mx);
-        v[1] = (float) (dy * my);
+        v[1] = (float) (-dy * my);
         return v;
     }
 
@@ -216,8 +213,8 @@ public class SubPlot {
         this.viewport = viewport;
         mx = viewport[2] * fullWidth / (window[1] - window[0]);
         bx = viewport[0] * fullWidth;
-        my = viewport[3] * fullHeight / (window[3] - window[2]);
-        by = viewport[1] * fullHeight;
+        my = -viewport[3] * fullHeight / (window[3] - window[2]);
+        by = (1 - viewport[1]) * fullHeight;
     }
 
     /**
@@ -229,7 +226,8 @@ public class SubPlot {
         this.window = window;
         mx = viewport[2] * fullWidth / (window[1] - window[0]);
         bx = viewport[0] * fullWidth;
-        my = viewport[3] * fullHeight / (window[3] - window[2]);
-        by = viewport[1] * fullHeight;
+        my = -viewport[3] * fullHeight / (window[3] - window[2]);
+        by = (1 - viewport[1]) * fullHeight;
     }
+
 }

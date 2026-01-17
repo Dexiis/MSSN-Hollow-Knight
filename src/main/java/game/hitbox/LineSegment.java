@@ -1,95 +1,134 @@
 package game.hitbox;
 
-import processing.core.PApplet;
-import processing.core.PVector;
+import game.core.SubPlot;
 
+/**
+ * Represents a line segment consisting of a start point, an end point and a position.
+ * The position is used to offset both the start and stop points, allowing the line
+ * segment to be moved around.
+ */
 public class LineSegment {
-    private PVector position;
-    private final PVector start;
-    private final PVector stop;
+    private Point position;
+    private final Point start;
+    private final Point stop;
     private LineEquation equation;
 
-    public LineSegment(PVector position, PVector start, PVector stop) {
+    /**
+     * @param start    the start point
+     * @param stop     the end point
+     * @param position the position offset of the line segment
+     */
+    public LineSegment(Point position, Point start, Point stop) {
         this.position = position;
         this.start = start;
         this.stop = stop;
         this.equation = new LineEquation(this);
     }
 
+    /**
+     * Returns the {@link LineEquation} describing the line segment. Used to calculate intersection points
+     * with other line segments.
+     */
     public LineEquation getEquation() {
         return equation;
     }
 
-    public PVector getStart() {
+    /**
+     * @return start point of line segment
+     */
+    public Point getStart() {
         return start;
     }
 
-    public PVector getStop() {
+    /**
+     * @return end point of line segment
+     */
+    public Point getStop() {
         return stop;
     }
 
-    public PVector getPosition() {
+    /**
+     * Sets the position of the line segment to the given position.
+     *
+     * @param position
+     */
+    public void setPosition(Point position) {
+        this.position = position;
+        this.equation.setPosition(position);
+    }
+
+    /**
+     * @return position of the line segment
+     */
+    public Point getPosition() {
         return position;
     }
 
+    /**
+     * Lines are counted as vertical if the difference between their start and stop X-coordinates is less than 3.0f
+     * This is done to prevent problems caused by too slight angles from the Y-axis.
+     *
+     * @return <b>true</b> if the line segment is approximated as vertical <b>false</b> otherwise
+     */
     public boolean isVertical() {
-        return Math.abs(start.x - stop.x) < 0.001f;
+        return Math.abs(start.x - stop.x) <= 3.0f;
     }
 
+    /**
+     * Checks if two line segments intersect.
+     *
+     * @return <b>true</b> if line segments intersect <b>false</b> otherwise.
+     */
     public boolean intersects(LineSegment other) {
+        // If both lines are vertical, they have to have the same x-coordinate and must overlap on the y-axis
         if (this.isVertical() && other.isVertical()) {
-            if (Math.abs((this.start.x + position.x) - (other.start.x + other.position.x)) > 0.001f) return false;
-
-            return rangeOverlap(this.start.y + position.y, this.stop.y + position.y, other.start.y + other.position.y, other.stop.y + other.position.y);
+            return Math.min(this.start.x, this.stop.x) == Math.min(other.start.x, other.stop.x) && (this.isPointOnLine(other.start.x, other.start.y) || this.isPointOnLine(other.stop.x, other.stop.y));
         }
 
+        // If one line is vertical, solve the non-vertical line equation with
+        // the vertical line's x-coordinate to get intersection point
+        // and check if said point is one both lines
         if (this.isVertical() || other.isVertical()) {
-            LineSegment vert = this.isVertical() ? this : other;
-            LineSegment nonVert = this.isVertical() ? other : this;
+            LineSegment vertical = this.isVertical() ? this : other;
+            LineSegment nonVertical = this.isVertical() ? other : this;
 
-            nonVert.getEquation().formEquation();
+            nonVertical.getEquation().formEquation();
 
-            float vertX = vert.start.x + vert.position.x;
-            float intersectionY = nonVert.getEquation().calculate(vertX);
-
-            return vert.isPointOnLine(vertX, intersectionY) && nonVert.isPointOnLine(vertX, intersectionY);
+            float x = vertical.getStart().x + vertical.getPosition().x;
+            float y = nonVertical.getEquation().calculate(x);
+            return vertical.isPointOnLine(x, y) && nonVertical.isPointOnLine(x, y);
         }
 
-        PVector p = equation.solveIntersectionPoint(other.getEquation());
-        return this.isPointOnLine(p.x, p.y) && other.isPointOnLine(p.x, p.y);
+        // Solve intersection point and find out if the point is on both lines.
+        Point intersectionPoint = equation.solveIntersectionPoint(other.getEquation());
+        float x = intersectionPoint.x;
+        float y = intersectionPoint.y;
+        return this.isPointOnLine(x, y) && other.isPointOnLine(x, y);
     }
 
-    private boolean rangeOverlap(float a1, float a2, float b1, float b2) {
-        return Math.max(a1, a2) >= Math.min(b1, b2) && Math.min(a1, a2) <= Math.max(b1, b2);
-    }
-
+    /**
+     * Checks if a point is found on this line segment.
+     *
+     * @param x
+     * @param y
+     * @return <b>true</b> if the point is on the line segment <b>false</b> otherwise
+     */
     public boolean isPointOnLine(float x, float y) {
-        float epsilon = 0.05f;
-        float xGlobal = position.x;
-        float yGlobal = position.y;
+        float xPos = position.x;
+        float yPos = position.y;
+        boolean betweenX = (x >= start.x + xPos && x <= stop.x + xPos) || (x <= start.x + xPos && x >= stop.x + xPos);
 
-        boolean betweenX = x >= Math.min(start.x, stop.x) + xGlobal - epsilon && x <= Math.max(start.x, stop.x) + xGlobal + epsilon;
-
-        boolean betweenY = y >= Math.min(start.y, stop.y) + yGlobal - epsilon && y <= Math.max(start.y, stop.y) + yGlobal + epsilon;
+        boolean betweenY = (y >= start.y + yPos && y <= stop.y + yPos) || (y <= start.y + yPos && y >= stop.y + yPos);
 
         return betweenX && betweenY;
     }
 
-    public void display(PApplet p) {
-        float x1 = start.x + position.x;
-        float y1 = start.y + position.y;
-        float x2 = stop.x + position.x;
-        float y2 = stop.y + position.y;
-
-        p.pushStyle();
-        p.stroke(0);
-        p.strokeWeight(2);
-        p.line(x1, y1, x2, y2);
-        p.popStyle();
-    }
-
-    public void setPosition(PVector position) {
-        this.position = position;
-        this.equation.setPosition(position);
+    /**
+     * Draws the line segment using the {@link LinePainter} provided.
+     *
+     * @param painter used to draw the line segment
+     */
+    public void draw(LinePainter painter, SubPlot plt) {
+        painter.paintLine(start.x + position.x, start.y + position.y, stop.x + position.x, stop.y + position.y, plt);
     }
 }

@@ -1,64 +1,108 @@
 package game.hitbox;
 
-import processing.core.PVector;
-
+/**
+ * An equation describing a {@link LineSegment}.
+ * Used for finding out if two line segments intersect<p>
+ * This works by extending the line segment into a 2D line which can be
+ * described by the equation of the form: <p>
+ * <i>y = k * x + a</i> <p>
+ * where <i>k</i> is the derivative of the line and <i>a</i> is a constant
+ * describing the distance in from the point (0, 0) in the direction of the y-axis.
+ */
 public class LineEquation {
-    private PVector position;
-    private PVector start;
-    private PVector stop;
-    private PVector result = new PVector(0.0f, 0.0f);
-    private float k;
-    private float a;
+    private Point position; // Position of the line segment
+    private Point start; // Start point of the line segment
+    private Point stop; // Stop point of the line segment
+    private Point result = new Point(0.0f, 0.0f);
+    private float k; // Derivative of the line segment
+    private float a; // Constant offset from (0, 0) in the direction of the y-axis
 
+    /**
+     * @param {@link LineSegment} to form the equation for.
+     */
     public LineEquation(LineSegment segment) {
         this.position = segment.getPosition();
         this.start = segment.getStart();
         this.stop = segment.getStop();
     }
 
+    /**
+     * Forms the equation for the line in the form: <p>
+     * <i>y = k * x + a</i> <p>
+     */
     public void formEquation() {
-        if (stop.x == start.x) {
-            k = 0.0f;
-        } else {
-            k = (stop.y - start.y) / (stop.x - start.x);
-        }
+        if (stop.x == start.x) k = 0.0f;
+        else k = (stop.y - start.y) / (stop.x - start.x);
+
         a = start.y + position.y - k * (start.x + position.x);
     }
 
+    /**
+     * Sets the position of the line equation
+     *
+     * @param position the new position
+     */
+    public void setPosition(Point position) {
+        this.position = position;
+    }
+
+    /**
+     * @return k, the derivative of the line
+     */
     public float getK() {
         return k;
     }
 
+    /**
+     * @return a, the constant offset in the y-axis direction from the point (0, 0)
+     */
     public float getA() {
         return a;
     }
 
-    public PVector solveIntersectionPoint(LineEquation other) {
+    /**
+     * Uses the equation with the help of another line equation,
+     * solving for y the equation of the following form: <p>
+     * <i>y = k * x + a</i>
+     *
+     * @param other another line equation used for the simultaneous equation
+     * @return a point which satisfies both equations
+     */
+    public Point solveIntersectionPoint(LineEquation other) {
+        // Update the equations to their current values
         this.formEquation();
         other.formEquation();
 
+        // Solved by transferring all constants a to the "other" side of the equation
+        // and all factors k to "this" side of the equation
+        // E.g. 2x + 3 = 3x - 1 becomes x = 4
         float resultK = this.k - other.getK();
         float resultA = other.getA() - this.a;
-
         if (resultK != 0.0f) {
             resultA /= resultK;
         } else {
-            resultA = 0.0f;
+            resultA = 0.0f;//start.x;
         }
 
+        // Now the equation is in the form 1*x = A, where A is the remaining constant value
         float x = resultA;
 
+        // Form the result point (x, y), where y = k * x + a
         result.x = x;
         result.y = calculate(x);
 
         return result;
     }
 
+    /**
+     * Solves the equation of the form <p>
+     * <i>y = k * x + a</i>
+     *
+     * @param x
+     * @return the result of the equation
+     */
     public float calculate(float x) {
         return k * x + a;
     }
 
-    public void setPosition(PVector position) {
-        this.position = position;
-    }
 }
