@@ -42,7 +42,8 @@ public class LineSegment {
      */
     public boolean intersects(LineSegment other) {
         Point intersection = equation.solveIntersectionPoint(other.getEquation());
-        return intersection != null;
+        if (intersection == null) return false;
+        return isPointOnLine(intersection.x, intersection.y) && other.isPointOnLine(intersection.x, intersection.y);
     }
 
     /**

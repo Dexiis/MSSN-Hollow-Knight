@@ -53,5 +53,6 @@ public class HurtBox extends Hitbox implements IVisualizable {
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         //TODO SPRITES???
         draw(painter, plt);
+        roughHitbox.draw(p, plt);
     }
 }

@@ -60,12 +60,13 @@ public class Game extends PApplet {
         checkCollisions(dt);
 
         if (attack != null) {
-            if (map.getEnemies() != null) for (int i = 0; i < map.getEnemies().size(); i++) {
-                Enemy enemy = map.getEnemies().get(i);
-                if (attack.intersected(enemy.getHitbox())) {
-                    enemy.damage();
-                    System.out.println(enemy.getHeath());
-                    if (enemy.isDead()) map.removeEnemy(enemy);
+            if (map.getEnemies() != null) {
+                for (int i = map.getEnemies().size() - 1; i >= 0; i--) {
+                    Enemy enemy = map.getEnemies().get(i);
+                    if (attack.intersected(enemy.getHitbox())) {
+                        enemy.damage();
+                        if (enemy.isDead()) map.removeEnemy(enemy);
+                    }
                 }
             }
 

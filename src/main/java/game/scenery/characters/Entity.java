@@ -27,7 +27,7 @@ public abstract class Entity extends Movement implements IVisualizable {
         health--;
     }
 
-    public int getHeath(){
+    public int getHealth(){
         return health;
     }
 
