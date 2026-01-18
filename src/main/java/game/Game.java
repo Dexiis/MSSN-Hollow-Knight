@@ -56,21 +56,22 @@ public class Game extends PApplet {
         handleInputMovement();
         player.move(dt);
 
-        player.setIsGrounded(false);
-        checkCollisions(dt);
+        checkCollisions();
 
         if (attack != null) {
+            attack.setPosition(player.getPosition());
+
             if (map.getEnemies() != null) {
                 for (int i = map.getEnemies().size() - 1; i >= 0; i--) {
                     Enemy enemy = map.getEnemies().get(i);
                     if (attack.intersected(enemy.getHitbox())) {
                         enemy.damage();
+                        System.out.println(enemy.getHealth());
                         if (enemy.isDead()) map.removeEnemy(enemy);
                     }
                 }
             }
 
-            attack.setPosition(player.getPosition());
             attack.draw(painter, plt);
             if (now - attackTime < TheKnight.ATTACK_DURANTION) attack = null;
         }
@@ -97,7 +98,8 @@ public class Game extends PApplet {
     /**
      * Verifica as colisões do jogador.
      */
-    private void checkCollisions(float dt) {
+    private void checkCollisions() {
+        player.setIsGrounded(false);
         for (Entity entity : map.getEntities())
             for (Terrain terrain : map.getTerrains()) terrain.elaborateIntersects(entity);
     }
