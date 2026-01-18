@@ -5,6 +5,7 @@ import game.scenery.characters.Entity;
 import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.TheKnight;
 import game.scenery.characters.types.enemies.Aspids;
+import game.scenery.characters.types.enemies.Crawlid;
 import game.scenery.components.Terrain;
 import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
@@ -26,22 +27,24 @@ public class Map {
         this.p = p;
         this.painter = painter;
 
-        PVector center = new PVector(0, 200);
-        terrains.add(new Terrain(center, 1280, 200));
+        terrains.add(new Terrain(new PVector(0, -100), 1000, 200));
+        terrains.add(new Terrain(new PVector(0, 1100), 1000, 200));
+        terrains.add(new Terrain(new PVector(600, 500), 200, 1200));
+        terrains.add(new Terrain(new PVector(-600, 500), 200, 1200));
 
-        center = new PVector(0, -200);
-        terrains.add(new Terrain(center, 1280, 200));
-
-        this.player = new TheKnight(new PVector(0, 0));
+        this.player = new TheKnight(new PVector(0, 40));
         entities.add(player);
 
-        enemies.add(new Aspids(new PVector(0, 0)));
+        enemies.add(new Aspids(new PVector(-100, 100)));
+        entities.add(enemies.getLast());
+
+        enemies.add(new Crawlid(new PVector(100, 100)));
         entities.add(enemies.getLast());
     }
 
     public void display(SubPlot plt) {
         for (Terrain terrain : terrains) terrain.display(p, painter, plt);
-        for (Entity entity: entities) entity.display(p, painter, plt);
+        for (Entity entity : entities) entity.display(p, painter, plt);
 
     }
 
@@ -53,7 +56,7 @@ public class Map {
         return enemies;
     }
 
-    public void removeEnemy (Enemy enemy){
+    public void removeEnemy(Enemy enemy) {
         enemies.remove(enemy);
         entities.remove(enemy);
     }

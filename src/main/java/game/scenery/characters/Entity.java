@@ -4,6 +4,7 @@ import game.scenery.characters.attributes.Behaviour;
 import game.scenery.characters.attributes.DNA;
 import game.scenery.characters.attributes.Eye;
 import game.scenery.components.hitbox.Hitbox;
+import processing.core.PApplet;
 import processing.core.PVector;
 
 import java.util.List;
@@ -19,15 +20,21 @@ public abstract class Entity extends Movement implements IVisualizable {
     protected int health;
     protected Hitbox hitbox;
 
+    protected float lastTimeHit;
+    private static final int I_FRAMES = 700;
+
     protected Entity(PVector position) {
         super(position);
     }
 
-    public void damage() {
-        health--;
+    public void damage(PApplet p) {
+        if (p.millis() - lastTimeHit > I_FRAMES) {
+            health--;
+            lastTimeHit = p.millis();
+        }
     }
 
-    public int getHealth(){
+    public int getHealth() {
         return health;
     }
 

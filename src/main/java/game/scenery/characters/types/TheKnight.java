@@ -1,8 +1,8 @@
 package game.scenery.characters.types;
 
+import game.core.SubPlot;
 import game.scenery.characters.Entity;
 import game.scenery.characters.IVisualizable;
-import game.core.SubPlot;
 import game.scenery.components.hitbox.Hitbox;
 import game.scenery.components.hitbox.HurtBox;
 import game.scenery.components.hitbox.LinePainter;
@@ -23,21 +23,25 @@ public class TheKnight extends Entity implements IVisualizable {
         this.health = 10;
     }
 
+    //TODO RETORNAR PVECTOR
     public void jump() {
         this.setVelocity(new PVector(this.getVelocity().x, JUMP_STRENGTH));
         isGrounded = false;
     }
 
+    //TODO RETORNAR PVECTOR
     public void moveRight() {
-        setVelocity(new PVector(SPEED, getVelocity().y));
+        setVelocity(new PVector(Math.min(SPEED, getVelocity().x + SPEED), getVelocity().y));
     }
 
+    //TODO RETORNAR PVECTOR
     public void moveLeft() {
-        setVelocity(new PVector(-SPEED, getVelocity().y));
+        setVelocity(new PVector(Math.max(-SPEED, getVelocity().x - SPEED), getVelocity().y));
     }
 
+    //TODO RETORNAR PVECTOR
     public void stopMovement() {
-        setVelocity(new PVector(0, getVelocity().y));
+        setVelocity(new PVector(0.5f * getVelocity().x, getVelocity().y));
     }
 
     public HurtBox attack(Direction direction) {

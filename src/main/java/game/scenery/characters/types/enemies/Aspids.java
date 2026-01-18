@@ -19,7 +19,7 @@ public class Aspids extends Enemy implements IVisualizable {
         super(position);
         this.hitbox = new Hitbox(new Point(position.x, position.y), 80, 40);
         this.mass = 1f;
-        this.health = 2;
+        this.health = 3;
     }
 
     public HurtBox attack(Direction direction) {

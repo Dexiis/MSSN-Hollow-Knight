@@ -30,6 +30,8 @@ public class Game extends PApplet {
     private boolean lookingDown = false;
     private HurtBox attack = null;
 
+    private static final int ATTACK_COOLDOWN = 700;
+
     @Override
     public void settings() {
         size(1600, 900);
@@ -52,11 +54,19 @@ public class Game extends PApplet {
 
         background(255);
 
-        player.applyForce(gravity(player.getMass()));
-        handleInputMovement();
-        player.move(dt);
+        //TODO OUTROS CONTRA MIM
+        if (map.getEnemies() != null) {
 
-        checkCollisions();
+            for (Enemy enemy : map.getEnemies()) {
+                if (enemy.getHitbox().intersected(player.getHitbox())) {
+                    player.damage(this);
+                    //PVector direction = PVector.sub(player.getPosition(), enemy.getPosition()).normalize();
+                    //direction = direction.mult(100);
+                    //player.setVelocity(new PVector(0, 0));
+                    //player.applyForce(direction);
+                }
+            }
+        }
 
         if (attack != null) {
             attack.setPosition(player.getPosition());
@@ -65,7 +75,7 @@ public class Game extends PApplet {
                 for (int i = map.getEnemies().size() - 1; i >= 0; i--) {
                     Enemy enemy = map.getEnemies().get(i);
                     if (attack.intersected(enemy.getHitbox())) {
-                        enemy.damage();
+                        enemy.damage(this);
                         System.out.println(enemy.getHealth());
                         if (enemy.isDead()) map.removeEnemy(enemy);
                     }
@@ -73,8 +83,14 @@ public class Game extends PApplet {
             }
 
             attack.draw(painter, plt);
-            if (now - attackTime < TheKnight.ATTACK_DURANTION) attack = null;
+            if (now - attackTime > TheKnight.ATTACK_DURANTION) attack = null;
         }
+
+        player.applyForce(gravity(player.getMass()));
+        handleInputMovement();
+        player.move(dt);
+
+        checkCollisions();
 
         setWindow(player.getPosition());
         map.display(plt);
@@ -147,7 +163,7 @@ public class Game extends PApplet {
             player.setPosition(new PVector((float) w[0], (float) w[1]));
             player.setVelocity(new PVector(0, 0));
         } else if (mouseButton == LEFT) {
-            if (millis() - attackTime > 700) {
+            if (millis() - attackTime > ATTACK_COOLDOWN) {
                 if (lookingDown) attack = player.attack(Direction.DOWN);
                 else if (jump) attack = player.attack(Direction.UP);
                 else {

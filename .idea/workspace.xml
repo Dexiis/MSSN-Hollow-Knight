@@ -6,10 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/Entity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/Aspids.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/Aspids.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/Crawlid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/Crawlid.java" afterDir="false" />
     </list>
-    <list id="caa23359-5f65-48a1-8ee5-b34609ea65fd" name="Changes by pitad" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/Boss.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/Boss.java" afterDir="false" />
-    </list>
+    <list id="caa23359-5f65-48a1-8ee5-b34609ea65fd" name="Changes by pitad" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -137,6 +141,8 @@
       <workItem from="1768702215624" duration="185000" />
       <workItem from="1768702409384" duration="546000" />
       <workItem from="1768702968478" duration="755000" />
+      <workItem from="1768704058110" duration="288000" />
+      <workItem from="1768704939983" duration="2776000" />
     </task>
     <task id="LOCAL-00001" summary="File restructure.">
       <option name="closed" value="true" />
