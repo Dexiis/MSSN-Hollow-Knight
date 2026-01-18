@@ -26,7 +26,6 @@ public class TheKnight extends Entity implements IVisualizable {
     //TODO RETORNAR PVECTOR
     public void jump() {
         this.setVelocity(new PVector(this.getVelocity().x, JUMP_STRENGTH));
-        isGrounded = false;
     }
 
     //TODO RETORNAR PVECTOR

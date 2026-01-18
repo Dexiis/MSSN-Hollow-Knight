@@ -27,6 +27,7 @@ public class Game extends PApplet {
     private boolean moveRight = false;
     //private boolean idle = false;
     private boolean jump = false;
+    private boolean jumpReleased = false;
     private boolean lookingDown = false;
     private HurtBox attack = null;
 
@@ -109,6 +110,14 @@ public class Game extends PApplet {
         if (moveLeft) player.moveLeft();
         if ((!moveRight && !moveLeft) || (moveRight && moveLeft)) player.stopMovement();
         if (player.getIsGrounded() && jump) player.jump();
+        if (jumpReleased && jump) {
+            jump = false;
+            jumpReleased = false;
+            if(player.getVelocity().y > 0)
+                player.setVelocity(new PVector(player.getVelocity().x, 0));
+        }
+
+        jumpReleased = false;
     }
 
     /**
@@ -152,7 +161,7 @@ public class Game extends PApplet {
     public void keyReleased() {
         if (key == 'a' || key == 'A') moveLeft = false;
         if (key == 'd' || key == 'D') moveRight = false;
-        if (key == 'w' || key == 'W' || key == ' ') jump = false;
+        if (key == 'w' || key == 'W' || key == ' ') jumpReleased = true;
         if (key == 's' || key == 'S') lookingDown = false;
     }
 
