@@ -5,8 +5,8 @@ import processing.core.PVector;
 
 public abstract class Boss extends Entity {
 
-    protected Boss(PVector posisiton) {
-        super(posisiton);
+    protected Boss(PVector position) {
+        super(position);
         this.mass = 1; //Todo Escolher a massa
     }
 

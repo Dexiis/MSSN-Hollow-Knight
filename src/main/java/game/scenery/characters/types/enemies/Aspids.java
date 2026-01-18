@@ -23,27 +23,8 @@ public class Aspids extends Enemy implements IVisualizable {
     }
 
     public HurtBox attack(Direction direction) {
-        HurtBox.Builder builder = new HurtBox.Builder();
-
-        switch (direction) {
-            case UP:
-                builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, 100).addPoint(25, 150).addPoint(-25, 150).addPoint(-55, 100);
-                break;
-            case DOWN:
-                builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, -100).addPoint(25, -150).addPoint(-25, -150).addPoint(-55, -100);
-                break;
-            case LEFT:
-                builder.addPoint(0, -65).addPoint(0, 65).addPoint(-100, 55).addPoint(-150, 25).addPoint(-150, -25).addPoint(-100, -55);
-                break;
-            case RIGHT:
-                builder.addPoint(0, 65).addPoint(0, -65).addPoint(100, -55).addPoint(150, -25).addPoint(150, 25).addPoint(100, 55);
-                break;
-            default:
-                builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, 100).addPoint(25, 150).addPoint(-25, 150).addPoint(-55, 100);
-                break;
-        }
-
-        return builder.build();
+        //TODO ATTACK
+        return null;
     }
 
     @Override
