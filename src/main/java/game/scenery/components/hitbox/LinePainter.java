@@ -1,4 +1,4 @@
-package game.scenery.hitbox;
+package game.scenery.components.hitbox;
 
 import game.core.SubPlot;
 

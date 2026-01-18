@@ -7,8 +7,8 @@ import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.TheKnight;
 import game.scenery.components.Terrain;
-import game.scenery.hitbox.HurtBox;
-import game.scenery.hitbox.LinePainter;
+import game.scenery.components.hitbox.HurtBox;
+import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
 import processing.core.PVector;
 

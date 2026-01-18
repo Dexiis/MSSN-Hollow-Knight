@@ -1,7 +1,7 @@
 package game.scenery.characters;
 
 import game.core.SubPlot;
-import game.scenery.hitbox.LinePainter;
+import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
 
 public interface IVisualizable {

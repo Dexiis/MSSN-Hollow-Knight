@@ -3,7 +3,7 @@ package game.scenery.characters;
 import game.scenery.characters.attributes.Behaviour;
 import game.scenery.characters.attributes.DNA;
 import game.scenery.characters.attributes.Eye;
-import game.scenery.hitbox.Hitbox;
+import game.scenery.components.hitbox.Hitbox;
 import processing.core.PVector;
 
 import java.util.List;

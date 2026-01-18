@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/hitbox/LineSegment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/hitbox/LineSegment.java" afterDir="false" />
-    </list>
+    <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -131,7 +127,7 @@
       <workItem from="1768663015659" duration="6225000" />
       <workItem from="1768669283126" duration="8024000" />
       <workItem from="1768677917354" duration="8022000" />
-      <workItem from="1768697137644" duration="638000" />
+      <workItem from="1768697137644" duration="947000" />
     </task>
     <task id="LOCAL-00001" summary="File restructure.">
       <option name="closed" value="true" />

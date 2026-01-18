@@ -3,8 +3,8 @@ package game.scenery.characters.types.bosses;
 import game.scenery.characters.IVisualizable;
 import game.scenery.characters.types.Boss;
 import game.core.SubPlot;
-import game.scenery.hitbox.Hitbox;
-import game.scenery.hitbox.LinePainter;
+import game.scenery.components.hitbox.Hitbox;
+import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
 import processing.core.PVector;
 

@@ -1,4 +1,4 @@
-package game.scenery.hitbox;
+package game.scenery.components.hitbox;
 
 /**
  * Representa e resolve a equação linear na forma y = kx + a.

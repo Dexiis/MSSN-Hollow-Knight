@@ -4,10 +4,10 @@ import game.core.SubPlot;
 import game.scenery.characters.IVisualizable;
 import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
-import game.scenery.hitbox.Hitbox;
-import game.scenery.hitbox.HurtBox;
-import game.scenery.hitbox.LinePainter;
-import game.scenery.hitbox.Point;
+import game.scenery.components.hitbox.Hitbox;
+import game.scenery.components.hitbox.HurtBox;
+import game.scenery.components.hitbox.LinePainter;
+import game.scenery.components.hitbox.Point;
 import processing.core.PApplet;
 import processing.core.PVector;
 
