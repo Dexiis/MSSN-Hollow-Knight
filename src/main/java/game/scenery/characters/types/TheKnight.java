@@ -3,12 +3,12 @@ package game.scenery.characters.types;
 import game.core.SubPlot;
 import game.scenery.characters.Entity;
 import game.scenery.characters.IVisualizable;
+import game.scenery.characters.MovementState;
 import game.scenery.components.hitbox.Hitbox;
 import game.scenery.components.hitbox.HurtBox;
 import game.scenery.components.hitbox.LinePainter;
 import game.scenery.components.hitbox.Point;
 import processing.core.PApplet;
-import processing.core.PConstants;
 import processing.core.PImage;
 import processing.core.PVector;
 
@@ -16,18 +16,38 @@ public class TheKnight extends Entity implements IVisualizable {
     private static final float JUMP_STRENGTH = 550f;
     private static final float SPEED = 275f;
     public static final float ATTACK_DURANTION = 100f;
+    private static final int PIXEL_CORRECTION = 5;
 
     private boolean isGrounded = false;
     private Direction direction;
 
     public static final int SPRITE_SIZE = 80;
+    private static final int SPRITE_COUNT = 12;
+    private static final PImage[][] spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
     private PImage sprite;
+    private int spriteTime = 0;
+    private int spriteIndex = 0;
 
-    public TheKnight(PVector position) {
+    MovementState movement;
+    MovementState lastMovement;
+
+    public TheKnight(PVector position, PApplet p) {
         super(position);
         this.hitbox = new Hitbox(new Point(position.x, position.y), 30, 80);
         this.mass = 1f;
         this.health = 10;
+
+        // Enche o array de sprites iterativamente
+        PImage sprites = p.loadImage("img/TheKnightSprites.png");
+        for (int y = 0; y < SPRITE_COUNT; y++) {
+            for (int x = 0; x < SPRITE_COUNT; x++) {
+                spriteArray[x][y] = sprites.get(x * TheKnight.SPRITE_SIZE, y * TheKnight.SPRITE_SIZE, TheKnight.SPRITE_SIZE, TheKnight.SPRITE_SIZE);
+            }
+        }
+
+        setSprite(spriteArray[0][0]);
+        movement = MovementState.IDLE;
+        lastMovement = movement;
     }
 
     //TODO RETORNAR PVECTOR
@@ -82,7 +102,7 @@ public class TheKnight extends Entity implements IVisualizable {
         return isGrounded;
     }
 
-    public void setSprite(PImage sprite) {
+    private void setSprite(PImage sprite) {
         this.sprite = sprite;
     }
 
@@ -90,24 +110,76 @@ public class TheKnight extends Entity implements IVisualizable {
         this.direction = direction;
     }
 
+    public Direction getDirection() {
+        return this.direction;
+    }
+
+    public void setMovement(MovementState movement) {
+        this.movement = movement;
+    }
+
+    public void resetSpriteIndex(){
+        this.spriteIndex = 0;
+    }
+
+    public void setSpriteTime(int now){
+        this.spriteTime = now;
+    }
+
+    public MovementState getMovement() {
+        return this.movement;
+    }
+
+    public void setLastMovement(MovementState lastMovement) {
+        this.lastMovement = lastMovement;
+    }
+
+    public MovementState getLastMovement() {
+        return this.lastMovement;
+    }
+
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
-        //this.hitbox.draw(painter, plt);
+
+        // Máquina de estados para aplicar sprites baseado no movimento com animação
+        switch (movement) {
+            case MovementState.IDLE:
+                setSprite(spriteArray[0][0]);
+                break;
+            case MovementState.RUN:
+                if (p.millis() - spriteTime > 40) {
+                    setSprite(spriteArray[spriteIndex][0]);
+                    spriteTime = p.millis();
+                    spriteIndex++;
+                    if (spriteIndex > 7) spriteIndex = 0;
+                }
+                break;
+            case MovementState.JUMP:
+                break;
+            case MovementState.FALL:
+                if (p.millis() - spriteTime > 40) {
+                    setSprite(spriteArray[spriteIndex][9]);
+                    spriteTime = p.millis();
+                    spriteIndex++;
+                    if (spriteIndex > 7) spriteIndex = 5;
+                }
+                break;
+        }
+
 
         int multValue = 1;
-        if(direction == Direction.LEFT) multValue = -1;
+        if (direction == Direction.LEFT) multValue = -1;
 
         float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
 
         p.pushMatrix();
 
-        // O (+5) é apenas uma correção para colocar a sprite encostada ao chão
-        p.translate(pp[0] - multValue * SPRITE_SIZE / 2f, pp[1] - SPRITE_SIZE / 2f + 5);
+        p.translate(pp[0] - multValue * SPRITE_SIZE / 2f, pp[1] - SPRITE_SIZE / 2f + PIXEL_CORRECTION);
         p.scale(multValue, 1);
         p.image(this.sprite, 0, 0);
 
         p.popMatrix();
 
-
+        this.hitbox.draw(painter, plt);
     }
 }

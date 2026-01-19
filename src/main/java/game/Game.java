@@ -35,13 +35,7 @@ public class Game extends PApplet {
 
     private static final int ATTACK_COOLDOWN = 700;
 
-    private static final int SPRITE_COUNT = 12;
-    private static final PImage[][] spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
-    private int spriteTime = 0;
-    private int spriteIndex = 0;
-
-    private MovementState movement;
-    private MovementState lastMovement;
+    private int now = millis();
 
     @Override
     public void settings() {
@@ -55,85 +49,68 @@ public class Game extends PApplet {
 
         map = new Map(this, painter);
         player = map.getPlayer();
-
-        // Enche o array de sprites iterativamente
-        PImage playerSprites = loadImage("img/TheKnightSprites.png");
-        for(int y = 0; y < SPRITE_COUNT; y++) {
-            for(int x = 0; x < SPRITE_COUNT; x++) {
-                spriteArray[x][y] = playerSprites.get(x * TheKnight.SPRITE_SIZE, y * TheKnight.SPRITE_SIZE, TheKnight.SPRITE_SIZE, TheKnight.SPRITE_SIZE);
-            }
-        }
-
-        // Coloca o jogador em IDLE
-        movement = MovementState.IDLE;
-        lastMovement = MovementState.IDLE;
-        player.setSprite(spriteArray[0][0]);
     }
 
     @Override
     public void draw() {
-        int now = millis();
+        now = millis();
         float dt = (now - lastUpdateTime) / 1000f;
         lastUpdateTime = now;
 
         background(255);
 
-        // Envia a direção ao player para inverter no eixo x
-        if (moveLeft) player.setDirection(Direction.LEFT);
-        if (moveRight) player.setDirection(Direction.RIGHT);
+        player.applyForce(gravity(player.getMass()));
 
-        // Determina o estado do movimento
-        if(player.getIsGrounded())
-            movement = (moveLeft || moveRight) ? MovementState.RUN : MovementState.IDLE;
-        else
-            movement = player.getVelocity().y < 0 ? MovementState.FALL : MovementState.JUMP;
+        handleInputMovement();
+        handleKnighAttack();
+        handleMonstersAttacks();
+
+        player.move(dt);
+
+        checkCollisions();
+
+        setWindow(player.getPosition());
+        map.display(plt);
+    }
+
+    private PVector gravity(float mass) {
+        if (player.getAcceleration().mag() < 12.8f) return new PVector(0, -1280 * mass);
+        else return new PVector(0, 0);
+    }
+
+    private void handleInputMovement() {
+        if (moveRight) {
+            player.moveRight();
+            player.setDirection(Direction.RIGHT);
+        }
+        if (moveLeft) {
+            player.moveLeft();
+            player.setDirection(Direction.LEFT);
+        }
+        if ((!moveRight && !moveLeft) || (moveRight && moveLeft)) player.stopMovement();
+        if (player.getIsGrounded()) {
+            player.setMovement((moveLeft || moveRight) ? MovementState.RUN : MovementState.IDLE);
+            if (jump) player.jump();
+        } else player.setMovement(player.getVelocity().y < 0 ? MovementState.FALL : MovementState.JUMP);
+
 
         // Reinicia a animação
-        if(movement != lastMovement) {
-            spriteIndex = 0;
-            spriteTime = millis();
-            lastMovement = movement;
+        if (player.getMovement() != player.getLastMovement()) {
+            player.resetSpriteIndex();
+            player.setSpriteTime(now);
+            player.setLastMovement(player.getMovement());
         }
 
-        // Máquina de estados para aplicar sprites baseado no movimento com animação
-        switch (movement) {
-            case MovementState.IDLE:
-                player.setSprite(spriteArray[0][0]);
-                break;
-            case MovementState.RUN:
-                if (now - spriteTime > 40) {
-                    player.setSprite(spriteArray[spriteIndex][0]);
-                    spriteTime = millis();
-                    spriteIndex++;
-                    if (spriteIndex > 7) spriteIndex = 0;
-                }
-                break;
-            case MovementState.JUMP:
-                break;
-            case MovementState.FALL:
-                if (now - spriteTime > 40) {
-                    player.setSprite(spriteArray[spriteIndex][9]);
-                    spriteTime = millis();
-                    spriteIndex++;
-                    if (spriteIndex > 7) spriteIndex = 5;
-                }
-                break;
+        if (jumpReleased && jump) {
+            jump = false;
+            jumpReleased = false;
+            if (player.getVelocity().y > 0) player.setVelocity(new PVector(player.getVelocity().x, 0));
         }
 
-        //TODO OUTROS CONTRA MIM
-        if (map.getEnemies() != null) {
+        jumpReleased = false;
+    }
 
-            for (Enemy enemy : map.getEnemies()) {
-                if (enemy.getHitbox().intersected(player.getHitbox())) {
-                    player.damage(this);
-                    //PVector direction = PVector.sub(player.getPosition(), enemy.getPosition()).normalize();
-                    //direction = direction.mult(100);
-                    //player.setVelocity(new PVector(0, 0));
-                    //player.applyForce(direction);
-                }
-            }
-        }
-
+    private void handleKnighAttack() {
         if (attack != null) {
             attack.setPosition(player.getPosition());
 
@@ -151,43 +128,24 @@ public class Game extends PApplet {
             attack.draw(painter, plt);
             if (now - attackTime > TheKnight.ATTACK_DURANTION) attack = null;
         }
-
-        player.applyForce(gravity(player.getMass()));
-        handleInputMovement();
-        player.move(dt);
-
-        checkCollisions();
-
-        setWindow(player.getPosition());
-        map.display(plt);
     }
 
-    private PVector gravity(float mass) {
-        if (player.getAcceleration().mag() < 12.8f) return new PVector(0, -1280 * mass);
-        else return new PVector(0, 0 * mass);
-    }
+    private void handleMonstersAttacks() {
+        //TODO OUTROS CONTRA MIM
+        if (map.getEnemies() != null) {
 
-    /**
-     * Gere a velocidade horizontal baseada nas teclas pressionadas.
-     */
-    private void handleInputMovement() {
-        if (moveRight) player.moveRight();
-        if (moveLeft) player.moveLeft();
-        if ((!moveRight && !moveLeft) || (moveRight && moveLeft)) player.stopMovement();
-        if (player.getIsGrounded() && jump) player.jump();
-        if (jumpReleased && jump) {
-            jump = false;
-            jumpReleased = false;
-            if(player.getVelocity().y > 0)
-                player.setVelocity(new PVector(player.getVelocity().x, 0));
+            for (Enemy enemy : map.getEnemies()) {
+                if (enemy.getHitbox().intersected(player.getHitbox())) {
+                    player.damage(this);
+                    //PVector direction = PVector.sub(player.getPosition(), enemy.getPosition()).normalize();
+                    //direction = direction.mult(100);
+                    //player.setVelocity(new PVector(0, 0));
+                    //player.applyForce(direction);
+                }
+            }
         }
-
-        jumpReleased = false;
     }
 
-    /**
-     * Verifica as colisões do jogador.
-     */
     private void checkCollisions() {
         player.setIsGrounded(false);
         for (Entity entity : map.getEntities())
@@ -237,7 +195,7 @@ public class Game extends PApplet {
             player.setPosition(new PVector((float) w[0], (float) w[1]));
             player.setVelocity(new PVector(0, 0));
         } else if (mouseButton == LEFT) {
-            if (millis() - attackTime > ATTACK_COOLDOWN) {
+            if (now - attackTime > ATTACK_COOLDOWN) {
                 if (lookingDown) attack = player.attack(Direction.DOWN);
                 else if (jump) attack = player.attack(Direction.UP);
                 else {
@@ -249,7 +207,7 @@ public class Game extends PApplet {
 
                     attack = player.attack(direction);
                 }
-                attackTime = millis();
+                attackTime = now;
             }
         }
     }

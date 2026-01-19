@@ -32,7 +32,7 @@ public class Map {
         terrains.add(new Terrain(new PVector(600, 500), 200, 1200));
         terrains.add(new Terrain(new PVector(-600, 500), 200, 1200));
 
-        this.player = new TheKnight(new PVector(0, 40));
+        this.player = new TheKnight(new PVector(0, 100), p);
         entities.add(player);
 
         enemies.add(new Aspids(new PVector(-100, 100)));
@@ -45,7 +45,6 @@ public class Map {
     public void display(SubPlot plt) {
         for (Terrain terrain : terrains) terrain.display(p, painter, plt);
         for (Entity entity : entities) entity.display(p, painter, plt);
-
     }
 
     public ArrayList<Terrain> getTerrains() {
