@@ -161,6 +161,23 @@ public class Game extends PApplet {
         plt.setWindow(window);
     }
 
+    private void playerAttack() {
+        if (now - attackTime > ATTACK_COOLDOWN) {
+            if (lookingDown) attack = player.attack(Direction.DOWN);
+            else if (jump) attack = player.attack(Direction.UP);
+            else {
+                PVector v = player.getVelocity();
+                Direction direction;
+
+                if (Math.abs(v.x) != 0) direction = (v.x > 0) ? Direction.RIGHT : Direction.LEFT;
+                else direction = Direction.UP;
+
+                attack = player.attack(direction);
+            }
+            attackTime = now;
+        }
+    }
+
     LinePainter painter = new LinePainter() {
         @Override
         public void paintLine(float x1, float y1, float x2, float y2, SubPlot plt) {
@@ -176,6 +193,7 @@ public class Game extends PApplet {
         if (key == 'd' || key == 'D') moveRight = true;
         if (key == 'w' || key == 'W' || key == ' ') jump = true;
         if (key == 's' || key == 'S') lookingDown = true;
+        if (key == ENTER || key == RETURN) playerAttack();
         //if (!moveLeft && !moveRight && !jumping) idle = true;
         //else idle = false;
     }
@@ -195,20 +213,7 @@ public class Game extends PApplet {
             player.setPosition(new PVector((float) w[0], (float) w[1]));
             player.setVelocity(new PVector(0, 0));
         } else if (mouseButton == LEFT) {
-            if (now - attackTime > ATTACK_COOLDOWN) {
-                if (lookingDown) attack = player.attack(Direction.DOWN);
-                else if (jump) attack = player.attack(Direction.UP);
-                else {
-                    PVector v = player.getVelocity();
-                    Direction direction;
-
-                    if (Math.abs(v.x) != 0) direction = (v.x > 0) ? Direction.RIGHT : Direction.LEFT;
-                    else direction = Direction.UP;
-
-                    attack = player.attack(direction);
-                }
-                attackTime = now;
-            }
+            playerAttack();
         }
     }
 
