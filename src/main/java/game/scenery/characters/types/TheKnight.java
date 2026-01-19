@@ -3,7 +3,6 @@ package game.scenery.characters.types;
 import game.core.SubPlot;
 import game.scenery.characters.Entity;
 import game.scenery.characters.IVisualizable;
-import game.scenery.characters.MovementState;
 import game.scenery.components.hitbox.Hitbox;
 import game.scenery.components.hitbox.HurtBox;
 import game.scenery.components.hitbox.LinePainter;
@@ -15,8 +14,18 @@ import processing.core.PVector;
 public class TheKnight extends Entity implements IVisualizable {
     private static final float JUMP_STRENGTH = 550f;
     private static final float SPEED = 275f;
-    public static final float ATTACK_DURANTION = 100f;
-    private static final int PIXEL_CORRECTION = 5;
+    public static final float ATTACK_DURATION = 100f;
+    public static final float ATTACK_COOLDOWN = 500f;
+    private static final int PIXEL_CORRECTION = 6;
+
+    private float attackTime;
+
+    //private boolean moveLeft = false;
+    //private boolean moveRight = false;
+    private boolean jumping = false;
+    private boolean jumpingReleased = false;
+    //private boolean lookingDown = false;
+    private HurtBox attack = null;
 
     private boolean isGrounded = false;
     private Direction direction;
@@ -28,8 +37,8 @@ public class TheKnight extends Entity implements IVisualizable {
     private int spriteTime = 0;
     private int spriteIndex = 0;
 
-    MovementState movement;
-    MovementState lastMovement;
+    private MovementState movement;
+    private MovementState lastMovement;
 
     public TheKnight(PVector position, PApplet p) {
         super(position);
@@ -70,7 +79,24 @@ public class TheKnight extends Entity implements IVisualizable {
         setVelocity(new PVector(0.5f * getVelocity().x, getVelocity().y));
     }
 
-    public HurtBox attack(Direction direction) {
+    public void playerAttack(int now) {
+        if (now - attackTime > TheKnight.ATTACK_COOLDOWN) {
+            if (getDirection() == Direction.DOWN) attack = attack(Direction.DOWN);
+            else if (jumping) attack = attack(Direction.UP);
+            else {
+                PVector v = getVelocity();
+                Direction direction;
+
+                if (Math.abs(v.x) != 0) direction = (v.x > 0) ? Direction.RIGHT : Direction.LEFT;
+                else direction = Direction.UP;
+
+                attack = attack(direction);
+            }
+            attackTime = now;
+        }
+    }
+
+    private HurtBox attack(Direction direction) {
         HurtBox.Builder builder = new HurtBox.Builder();
 
         switch (direction) {
@@ -118,12 +144,44 @@ public class TheKnight extends Entity implements IVisualizable {
         this.movement = movement;
     }
 
-    public void resetSpriteIndex(){
+    public void resetSpriteIndex() {
         this.spriteIndex = 0;
     }
 
-    public void setSpriteTime(int now){
+    public void setSpriteTime(int now) {
         this.spriteTime = now;
+    }
+
+    public boolean isJumpingReleased() {
+        return jumpingReleased;
+    }
+
+    public void setJumpingReleased(boolean jumpingReleased) {
+        this.jumpingReleased = jumpingReleased;
+    }
+
+    public boolean isJumping() {
+        return jumping;
+    }
+
+    public void setJumping(boolean jumping) {
+        this.jumping = jumping;
+    }
+
+    public HurtBox getAttack() {
+        return attack;
+    }
+
+    public void setAttack(HurtBox attack) {
+        this.attack = attack;
+    }
+
+    public float getAttackTime() {
+        return attackTime;
+    }
+
+    public void setAttackTime(float attackTime) {
+        this.attackTime = attackTime;
     }
 
     public MovementState getMovement() {
@@ -166,7 +224,6 @@ public class TheKnight extends Entity implements IVisualizable {
                 break;
         }
 
-
         int multValue = 1;
         if (direction == Direction.LEFT) multValue = -1;
 
@@ -180,6 +237,6 @@ public class TheKnight extends Entity implements IVisualizable {
 
         p.popMatrix();
 
-        // this.hitbox.draw(painter, plt);
+        this.hitbox.draw(painter, plt);
     }
 }

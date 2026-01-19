@@ -2,6 +2,8 @@ package game.scenery.characters.types.enemies;
 
 import game.core.SubPlot;
 import game.scenery.characters.IVisualizable;
+import game.scenery.characters.attributes.DNA;
+import game.scenery.characters.attributes.behaviours.Seek;
 import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
 import game.scenery.components.hitbox.Hitbox;
@@ -12,18 +14,23 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 public class Crawlid extends Enemy implements IVisualizable {
-    private static final float SPEED = 50f;
+    private static final float SPEED = 75f;
     public static final float ATTACK_DURANTION = 2000f;
 
     public Crawlid(PVector position) {
         super(position);
         this.hitbox = new Hitbox(new Point(position.x, position.y), 80, 100);
-        this.mass = 1f;
+        this.mass = 10f;
         this.health = 6;
+
+        this.dna = new DNA(this);
+        this.dna.setMaxSpeed(SPEED);
+        this.behaviour = new Seek(getMass());
     }
 
     public HurtBox attack(Direction direction) {
         //TODO ATTACK
+        //TODO Acho que não tem tbh
         return null;
     }
 

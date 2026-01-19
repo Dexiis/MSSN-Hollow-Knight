@@ -15,10 +15,9 @@ public class Eye {
     private final Entity me;
     protected Entity target;
 
-    public Eye(Entity me, List<Entity> allTrackingBodies) {
+    public Eye(Entity me, Entity target) {
         this.me = me;
-        this.allTrackingBodies = allTrackingBodies;
-        this.target = allTrackingBodies.get(0);
+        this.target = target;
     }
 
     public void setTarget(Entity target) {
@@ -63,7 +62,7 @@ public class Eye {
     }
 
     private boolean nearSight(PVector t) {
-        return inSight(t, me.getDNA().visionNearDistance, me.getDNA().visionNearAngle);
+        return inSight(t, me.getDNA().visionAttack, me.getDNA().visionAttackAngle);
     }
 
     private boolean inSight(PVector t, float maxDistance, float maxAngle) {
@@ -93,17 +92,17 @@ public class Eye {
         p.rotate(me.getDNA().visionAngle);
         p.arc(0, 0, 2 * dd1[0], 2 * dd1[0], -me.getDNA().visionAngle, me.getDNA().visionAngle);
 
-        float[] dd2 = plt.getDimInPixel(me.getDNA().visionNearDistance, me.getDNA().visionNearDistance);
+        float[] dd2 = plt.getDimInPixel(me.getDNA().visionAttack, me.getDNA().visionAttack);
         p.stroke(255, 0, 255);
-        if (me.getDNA().visionNearAngle >= Math.PI) {
+        if (me.getDNA().visionAttackAngle >= Math.PI) {
             p.circle(0, 0, 2 * dd2[0]);
         } else {
-            p.rotate(me.getDNA().visionNearAngle);
+            p.rotate(me.getDNA().visionAttackAngle);
             p.line(0, 0, dd2[0], 0);
-            p.rotate(-2 * me.getDNA().visionNearAngle);
+            p.rotate(-2 * me.getDNA().visionAttackAngle);
             p.line(0, 0, dd2[0], 0);
-            p.rotate(me.getDNA().visionNearAngle);
-            p.arc(0, 0, 2 * dd2[0], 2 * dd2[0], -me.getDNA().visionNearAngle, me.getDNA().visionNearAngle);
+            p.rotate(me.getDNA().visionAttackAngle);
+            p.arc(0, 0, 2 * dd2[0], 2 * dd2[0], -me.getDNA().visionAttackAngle, me.getDNA().visionAttackAngle);
         }
         p.popMatrix();
         p.popStyle();

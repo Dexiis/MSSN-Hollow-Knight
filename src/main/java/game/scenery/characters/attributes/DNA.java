@@ -1,36 +1,30 @@
 package game.scenery.characters.attributes;
 
+import game.scenery.characters.Entity;
+
 public class DNA {
 
     protected float maxSpeed;
     protected float maxForce;
     protected float visionDistance;
-    protected float visionNearDistance;
+    protected float visionAttack;
     protected float visionAngle;
-    protected float deltaTPursuit;
-    protected float radiusArrive;
     protected float deltaTWander;
     protected float radiusWander;
     protected float deltaPhiWander;
-    protected float visionNearAngle;
-    // TODO MUITOS DESTES ATRIBUTOS VAO DESAPARECER OU SER MUDADOS
+    protected float visionAttackAngle;
 
+    public DNA(Entity me) { //TODO APLICAR ESTA CLASSE A CADA GAJO INDIVIDUALMENTE
+        maxSpeed = random(100f, 200f);
+        maxForce = random(150f, 250f);
 
-    public DNA() { //TODO APLICAR ESTA CLASSE À CADA GAJO INDIVIDUALMENTE
-        maxSpeed = random(3f, 5f);
-        maxForce = random(7f, 10f);
+        visionDistance = random(001f, 002f);
+        visionAttack = 0.20f * visionDistance;
+        visionAngle = (float) Math.PI * 2f;
+        visionAttackAngle = (float) Math.PI * 2f;
 
-        visionDistance = random(9f, 11f);
-        visionNearDistance = 0.25f * visionDistance;
-        visionAngle = (float) Math.PI * 0.2f;
-        visionNearAngle = (float) Math.PI * 0.6f;
-
-        deltaTPursuit = random(0.5f, 1f);
-
-        radiusArrive = random(5, 10);
-
-        deltaTWander = random(.3f, .6f);
-        radiusWander = random(3f, 5f);
+        deltaTWander = 2f;
+        radiusWander = random(100f, 150f);
 
         deltaPhiWander = (float) Math.PI / 8;
     }
@@ -60,11 +54,11 @@ public class DNA {
     }
 
     public float getVisionNearDistance() {
-        return visionNearDistance;
+        return visionAttack;
     }
 
     public void setVisionNearDistance(float visionNearDistance) {
-        this.visionNearDistance = visionNearDistance;
+        this.visionAttack = visionNearDistance;
     }
 
     public float getVisionAngle() {
@@ -73,22 +67,6 @@ public class DNA {
 
     public void setVisionAngle(float visionAngle) {
         this.visionAngle = visionAngle;
-    }
-
-    public float getDeltaTPursuit() {
-        return deltaTPursuit;
-    }
-
-    public void setDeltaTPursuit(float deltaTPursuit) {
-        this.deltaTPursuit = deltaTPursuit;
-    }
-
-    public float getRadiusArrive() {
-        return radiusArrive;
-    }
-
-    public void setRadiusArrive(float radiusArrive) {
-        this.radiusArrive = radiusArrive;
     }
 
     public float getDeltaTWander() {
@@ -116,11 +94,11 @@ public class DNA {
     }
 
     public float getVisionNearAngle() {
-        return visionNearAngle;
+        return visionAttackAngle;
     }
 
     public void setVisionNearAngle(float visionNearAngle) {
-        this.visionNearAngle = visionNearAngle;
+        this.visionAttackAngle = visionNearAngle;
     }
 
     public static float random(float min, float max) {

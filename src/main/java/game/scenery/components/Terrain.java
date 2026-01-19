@@ -20,7 +20,6 @@ import java.util.List;
  * de colisões físicas, impedindo que entidades atravessem o terreno.
  */
 public class Terrain extends Hitbox implements IVisualizable {
-    private final static int PIXEL_CORRECTION = 1;
 
     /**
      * Constrói um objeto de terreno baseado numa forma poligonal arbitrária.
@@ -75,11 +74,11 @@ public class Terrain extends Hitbox implements IVisualizable {
 
                 if (dx > 0) {
                     entity.setVelocity(new PVector(0, entity.getVelocity().y));
-                    float newX = this.getPosition().x + this.width / 2 + otherHitbox.getWidth() / 2 - PIXEL_CORRECTION;
+                    float newX = this.getPosition().x + this.width / 2 + otherHitbox.getWidth() / 2;
                     entity.setPosition(new PVector(newX, entity.getPosition().y));
                 } else {
                     entity.setVelocity(new PVector(0, entity.getVelocity().y));
-                    float newX = this.getPosition().x - this.width / 2 - otherHitbox.getWidth() / 2 + PIXEL_CORRECTION;
+                    float newX = this.getPosition().x - this.width / 2 - otherHitbox.getWidth() / 2;
                     entity.setPosition(new PVector(newX, entity.getPosition().y));
                 }
 
@@ -87,13 +86,13 @@ public class Terrain extends Hitbox implements IVisualizable {
 
                 if (dy > 0) {
                     entity.setVelocity(new PVector(entity.getVelocity().x, 0));
-                    float newY = this.getPosition().y + this.height / 2 + otherHitbox.getHeight() / 2 - PIXEL_CORRECTION;
+                    float newY = this.getPosition().y + this.height / 2 + otherHitbox.getHeight() / 2;
                     entity.setPosition(new PVector(entity.getPosition().x, newY));
 
                     if (entity instanceof TheKnight) ((TheKnight) entity).setIsGrounded(true);
                 } else {
                     entity.setVelocity(new PVector(entity.getVelocity().x, 0));
-                    float newY = this.getPosition().y - this.height / 2 - otherHitbox.getHeight() / 2 - PIXEL_CORRECTION;
+                    float newY = this.getPosition().y - this.height / 2 - otherHitbox.getHeight() / 2;
                     entity.setPosition(new PVector(entity.getPosition().x, newY));
                 }
             }

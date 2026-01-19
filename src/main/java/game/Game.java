@@ -3,15 +3,16 @@ package game;
 import game.core.SubPlot;
 import game.scenery.Map;
 import game.scenery.characters.Entity;
-import game.scenery.characters.MovementState;
+import game.scenery.characters.types.MovementState;
+import game.scenery.characters.attributes.Eye;
 import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.TheKnight;
+import game.scenery.characters.types.enemies.Aspids;
 import game.scenery.components.Terrain;
 import game.scenery.components.hitbox.HurtBox;
 import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
-import processing.core.PImage;
 import processing.core.PVector;
 
 public class Game extends PApplet {
@@ -20,20 +21,9 @@ public class Game extends PApplet {
     private TheKnight player;
 
     private final float[] viewport = {0f, 0f, 1f, 1f};
-    private double[] window = {-800, 800, -450, 450};
+    private final double[] window = {-800, 800, -450, 450};
     private SubPlot plt;
     private float lastUpdateTime;
-    private float attackTime;
-
-    private boolean moveLeft = false;
-    private boolean moveRight = false;
-    //private boolean idle = false;
-    private boolean jump = false;
-    private boolean jumpReleased = false;
-    private boolean lookingDown = false;
-    private HurtBox attack = null;
-
-    private static final int ATTACK_COOLDOWN = 700;
 
     private int now = millis();
 
@@ -49,6 +39,9 @@ public class Game extends PApplet {
 
         map = new Map(this, painter);
         player = map.getPlayer();
+
+        for (Enemy enemy : map.getEnemies())
+            enemy.setEye(new Eye(enemy, player));
     }
 
     @Override
@@ -59,13 +52,15 @@ public class Game extends PApplet {
 
         background(255);
 
-        player.applyForce(gravity(player.getMass()));
+        for (Entity entity : map.getEntities())
+            if (!(entity instanceof Aspids)) entity.applyForce(gravity(entity.getMass()));
 
         handleInputMovement();
         handleKnighAttack();
-        handleMonstersAttacks();
+        handleMonstersAttacks(dt);
 
-        player.move(dt);
+        for (Entity entity : map.getEntities())
+            entity.move(dt);
 
         checkCollisions();
 
@@ -79,18 +74,18 @@ public class Game extends PApplet {
     }
 
     private void handleInputMovement() {
-        if (moveRight) {
+        if (player.getDirection() == Direction.RIGHT) {
             player.moveRight();
             player.setDirection(Direction.RIGHT);
         }
-        if (moveLeft) {
+        if (player.getDirection() == Direction.LEFT) {
             player.moveLeft();
             player.setDirection(Direction.LEFT);
         }
-        if ((!moveRight && !moveLeft) || (moveRight && moveLeft)) player.stopMovement();
+        if (((player.getDirection() != Direction.RIGHT) && (player.getDirection() != Direction.RIGHT)) || (player.getDirection() == Direction.RIGHT) && (player.getDirection() == Direction.LEFT)) player.stopMovement();
         if (player.getIsGrounded()) {
-            player.setMovement((moveLeft || moveRight) ? MovementState.RUN : MovementState.IDLE);
-            if (jump) player.jump();
+            player.setMovement(((player.getDirection() == Direction.RIGHT) || (player.getDirection() != Direction.LEFT)) ? MovementState.RUN : MovementState.IDLE);
+            if (player.isJumping()) player.jump();
         } else player.setMovement(player.getVelocity().y < 0 ? MovementState.FALL : MovementState.JUMP);
 
 
@@ -101,40 +96,42 @@ public class Game extends PApplet {
             player.setLastMovement(player.getMovement());
         }
 
-        if (jumpReleased && jump) {
-            jump = false;
-            jumpReleased = false;
+        if (player.isJumpingReleased() && player.isJumping()) {
+            player.setJumping(false);
+            player.setJumpingReleased(false);
             if (player.getVelocity().y > 0) player.setVelocity(new PVector(player.getVelocity().x, 0));
         }
 
-        jumpReleased = false;
+        player.setJumpingReleased(false);
     }
 
     private void handleKnighAttack() {
-        if (attack != null) {
-            attack.setPosition(player.getPosition());
+        if (player.getAttack() != null) {
+            player.getAttack().setPosition(player.getPosition());
+
 
             if (map.getEnemies() != null) {
                 for (int i = map.getEnemies().size() - 1; i >= 0; i--) {
                     Enemy enemy = map.getEnemies().get(i);
-                    if (attack.intersected(enemy.getHitbox())) {
+                    if (player.getAttack().intersected(enemy.getHitbox())) {
                         enemy.damage(this);
-                        System.out.println(enemy.getHealth());
                         if (enemy.isDead()) map.removeEnemy(enemy);
                     }
                 }
             }
 
-            attack.draw(painter, plt);
-            if (now - attackTime > TheKnight.ATTACK_DURANTION) attack = null;
+            player.getAttack().draw(painter, plt);
+            if (now - player.getAttackTime() > TheKnight.ATTACK_DURATION) player.setAttack(null);
         }
     }
 
-    private void handleMonstersAttacks() {
+    private void handleMonstersAttacks(float dt) {
         //TODO OUTROS CONTRA MIM
         if (map.getEnemies() != null) {
 
             for (Enemy enemy : map.getEnemies()) {
+                enemy.applyBehaviour(enemy.getBehaviour(), dt);
+
                 if (enemy.getHitbox().intersected(player.getHitbox())) {
                     player.damage(this);
                     //PVector direction = PVector.sub(player.getPosition(), enemy.getPosition()).normalize();
@@ -161,23 +158,6 @@ public class Game extends PApplet {
         plt.setWindow(window);
     }
 
-    private void playerAttack() {
-        if (now - attackTime > ATTACK_COOLDOWN) {
-            if (lookingDown) attack = player.attack(Direction.DOWN);
-            else if (jump) attack = player.attack(Direction.UP);
-            else {
-                PVector v = player.getVelocity();
-                Direction direction;
-
-                if (Math.abs(v.x) != 0) direction = (v.x > 0) ? Direction.RIGHT : Direction.LEFT;
-                else direction = Direction.UP;
-
-                attack = player.attack(direction);
-            }
-            attackTime = now;
-        }
-    }
-
     LinePainter painter = new LinePainter() {
         @Override
         public void paintLine(float x1, float y1, float x2, float y2, SubPlot plt) {
@@ -189,21 +169,28 @@ public class Game extends PApplet {
 
     @Override
     public void keyPressed() {
-        if (key == 'a' || key == 'A') moveLeft = true;
-        if (key == 'd' || key == 'D') moveRight = true;
-        if (key == 'w' || key == 'W' || key == ' ') jump = true;
-        if (key == 's' || key == 'S') lookingDown = true;
-        if (key == ENTER || key == RETURN) playerAttack();
-        //if (!moveLeft && !moveRight && !jumping) idle = true;
-        //else idle = false;
+        if (key == 'w' || key == 'W' || key == ' ') {
+            player.setDirection(Direction.UP);
+            player.setJumping(true);
+        }
+        if (key == 's' || key == 'S'){
+            player.setDirection(Direction.UP);
+            player.setLookingDown(true);
+        }
+
+        if (key == 'a' || key == 'A') player.setDirection(Direction.LEFT);
+        if (key == 'd' || key == 'D') player.setDirection(Direction.RIGHT);
+
+        if (key == ENTER || key == RETURN) player.playerAttack(now);
     }
 
     @Override
     public void keyReleased() {
-        if (key == 'a' || key == 'A') moveLeft = false;
-        if (key == 'd' || key == 'D') moveRight = false;
+        if (key == 'a' || key == 'A') player.setDirection(Direction.UP);
+        if (key == 'd' || key == 'D') player.setDirection(Direction.UP);
         if (key == 'w' || key == 'W' || key == ' ') jumpReleased = true;
         if (key == 's' || key == 'S') lookingDown = false;
+        if (key == 'm' || key == 'M') player.setPosition(new PVector(0, 50)); //TODO DEBUG - RETIRAR
     }
 
     @Override
@@ -213,7 +200,7 @@ public class Game extends PApplet {
             player.setPosition(new PVector((float) w[0], (float) w[1]));
             player.setVelocity(new PVector(0, 0));
         } else if (mouseButton == LEFT) {
-            playerAttack();
+            player.playerAttack();
         }
     }
 

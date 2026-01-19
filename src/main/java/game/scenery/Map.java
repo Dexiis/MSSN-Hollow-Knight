@@ -17,11 +17,10 @@ public class Map {
     private final PApplet p;
     private final LinePainter painter;
 
-    private TheKnight player;
-    private Aspids monster;
-    private ArrayList<Terrain> terrains = new ArrayList<>();
-    private ArrayList<Enemy> enemies = new ArrayList<>();
-    private ArrayList<Entity> entities = new ArrayList<>();
+    private final TheKnight player;
+    private final ArrayList<Terrain> terrains = new ArrayList<>();
+    private final ArrayList<Enemy> enemies = new ArrayList<>();
+    private final ArrayList<Entity> entities = new ArrayList<>();
 
     public Map(PApplet p, LinePainter painter) {//TODO ATUALMENTE RAWCODED - TESTE
         this.p = p;
@@ -31,14 +30,15 @@ public class Map {
         terrains.add(new Terrain(new PVector(0, 1100), 1000, 200));
         terrains.add(new Terrain(new PVector(600, 500), 200, 1200));
         terrains.add(new Terrain(new PVector(-600, 500), 200, 1200));
+        terrains.add(new Terrain(new PVector(0, 300), 500, 100));
 
-        this.player = new TheKnight(new PVector(0, 100), p);
+        this.player = new TheKnight(new PVector(0, 40), p);
         entities.add(player);
 
         enemies.add(new Aspids(new PVector(-100, 100)));
         entities.add(enemies.getLast());
 
-        enemies.add(new Crawlid(new PVector(100, 100)));
+        enemies.add(new Crawlid(new PVector(200, 200)));
         entities.add(enemies.getLast());
     }
 
