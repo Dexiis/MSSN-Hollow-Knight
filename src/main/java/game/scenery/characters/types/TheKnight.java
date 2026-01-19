@@ -8,13 +8,20 @@ import game.scenery.components.hitbox.HurtBox;
 import game.scenery.components.hitbox.LinePainter;
 import game.scenery.components.hitbox.Point;
 import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PImage;
 import processing.core.PVector;
 
 public class TheKnight extends Entity implements IVisualizable {
-    private boolean isGrounded = false;
-    private static final float JUMP_STRENGTH = 500f;
-    private static final float SPEED = 200f;
+    private static final float JUMP_STRENGTH = 550f;
+    private static final float SPEED = 275f;
     public static final float ATTACK_DURANTION = 100f;
+
+    private boolean isGrounded = false;
+    private Direction direction;
+
+    public static final int SPRITE_SIZE = 80;
+    private PImage sprite;
 
     public TheKnight(PVector position) {
         super(position);
@@ -75,8 +82,32 @@ public class TheKnight extends Entity implements IVisualizable {
         return isGrounded;
     }
 
+    public void setSprite(PImage sprite) {
+        this.sprite = sprite;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
-        this.hitbox.draw(painter, plt);
+        //this.hitbox.draw(painter, plt);
+
+        int multValue = 1;
+        if(direction == Direction.LEFT) multValue = -1;
+
+        float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
+
+        p.pushMatrix();
+
+        // O (+5) é apenas uma correção para colocar a sprite encostada ao chão
+        p.translate(pp[0] - multValue * SPRITE_SIZE / 2f, pp[1] - SPRITE_SIZE / 2f + 5);
+        p.scale(multValue, 1);
+        p.image(this.sprite, 0, 0);
+
+        p.popMatrix();
+
+
     }
 }

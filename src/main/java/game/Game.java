@@ -3,6 +3,7 @@ package game;
 import game.core.SubPlot;
 import game.scenery.Map;
 import game.scenery.characters.Entity;
+import game.scenery.characters.MovementState;
 import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.TheKnight;
@@ -10,6 +11,7 @@ import game.scenery.components.Terrain;
 import game.scenery.components.hitbox.HurtBox;
 import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
+import processing.core.PImage;
 import processing.core.PVector;
 
 public class Game extends PApplet {
@@ -33,6 +35,14 @@ public class Game extends PApplet {
 
     private static final int ATTACK_COOLDOWN = 700;
 
+    private static final int SPRITE_COUNT = 12;
+    private static final PImage[][] spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
+    private int spriteTime = 0;
+    private int spriteIndex = 0;
+
+    private MovementState movement;
+    private MovementState lastMovement;
+
     @Override
     public void settings() {
         size(1600, 900);
@@ -45,6 +55,19 @@ public class Game extends PApplet {
 
         map = new Map(this, painter);
         player = map.getPlayer();
+
+        // Enche o array de sprites iterativamente
+        PImage playerSprites = loadImage("img/TheKnightSprites.png");
+        for(int y = 0; y < SPRITE_COUNT; y++) {
+            for(int x = 0; x < SPRITE_COUNT; x++) {
+                spriteArray[x][y] = playerSprites.get(x * TheKnight.SPRITE_SIZE, y * TheKnight.SPRITE_SIZE, TheKnight.SPRITE_SIZE, TheKnight.SPRITE_SIZE);
+            }
+        }
+
+        // Coloca o jogador em IDLE
+        movement = MovementState.IDLE;
+        lastMovement = MovementState.IDLE;
+        player.setSprite(spriteArray[0][0]);
     }
 
     @Override
@@ -54,6 +77,48 @@ public class Game extends PApplet {
         lastUpdateTime = now;
 
         background(255);
+
+        // Envia a direção ao player para inverter no eixo x
+        if (moveLeft) player.setDirection(Direction.LEFT);
+        if (moveRight) player.setDirection(Direction.RIGHT);
+
+        // Determina o estado do movimento
+        if(player.getIsGrounded())
+            movement = (moveLeft || moveRight) ? MovementState.RUN : MovementState.IDLE;
+        else
+            movement = player.getVelocity().y < 0 ? MovementState.FALL : MovementState.JUMP;
+
+        // Reinicia a animação
+        if(movement != lastMovement) {
+            spriteIndex = 0;
+            spriteTime = millis();
+            lastMovement = movement;
+        }
+
+        // Máquina de estados para aplicar sprites baseado no movimento com animação
+        switch (movement) {
+            case MovementState.IDLE:
+                player.setSprite(spriteArray[0][0]);
+                break;
+            case MovementState.RUN:
+                if (now - spriteTime > 40) {
+                    player.setSprite(spriteArray[spriteIndex][0]);
+                    spriteTime = millis();
+                    spriteIndex++;
+                    if (spriteIndex > 7) spriteIndex = 0;
+                }
+                break;
+            case MovementState.JUMP:
+                break;
+            case MovementState.FALL:
+                if (now - spriteTime > 40) {
+                    player.setSprite(spriteArray[spriteIndex][9]);
+                    spriteTime = millis();
+                    spriteIndex++;
+                    if (spriteIndex > 7) spriteIndex = 5;
+                }
+                break;
+        }
 
         //TODO OUTROS CONTRA MIM
         if (map.getEnemies() != null) {
@@ -98,7 +163,7 @@ public class Game extends PApplet {
     }
 
     private PVector gravity(float mass) {
-        if (player.getAcceleration().mag() < 9.8f) return new PVector(0, -980 * mass);
+        if (player.getAcceleration().mag() < 12.8f) return new PVector(0, -1280 * mass);
         else return new PVector(0, 0 * mass);
     }
 
