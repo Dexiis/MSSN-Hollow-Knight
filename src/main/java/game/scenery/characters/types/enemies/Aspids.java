@@ -2,9 +2,7 @@ package game.scenery.characters.types.enemies;
 
 import game.core.SubPlot;
 import game.scenery.characters.IVisualizable;
-import game.scenery.characters.attributes.Behaviour;
 import game.scenery.characters.attributes.DNA;
-import game.scenery.characters.attributes.Eye;
 import game.scenery.characters.attributes.behaviours.Seek;
 import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
@@ -34,6 +32,7 @@ public class Aspids extends Enemy implements IVisualizable {
 
     public HurtBox attack(Direction direction) {
         //TODO ATTACK
+        //TODO Cria gajos??
         return null;
     }
 

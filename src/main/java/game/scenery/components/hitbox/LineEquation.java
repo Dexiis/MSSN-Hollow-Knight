@@ -8,8 +8,8 @@ package game.scenery.components.hitbox;
  */
 public class LineEquation {
     private Point position;
-    private Point start;
-    private Point stop;
+    private final Point start;
+    private final Point stop;
 
     private float k;
     private float a;
@@ -107,23 +107,5 @@ public class LineEquation {
      */
     public float calculate(float x) {
         return k * x + a;
-    }
-
-    /**
-     * Obtém o declive (inclinação) da reta.
-     *
-     * @return O valor de k.
-     */
-    public float getK() {
-        return k;
-    }
-
-    /**
-     * Obtém a ordenada na origem (offset Y).
-     *
-     * @return O valor de a.
-     */
-    public float getA() {
-        return a;
     }
 }

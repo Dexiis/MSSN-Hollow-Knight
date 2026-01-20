@@ -11,24 +11,23 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TheKnight extends Entity implements IVisualizable {
-    private static final float JUMP_STRENGTH = 550f;
+    private static final float JUMP_STRENGTH = 1000f;
     private static final float SPEED = 275f;
     public static final float ATTACK_DURATION = 100f;
     public static final float ATTACK_COOLDOWN = 500f;
     private static final int PIXEL_CORRECTION = 6;
 
-    private float attackTime;
+    private final Map<Direction, Boolean> directions;
+    private Direction lastFacingDirection; // LEFT or RIGHT
 
-    //private boolean moveLeft = false;
-    //private boolean moveRight = false;
-    private boolean jumping = false;
-    private boolean jumpingReleased = false;
-    //private boolean lookingDown = false;
     private HurtBox attack = null;
+    private float attackTime = 0f;
 
     private boolean isGrounded = false;
-    private Direction direction;
 
     public static final int SPRITE_SIZE = 80;
     private static final int SPRITE_COUNT = 12;
@@ -46,6 +45,13 @@ public class TheKnight extends Entity implements IVisualizable {
         this.mass = 1f;
         this.health = 10;
 
+        this.directions = new HashMap<>();
+        this.directions.put(Direction.UP, false);
+        this.directions.put(Direction.DOWN, false);
+        this.directions.put(Direction.RIGHT, false);
+        this.directions.put(Direction.LEFT, false);
+        this.directions.put(Direction.UPRELEASED, false);
+
         // Enche o array de sprites iterativamente
         PImage sprites = p.loadImage("img/TheKnightSprites.png");
         for (int y = 0; y < SPRITE_COUNT; y++) {
@@ -54,118 +60,33 @@ public class TheKnight extends Entity implements IVisualizable {
             }
         }
 
-        setSprite(spriteArray[0][0]);
+        this.sprite = spriteArray[0][0];
         movement = MovementState.IDLE;
         lastMovement = movement;
     }
 
-    //TODO RETORNAR PVECTOR
-    public void jump() {
-        this.setVelocity(new PVector(this.getVelocity().x, JUMP_STRENGTH));
+    public Direction getLastFacingDirection() {
+        return lastFacingDirection;
     }
 
-    //TODO RETORNAR PVECTOR
-    public void moveRight() {
-        setVelocity(new PVector(Math.min(SPEED, getVelocity().x + SPEED), getVelocity().y));
-    }
-
-    //TODO RETORNAR PVECTOR
-    public void moveLeft() {
-        setVelocity(new PVector(Math.max(-SPEED, getVelocity().x - SPEED), getVelocity().y));
-    }
-
-    //TODO RETORNAR PVECTOR
-    public void stopMovement() {
-        setVelocity(new PVector(0.5f * getVelocity().x, getVelocity().y));
-    }
-
-    public void playerAttack(int now) {
-        if (now - attackTime > TheKnight.ATTACK_COOLDOWN) {
-            if (getDirection() == Direction.DOWN) attack = attack(Direction.DOWN);
-            else if (jumping) attack = attack(Direction.UP);
-            else {
-                PVector v = getVelocity();
-                Direction direction;
-
-                if (Math.abs(v.x) != 0) direction = (v.x > 0) ? Direction.RIGHT : Direction.LEFT;
-                else direction = Direction.UP;
-
-                attack = attack(direction);
-            }
-            attackTime = now;
-        }
-    }
-
-    private HurtBox attack(Direction direction) {
-        HurtBox.Builder builder = new HurtBox.Builder();
-
-        switch (direction) {
-            case UP:
-                builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, 100).addPoint(25, 150).addPoint(-25, 150).addPoint(-55, 100);
-                break;
-            case DOWN:
-                builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, -100).addPoint(25, -150).addPoint(-25, -150).addPoint(-55, -100);
-                break;
-            case LEFT:
-                builder.addPoint(0, -65).addPoint(0, 65).addPoint(-100, 55).addPoint(-150, 25).addPoint(-150, -25).addPoint(-100, -55);
-                break;
-            case RIGHT:
-                builder.addPoint(0, 65).addPoint(0, -65).addPoint(100, -55).addPoint(150, -25).addPoint(150, 25).addPoint(100, 55);
-                break;
-            default:
-                builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, 100).addPoint(25, 150).addPoint(-25, 150).addPoint(-55, 100);
-                break;
-        }
-
-        return builder.build();
-    }
-
-    public void setIsGrounded(boolean isGrounded) {
-        this.isGrounded = isGrounded;
+    public void setLastFacingDirection(Direction lastFacingDirection) {
+        this.lastFacingDirection = lastFacingDirection;
     }
 
     public boolean getIsGrounded() {
         return isGrounded;
     }
 
-    private void setSprite(PImage sprite) {
-        this.sprite = sprite;
+    public void setIsGrounded(boolean isGrounded) {
+        this.isGrounded = isGrounded;
     }
 
-    public void setDirection(Direction direction) {
-        this.direction = direction;
+    public Map<Direction, Boolean> getDirections() {
+        return directions;
     }
 
-    public Direction getDirection() {
-        return this.direction;
-    }
-
-    public void setMovement(MovementState movement) {
-        this.movement = movement;
-    }
-
-    public void resetSpriteIndex() {
-        this.spriteIndex = 0;
-    }
-
-    public void setSpriteTime(int now) {
-        this.spriteTime = now;
-    }
-
-    public boolean isJumpingReleased() {
-        return jumpingReleased;
-    }
-
-    public void setJumpingReleased(boolean jumpingReleased) {
-        this.jumpingReleased = jumpingReleased;
-    }
-
-    public boolean isJumping() {
-        return jumping;
-    }
-
-    public void setJumping(boolean jumping) {
-        this.jumping = jumping;
+    public void setMovingDirection(Direction direction, boolean aux) {
+        directions.put(direction, aux);
     }
 
     public HurtBox getAttack() {
@@ -196,27 +117,90 @@ public class TheKnight extends Entity implements IVisualizable {
         return this.lastMovement;
     }
 
+    public void setMovement(MovementState movement) {
+        this.movement = movement;
+    }
+
+    public void resetAnimation(int now) {
+        this.spriteIndex = 0;
+        this.spriteTime = now;
+    }
+
+    //TODO RETORNAR PVECTOR
+    public void jump() {
+        this.setVelocity(new PVector(this.getVelocity().x, JUMP_STRENGTH));
+    }
+
+    //TODO RETORNAR PVECTOR
+    public void moveRight() {
+        setVelocity(new PVector(Math.min(SPEED, getVelocity().x + SPEED), getVelocity().y));
+    }
+
+    //TODO RETORNAR PVECTOR
+    public void moveLeft() {
+        setVelocity(new PVector(Math.max(-SPEED, getVelocity().x - SPEED), getVelocity().y));
+    }
+
+    //TODO RETORNAR PVECTOR
+    public void stopMovement() {
+        setVelocity(new PVector(0.5f * getVelocity().x, getVelocity().y));
+    }
+
+    public void playerAttack(int now) {
+        if (now - attackTime > TheKnight.ATTACK_COOLDOWN) {
+            this.attack = attack();
+            attackTime = now;
+        }
+    }
+
+    private HurtBox attack() {
+        HurtBox.Builder builder = new HurtBox.Builder();
+        Direction facingDirection;
+        if (directions.get(Direction.DOWN)) facingDirection = Direction.DOWN;
+        else if ((directions.get(Direction.RIGHT) && directions.get(Direction.LEFT))) facingDirection = Direction.UP;
+        else if (directions.get(Direction.LEFT)) facingDirection = Direction.LEFT;
+        else if (directions.get(Direction.RIGHT)) facingDirection = Direction.RIGHT;
+        else facingDirection = Direction.UP;
+
+        switch (facingDirection) {
+            case DOWN:
+                builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, -100).addPoint(25, -150).addPoint(-25, -150).addPoint(-55, -100);
+                break;
+            case LEFT:
+                builder.addPoint(0, -65).addPoint(0, 65).addPoint(-100, 55).addPoint(-150, 25).addPoint(-150, -25).addPoint(-100, -55);
+                break;
+            case RIGHT:
+                builder.addPoint(0, 65).addPoint(0, -65).addPoint(100, -55).addPoint(150, -25).addPoint(150, 25).addPoint(100, 55);
+                break;
+            default:
+                builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, 100).addPoint(25, 150).addPoint(-25, 150).addPoint(-55, 100);
+                break;
+        }
+
+        return builder.build();
+    }
+
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
 
         // Máquina de estados para aplicar sprites baseado no movimento com animação
         switch (movement) {
             case MovementState.IDLE:
-                setSprite(spriteArray[0][0]);
+                this.sprite = spriteArray[0][0];
                 break;
-            case MovementState.RUN:
+            case MovementState.RUNNING:
                 if (p.millis() - spriteTime > 40) {
-                    setSprite(spriteArray[spriteIndex][0]);
+                    this.sprite = spriteArray[spriteIndex][0];
                     spriteTime = p.millis();
                     spriteIndex++;
                     if (spriteIndex > 7) spriteIndex = 0;
                 }
                 break;
-            case MovementState.JUMP:
+            case MovementState.JUMPING:
                 break;
-            case MovementState.FALL:
+            case MovementState.FALLING:
                 if (p.millis() - spriteTime > 40) {
-                    setSprite(spriteArray[spriteIndex][9]);
+                    this.sprite = spriteArray[spriteIndex][9];
                     spriteTime = p.millis();
                     spriteIndex++;
                     if (spriteIndex > 7) spriteIndex = 5;
@@ -225,7 +209,7 @@ public class TheKnight extends Entity implements IVisualizable {
         }
 
         int multValue = 1;
-        if (direction == Direction.LEFT) multValue = -1;
+        if (lastFacingDirection == Direction.LEFT) multValue = -1;
 
         float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
 

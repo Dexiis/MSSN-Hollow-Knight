@@ -9,16 +9,8 @@ import processing.core.PVector;
  */
 public class Point {
 
-    public float x = 0.0f;
-    public float y = 0.0f;
-
-    /**
-     * Construtor padrão.
-     * Inicializa o ponto na origem das coordenadas (0.0, 0.0).
-     */
-    public Point() {
-        this(0.0f, 0.0f);
-    }
+    public float x;
+    public float y;
 
     /**
      * Construtor que inicializa o ponto com coordenadas específicas.
@@ -31,13 +23,4 @@ public class Point {
         this.y = y;
     }
 
-    /**
-     * Converte este ponto para um objeto {@link PVector} da biblioteca Processing.
-     * Útil para interagir com funções nativas do Processing que exigem vetores.
-     *
-     * @return Uma nova instância de PVector com as mesmas coordenadas (x, y).
-     */
-    public PVector toPVector() {
-        return new PVector(x, y);
-    }
 }

@@ -18,5 +18,5 @@ public interface LinePainter {
      * @param y2  Coordenada Y do ponto final.
      * @param plt O objeto SubPlot utilizado para a conversão de coordenadas (Mundo para Pixel).
      */
-    public void paintLine(float x1, float y1, float x2, float y2, SubPlot plt);
+    void paintLine(float x1, float y1, float x2, float y2, SubPlot plt);
 }

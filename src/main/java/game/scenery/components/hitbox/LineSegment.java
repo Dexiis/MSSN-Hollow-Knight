@@ -13,7 +13,7 @@ public class LineSegment {
     private Point position;
     private final Point start;
     private final Point stop;
-    private LineEquation equation;
+    private final LineEquation equation;
 
     /**
      * Construtor do segmento de reta.
@@ -90,28 +90,6 @@ public class LineSegment {
      */
     public void setPosition(Point position) {
         this.position = position;
-    }
-
-    /**
-     * Verifica se um ponto específico (x, y) está contido dentro dos limites físicos do segmento (Bounding Box).
-     * <p>
-     * Este método é útil para validar se uma interseção calculada pela equação da reta infinita
-     * ocorre realmente dentro do pedaço finito de reta que este segmento representa.
-     *
-     * @param x A coordenada X global do ponto.
-     * @param y A coordenada Y global do ponto.
-     * @return {@code true} se o ponto estiver sobre o segmento (com uma pequena margem de erro), {@code false} caso contrário.
-     */
-    public boolean isPointOnLine(float x, float y) {
-        float x1 = start.x + position.x;
-        float x2 = stop.x + position.x;
-        float y1 = start.y + position.y;
-        float y2 = stop.y + position.y;
-
-        boolean betweenX = (x >= Math.min(x1, x2) - 0.01f) && (x <= Math.max(x1, x2) + 0.01f);
-        boolean betweenY = (y >= Math.min(y1, y2) - 0.01f) && (y <= Math.max(y1, y2) + 0.01f);
-
-        return betweenX && betweenY;
     }
 
     /**

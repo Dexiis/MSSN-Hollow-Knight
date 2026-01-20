@@ -3,14 +3,13 @@ package game;
 import game.core.SubPlot;
 import game.scenery.Map;
 import game.scenery.characters.Entity;
-import game.scenery.characters.types.MovementState;
 import game.scenery.characters.attributes.Eye;
 import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
+import game.scenery.characters.types.MovementState;
 import game.scenery.characters.types.TheKnight;
 import game.scenery.characters.types.enemies.Aspids;
 import game.scenery.components.Terrain;
-import game.scenery.components.hitbox.HurtBox;
 import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -74,35 +73,41 @@ public class Game extends PApplet {
     }
 
     private void handleInputMovement() {
-        if (player.getDirection() == Direction.RIGHT) {
-            player.moveRight();
-            player.setDirection(Direction.RIGHT);
+        if ((!(player.getDirections().get(Direction.RIGHT)) && !(player.getDirections().get(Direction.LEFT))) || (player.getDirections().get(Direction.RIGHT)) && (player.getDirections().get(Direction.LEFT))) {
+            player.stopMovement();
+            player.setMovement(MovementState.IDLE);
+        } else {
+            if (player.getDirections().get(Direction.RIGHT)) {
+                player.setLastFacingDirection(Direction.RIGHT);
+                player.moveRight();
+            }
+            if (player.getDirections().get(Direction.LEFT)) {
+                player.setLastFacingDirection(Direction.LEFT);
+                player.moveLeft();
+            }
+
+            // Este if é 'repetido' umas linhas a baixo mas este tem uma condição "else" anterior necessária
+            if (player.getIsGrounded())
+                player.setMovement((player.getDirections().get(Direction.RIGHT) || player.getDirections().get(Direction.LEFT)) ? MovementState.RUNNING : MovementState.IDLE);
         }
-        if (player.getDirection() == Direction.LEFT) {
-            player.moveLeft();
-            player.setDirection(Direction.LEFT);
-        }
-        if (((player.getDirection() != Direction.RIGHT) && (player.getDirection() != Direction.RIGHT)) || (player.getDirection() == Direction.RIGHT) && (player.getDirection() == Direction.LEFT)) player.stopMovement();
+
         if (player.getIsGrounded()) {
-            player.setMovement(((player.getDirection() == Direction.RIGHT) || (player.getDirection() != Direction.LEFT)) ? MovementState.RUN : MovementState.IDLE);
-            if (player.isJumping()) player.jump();
-        } else player.setMovement(player.getVelocity().y < 0 ? MovementState.FALL : MovementState.JUMP);
+            if (player.getDirections().get(Direction.UP)) player.jump();
+        } else player.setMovement(player.getVelocity().y < 0 ? MovementState.FALLING : MovementState.JUMPING);
 
 
         // Reinicia a animação
         if (player.getMovement() != player.getLastMovement()) {
-            player.resetSpriteIndex();
-            player.setSpriteTime(now);
+            player.resetAnimation(now);
             player.setLastMovement(player.getMovement());
         }
 
-        if (player.isJumpingReleased() && player.isJumping()) {
-            player.setJumping(false);
-            player.setJumpingReleased(false);
+        if (player.getDirections().get(Direction.UPRELEASED) && player.getDirections().get(Direction.UP)) {
+            player.setMovingDirection(Direction.UPRELEASED, false);
+            player.setMovingDirection(Direction.UP, false);
             if (player.getVelocity().y > 0) player.setVelocity(new PVector(player.getVelocity().x, 0));
         }
 
-        player.setJumpingReleased(false);
     }
 
     private void handleKnighAttack() {
@@ -168,29 +173,28 @@ public class Game extends PApplet {
     };
 
     @Override
-    public void keyPressed() {
+    public void keyPressed() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉTODO. A LÓGICA NÃO É FEITA AQUI
         if (key == 'w' || key == 'W' || key == ' ') {
-            player.setDirection(Direction.UP);
-            player.setJumping(true);
+            player.setMovingDirection(Direction.UPRELEASED, false);
+            player.setMovingDirection(Direction.UP, true);
         }
-        if (key == 's' || key == 'S'){
-            player.setDirection(Direction.UP);
-            player.setLookingDown(true);
-        }
-
-        if (key == 'a' || key == 'A') player.setDirection(Direction.LEFT);
-        if (key == 'd' || key == 'D') player.setDirection(Direction.RIGHT);
+        if (key == 's' || key == 'S') player.setMovingDirection(Direction.DOWN, true);
+        if (key == 'a' || key == 'A') player.setMovingDirection(Direction.LEFT, true);
+        if (key == 'd' || key == 'D') player.setMovingDirection(Direction.RIGHT, true);
 
         if (key == ENTER || key == RETURN) player.playerAttack(now);
     }
 
     @Override
-    public void keyReleased() {
-        if (key == 'a' || key == 'A') player.setDirection(Direction.UP);
-        if (key == 'd' || key == 'D') player.setDirection(Direction.UP);
-        if (key == 'w' || key == 'W' || key == ' ') jumpReleased = true;
-        if (key == 's' || key == 'S') lookingDown = false;
-        if (key == 'm' || key == 'M') player.setPosition(new PVector(0, 50)); //TODO DEBUG - RETIRAR
+    public void keyReleased() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉTODO. A LÓGICA NÃO É FEITA AQUI
+        if (key == 'w' || key == 'W' || key == ' ') {
+            player.setMovingDirection(Direction.UP, false);
+            player.setMovingDirection(Direction.UPRELEASED, true);
+        }
+        if (key == 's' || key == 'S') player.setMovingDirection(Direction.DOWN, false);
+        if (key == 'a' || key == 'A') player.setMovingDirection(Direction.LEFT, false);
+        if (key == 'd' || key == 'D') player.setMovingDirection(Direction.RIGHT, false);
+        if (key == 'm' || key == 'M') player.setPosition(new PVector(0, 50)); //APENAS PARA DEBUG. REMOVER MAIS TARDE
     }
 
     @Override
@@ -200,7 +204,7 @@ public class Game extends PApplet {
             player.setPosition(new PVector((float) w[0], (float) w[1]));
             player.setVelocity(new PVector(0, 0));
         } else if (mouseButton == LEFT) {
-            player.playerAttack();
+            player.playerAttack(now);
         }
     }
 

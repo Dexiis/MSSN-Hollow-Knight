@@ -204,7 +204,7 @@ public class Hitbox {
      * Classe interna que representa uma Caixa Delimitadora Alinhada ao Eixo (AABB - Axis-Aligned Bounding Box).
      * Usada para otimizar a deteção de colisões rejeitando rapidamente casos onde não há sobreposição.
      */
-    public class RoughHitbox {
+    public static class RoughHitbox {
         float minX, maxX, minY, maxY;
         Point position;
 
