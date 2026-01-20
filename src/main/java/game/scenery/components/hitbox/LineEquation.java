@@ -7,9 +7,11 @@ package game.scenery.components.hitbox;
  * especificamente com o caso de linhas verticais (paredes) onde o declive é indefinido.
  */
 public class LineEquation {
-    private Point position;
+
     private final Point start;
     private final Point stop;
+
+    private Point position;
 
     private float k;
     private float a;

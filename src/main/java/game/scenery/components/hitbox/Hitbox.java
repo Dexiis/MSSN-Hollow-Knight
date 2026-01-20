@@ -74,78 +74,6 @@ public class Hitbox {
     }
 
     /**
-     * Cria os segmentos de reta (LineSegment) ligando os pontos sequencialmente.
-     *
-     * @param points A lista de vértices da forma.
-     */
-    private void formLines(List<Point> points) {
-        lines.clear();
-        for (int i = 0; i < points.size(); ++i) {
-            Point p1 = points.get(i);
-            Point p2 = points.get((i + 1) % points.size());
-
-            lines.add(new LineSegment(position, p1, p2));
-        }
-    }
-
-    /**
-     * Calcula a largura e altura reais da Hitbox iterando por todos os pontos para encontrar os extremos.
-     *
-     * @param points A lista de vértices da forma.
-     */
-    private void calculateDimensions(List<Point> points) {
-        float minX = Float.MAX_VALUE, maxX = -Float.MAX_VALUE;
-        float minY = Float.MAX_VALUE, maxY = -Float.MAX_VALUE;
-
-        for (Point p : points) {
-            if (p.x < minX) minX = p.x;
-            if (p.x > maxX) maxX = p.x;
-            if (p.y < minY) minY = p.y;
-            if (p.y > maxY) maxY = p.y;
-        }
-        this.width = maxX - minX;
-        this.height = maxY - minY;
-    }
-
-    /**
-     * Verifica se esta Hitbox colide com outra Hitbox.
-     * O processo ocorre em duas fases: primeiro verifica a RoughHitbox (rápido),
-     * e se houver sobreposição, verifica detalhadamente linha por linha (preciso).
-     *
-     * @param other A outra Hitbox para verificar a colisão.
-     * @return {@code true} se houver colisão, {@code false} caso contrário.
-     */
-    public boolean intersected(Hitbox other) {
-        if (!this.roughHitbox.isIntersecting(other.getRoughHitbox())) return false;
-
-        for (LineSegment line : lines)
-            for (LineSegment otherLine : other.getLines()) if (line.intersects(otherLine)) return true;
-
-        return false;
-    }
-
-    /**
-     * Define a nova posição da Hitbox utilizando a classe Point.
-     * Atualiza também a posição da RoughHitbox e de todos os segmentos de reta.
-     *
-     * @param position O novo ponto de posição.
-     */
-    public void setPosition(Point position) {
-        this.position = position;
-        this.roughHitbox.position = position;
-        for (LineSegment line : lines) line.setPosition(position);
-    }
-
-    /**
-     * Sobrecarga do método setPosition que aceita um PVector.
-     *
-     * @param position O novo vetor de posição.
-     */
-    public void setPosition(PVector position) {
-        setPosition(new Point(position.x, position.y));
-    }
-
-    /**
      * Obtém a RoughHitbox associada a esta Hitbox.
      *
      * @return O objeto RoughHitbox.
@@ -191,6 +119,44 @@ public class Hitbox {
     }
 
     /**
+     * Define a nova posição da Hitbox utilizando a classe Point.
+     * Atualiza também a posição da RoughHitbox e de todos os segmentos de reta.
+     *
+     * @param position O novo ponto de posição.
+     */
+    public void setPosition(Point position) {
+        this.position = position;
+        this.roughHitbox.position = position;
+        for (LineSegment line : lines) line.setPosition(position);
+    }
+
+    /**
+     * Sobrecarga do método setPosition que aceita um PVector.
+     *
+     * @param position O novo vetor de posição.
+     */
+    public void setPosition(PVector position) {
+        setPosition(new Point(position.x, position.y));
+    }
+
+    /**
+     * Verifica se esta Hitbox colide com outra Hitbox.
+     * O processo ocorre em duas fases: primeiro verifica a RoughHitbox (rápido),
+     * e se houver sobreposição, verifica detalhadamente linha por linha (preciso).
+     *
+     * @param other A outra Hitbox para verificar a colisão.
+     * @return {@code true} se houver colisão, {@code false} caso contrário.
+     */
+    public boolean intersected(Hitbox other) {
+        if (!this.roughHitbox.isIntersecting(other.getRoughHitbox())) return false;
+
+        for (LineSegment line : lines)
+            for (LineSegment otherLine : other.getLines()) if (line.intersects(otherLine)) return true;
+
+        return false;
+    }
+
+    /**
      * Desenha as linhas da Hitbox utilizando um pintor abstrato e o sistema de coordenadas.
      *
      * @param painter O objeto responsável por desenhar as linhas.
@@ -201,12 +167,46 @@ public class Hitbox {
     }
 
     /**
+     * Cria os segmentos de reta (LineSegment) ligando os pontos sequencialmente.
+     *
+     * @param points A lista de vértices da forma.
+     */
+    private void formLines(List<Point> points) {
+        lines.clear();
+        for (int i = 0; i < points.size(); ++i) {
+            Point p1 = points.get(i);
+            Point p2 = points.get((i + 1) % points.size());
+
+            lines.add(new LineSegment(position, p1, p2));
+        }
+    }
+
+    /**
+     * Calcula a largura e altura reais da Hitbox iterando por todos os pontos para encontrar os extremos.
+     *
+     * @param points A lista de vértices da forma.
+     */
+    private void calculateDimensions(List<Point> points) {
+        float minX = Float.MAX_VALUE, maxX = -Float.MAX_VALUE;
+        float minY = Float.MAX_VALUE, maxY = -Float.MAX_VALUE;
+
+        for (Point p : points) {
+            if (p.x < minX) minX = p.x;
+            if (p.x > maxX) maxX = p.x;
+            if (p.y < minY) minY = p.y;
+            if (p.y > maxY) maxY = p.y;
+        }
+        this.width = maxX - minX;
+        this.height = maxY - minY;
+    }
+
+    /**
      * Classe interna que representa uma Caixa Delimitadora Alinhada ao Eixo (AABB - Axis-Aligned Bounding Box).
      * Usada para otimizar a deteção de colisões rejeitando rapidamente casos onde não há sobreposição.
      */
     public static class RoughHitbox {
-        float minX, maxX, minY, maxY;
         Point position;
+        float minX, maxX, minY, maxY;
 
         /**
          * Construtor da RoughHitbox.

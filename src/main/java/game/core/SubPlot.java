@@ -11,11 +11,12 @@ public class SubPlot {
 
     private double[] window;
     private float[] viewport;
+    private double fullHeight, fullWidth;
+
     private double mx;
     private double bx;
     private double my;
     private double by;
-    private double fullHeight, fullWidth;
 
     /**
      * Construtor do SubPlot.
@@ -32,6 +33,50 @@ public class SubPlot {
         this.viewport = viewport;
         this.fullWidth = fullWidth;
         this.fullHeight = fullHeight;
+        mx = viewport[2] * fullWidth / (window[1] - window[0]);
+        bx = viewport[0] * fullWidth;
+        my = -viewport[3] * fullHeight / (window[3] - window[2]);
+        by = (1 - viewport[1]) * fullHeight;
+    }
+
+    /**
+     * Obtém as definições atuais da janela do mundo (Window).
+     *
+     * @return Array [minX, maxX, minY, maxY].
+     */
+    public double[] getWindow() {
+        return window;
+    }
+
+    /**
+     * Redefine a janela do mundo (zoom ou pan) e recalcula os coeficientes de transformação.
+     *
+     * @param window Novo array de definições de window.
+     */
+    public void setWindow(double[] window) {
+        this.window = window;
+        mx = viewport[2] * fullWidth / (window[1] - window[0]);
+        bx = viewport[0] * fullWidth;
+        my = -viewport[3] * fullHeight / (window[3] - window[2]);
+        by = (1 - viewport[1]) * fullHeight;
+    }
+
+    /**
+     * Obtém as definições atuais do viewport (Ecrã).
+     *
+     * @return Array [x%, y%, w%, h%].
+     */
+    public float[] getViewport() {
+        return viewport;
+    }
+
+    /**
+     * Redefine o viewport e recalcula todos os coeficientes de transformação.
+     *
+     * @param viewport Novo array de definições de viewport.
+     */
+    public void setViewport(float[] viewport) {
+        this.viewport = viewport;
         mx = viewport[2] * fullWidth / (window[1] - window[0]);
         bx = viewport[0] * fullWidth;
         my = -viewport[3] * fullHeight / (window[3] - window[2]);
@@ -104,37 +149,28 @@ public class SubPlot {
     }
 
     /**
-     * Verifica se uma coordenada de pixel está dentro da área definida por este SubPlot.
-     * Útil para detetar cliques do rato dentro de uma vista específica.
+     * Converte um vetor (direção e magnitude) do mundo para pixels.
+     * Semelhante a converter dimensões, ignora a posição de origem.
      *
-     * @param xx Coordenada X em pixels.
-     * @param yy Coordenada Y em pixels.
-     * @return {@code true} se o ponto estiver dentro do viewport, {@code false} caso contrário.
+     * @param dx Componente X do vetor.
+     * @param dy Componente Y do vetor.
+     * @return Array de 2 floats representando o vetor em pixels.
      */
-    public boolean isInside(float xx, float yy) {
-        double[] c = getWorldCoord(xx, yy);
-        return (c[0] >= window[0] && c[0] <= window[1] && c[1] >= window[2] && c[1] <= window[3]);
+    public float[] getVectorCoord(double dx, double dy) {
+        float[] v = new float[2];
+        v[0] = (float) (dx * mx);
+        v[1] = (float) (-dy * my);
+        return v;
     }
 
     /**
-     * Versão sobrecarregada de {@link #isInside(float, float)} que aceita um array.
+     * Versão sobrecarregada de {@link #getVectorCoord(double, double)}.
      *
-     * @param xy Array contendo [xPixel, yPixel].
-     * @return {@code true} se estiver dentro.
+     * @param dxdy Array contendo [dx, dy].
+     * @return Array de 2 floats.
      */
-    public boolean isInside(float[] xy) {
-        return isInside(xy[0], xy[1]);
-    }
-
-    /**
-     * Obtém a caixa delimitadora (bounding box) de todo o viewport em pixels.
-     *
-     * @return Array de 4 floats: [xPixel, yPixel, larguraPixel, alturaPixel].
-     */
-    public float[] getBoundingBox() {
-        float[] c1 = getPixelCoord(window[0], window[2]);
-        float[] c2 = getPixelCoord(window[1], window[3]);
-        return new float[]{c1[0], c2[1], c2[0] - c1[0], c1[1] - c2[1]};
+    public float[] getVectorCoord(double[] dxdy) {
+        return getVectorCoord(dxdy[0], dxdy[1]);
     }
 
     /**
@@ -163,71 +199,36 @@ public class SubPlot {
     }
 
     /**
-     * Converte um vetor (direção e magnitude) do mundo para pixels.
-     * Semelhante a converter dimensões, ignora a posição de origem.
+     * Obtém a caixa delimitadora (bounding box) de todo o viewport em pixels.
      *
-     * @param dx Componente X do vetor.
-     * @param dy Componente Y do vetor.
-     * @return Array de 2 floats representando o vetor em pixels.
+     * @return Array de 4 floats: [xPixel, yPixel, larguraPixel, alturaPixel].
      */
-    public float[] getVectorCoord(double dx, double dy) {
-        float[] v = new float[2];
-        v[0] = (float) (dx * mx);
-        v[1] = (float) (-dy * my);
-        return v;
+    public float[] getBoundingBox() {
+        float[] c1 = getPixelCoord(window[0], window[2]);
+        float[] c2 = getPixelCoord(window[1], window[3]);
+        return new float[]{c1[0], c2[1], c2[0] - c1[0], c1[1] - c2[1]};
     }
 
     /**
-     * Versão sobrecarregada de {@link #getVectorCoord(double, double)}.
+     * Verifica se uma coordenada de pixel está dentro da área definida por este SubPlot.
+     * Útil para detetar cliques do rato dentro de uma vista específica.
      *
-     * @param dxdy Array contendo [dx, dy].
-     * @return Array de 2 floats.
+     * @param xx Coordenada X em pixels.
+     * @param yy Coordenada Y em pixels.
+     * @return {@code true} se o ponto estiver dentro do viewport, {@code false} caso contrário.
      */
-    public float[] getVectorCoord(double[] dxdy) {
-        return getVectorCoord(dxdy[0], dxdy[1]);
+    public boolean isInside(float xx, float yy) {
+        double[] c = getWorldCoord(xx, yy);
+        return (c[0] >= window[0] && c[0] <= window[1] && c[1] >= window[2] && c[1] <= window[3]);
     }
 
     /**
-     * Obtém as definições atuais da janela do mundo (Window).
+     * Versão sobrecarregada de {@link #isInside(float, float)} que aceita um array.
      *
-     * @return Array [minX, maxX, minY, maxY].
+     * @param xy Array contendo [xPixel, yPixel].
+     * @return {@code true} se estiver dentro.
      */
-    public double[] getWindow() {
-        return window;
-    }
-
-    /**
-     * Obtém as definições atuais do viewport (Ecrã).
-     *
-     * @return Array [x%, y%, w%, h%].
-     */
-    public float[] getViewport() {
-        return viewport;
-    }
-
-    /**
-     * Redefine o viewport e recalcula todos os coeficientes de transformação.
-     *
-     * @param viewport Novo array de definições de viewport.
-     */
-    public void setViewport(float[] viewport) {
-        this.viewport = viewport;
-        mx = viewport[2] * fullWidth / (window[1] - window[0]);
-        bx = viewport[0] * fullWidth;
-        my = -viewport[3] * fullHeight / (window[3] - window[2]);
-        by = (1 - viewport[1]) * fullHeight;
-    }
-
-    /**
-     * Redefine a janela do mundo (zoom ou pan) e recalcula os coeficientes de transformação.
-     *
-     * @param window Novo array de definições de window.
-     */
-    public void setWindow(double[] window) {
-        this.window = window;
-        mx = viewport[2] * fullWidth / (window[1] - window[0]);
-        bx = viewport[0] * fullWidth;
-        my = -viewport[3] * fullHeight / (window[3] - window[2]);
-        by = (1 - viewport[1]) * fullHeight;
+    public boolean isInside(float[] xy) {
+        return isInside(xy[0], xy[1]);
     }
 }

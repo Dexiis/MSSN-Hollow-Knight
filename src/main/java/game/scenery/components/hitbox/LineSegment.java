@@ -10,10 +10,11 @@ import game.core.SubPlot;
  * geométricos analíticos (como interseções de retas infinitas) para a classe {@link LineEquation}.
  */
 public class LineSegment {
-    private Point position;
     private final Point start;
     private final Point stop;
     private final LineEquation equation;
+
+    private Point position;
 
     /**
      * Construtor do segmento de reta.
@@ -29,29 +30,6 @@ public class LineSegment {
         this.start = start;
         this.stop = stop;
         this.equation = new LineEquation(this);
-    }
-
-    /**
-     * Verifica se este segmento de reta interseta outro segmento.
-     * <p>
-     * Utiliza a equação linear associada para calcular matematicamente se existe
-     * um ponto de interseção entre as duas retas.
-     *
-     * @param other O outro segmento de reta a verificar.
-     * @return {@code true} se houver colisão (interseção), {@code false} caso contrário.
-     */
-    public boolean intersects(LineSegment other) {
-        Point intersection = equation.solveIntersectionPoint(other.getEquation());
-        return intersection != null;
-    }
-
-    /**
-     * Obtém a equação da reta associada a este segmento.
-     *
-     * @return O objeto {@link LineEquation}.
-     */
-    public LineEquation getEquation() {
-        return equation;
     }
 
     /**
@@ -73,6 +51,15 @@ public class LineSegment {
     }
 
     /**
+     * Obtém a equação da reta associada a este segmento.
+     *
+     * @return O objeto {@link LineEquation}.
+     */
+    public LineEquation getEquation() {
+        return equation;
+    }
+
+    /**
      * Obtém a posição global de referência do segmento.
      *
      * @return O ponto de posição.
@@ -90,6 +77,20 @@ public class LineSegment {
      */
     public void setPosition(Point position) {
         this.position = position;
+    }
+
+    /**
+     * Verifica se este segmento de reta interseta outro segmento.
+     * <p>
+     * Utiliza a equação linear associada para calcular matematicamente se existe
+     * um ponto de interseção entre as duas retas.
+     *
+     * @param other O outro segmento de reta a verificar.
+     * @return {@code true} se houver colisão (interseção), {@code false} caso contrário.
+     */
+    public boolean intersects(LineSegment other) {
+        Point intersection = equation.solveIntersectionPoint(other.getEquation());
+        return intersection != null;
     }
 
     /**

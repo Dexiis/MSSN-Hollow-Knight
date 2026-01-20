@@ -14,22 +14,25 @@ import processing.core.PVector;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Representa a personagem principal controlada pelo jogador ("The Knight").
+ * <p>
+ * Esta classe gere toda a lógica específica do herói, incluindo:
+ * <ul>
+ * <li>Carregamento e animação de sprites (SpriteSheet).</li>
+ * <li>Máquina de estados de movimento (Correr, Saltar, Cair, Parado).</li>
+ * <li>Lógica de combate e criação de caixas de ataque (HurtBox).</li>
+ * <li>Física de movimento específica (velocidade, salto, inércia).</li>
+ * </ul>
+ */
 public class TheKnight extends Entity implements IVisualizable {
     private static final float JUMP_STRENGTH = 1000f;
     private static final float SPEED = 275f;
-    public static final float ATTACK_DURATION = 100f;
-    public static final float ATTACK_COOLDOWN = 500f;
     private static final int PIXEL_CORRECTION = 6;
+    public static final float ATTACK_DURATION = 100f;
+    public static final float ATTACK_COOLDOWN = 400f;
 
-    private final Map<Direction, Boolean> directions;
-    private Direction lastFacingDirection; // LEFT or RIGHT
-
-    private HurtBox attack = null;
-    private float attackTime = 0f;
-
-    private boolean isGrounded = false;
-
-    public static final int SPRITE_SIZE = 80;
+    private static final int SPRITE_SIZE = 80;
     private static final int SPRITE_COUNT = 12;
     private static final PImage[][] spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
     private PImage sprite;
@@ -39,6 +42,23 @@ public class TheKnight extends Entity implements IVisualizable {
     private MovementState movement;
     private MovementState lastMovement;
 
+    private final Map<Direction, Boolean> directions;
+    private Direction lastFacingDirection; // LEFT or RIGHT
+
+    private HurtBox attack = null;
+    private float attackTime = 0f;
+
+    private boolean isGrounded = false;
+
+    /**
+     * Construtor do Cavaleiro.
+     * <p>
+     * Inicializa a física (Hitbox, massa, vida), prepara o mapa de inputs e carrega
+     * a folha de sprites (SpriteSheet) para a memória, cortando-a em frames individuais.
+     *
+     * @param position A posição inicial do jogador no mundo.
+     * @param p        O contexto PApplet necessário para carregar imagens.
+     */
     public TheKnight(PVector position, PApplet p) {
         super(position);
         this.hitbox = new Hitbox(new Point(position.x, position.y), 30, 80);
@@ -54,98 +74,198 @@ public class TheKnight extends Entity implements IVisualizable {
 
         // Enche o array de sprites iterativamente
         PImage sprites = p.loadImage("img/TheKnightSprites.png");
-        for (int y = 0; y < SPRITE_COUNT; y++) {
-            for (int x = 0; x < SPRITE_COUNT; x++) {
+        for (int y = 0; y < SPRITE_COUNT; y++)
+            for (int x = 0; x < SPRITE_COUNT; x++)
                 spriteArray[x][y] = sprites.get(x * TheKnight.SPRITE_SIZE, y * TheKnight.SPRITE_SIZE, TheKnight.SPRITE_SIZE, TheKnight.SPRITE_SIZE);
-            }
-        }
 
         this.sprite = spriteArray[0][0];
         movement = MovementState.IDLE;
         lastMovement = movement;
     }
 
+    /**
+     * Obtém a última direção horizontal para a qual o jogador estava a olhar.
+     *
+     * @return {@link Direction#LEFT} ou {@link Direction#RIGHT}.
+     */
     public Direction getLastFacingDirection() {
         return lastFacingDirection;
     }
 
+    /**
+     * Define a última direção horizontal para a qual o jogador olhou.
+     * Útil para orientar o sprite corretamente (flip horizontal).
+     *
+     * @param lastFacingDirection A nova direção.
+     */
     public void setLastFacingDirection(Direction lastFacingDirection) {
         this.lastFacingDirection = lastFacingDirection;
     }
 
+    /**
+     * Verifica se o jogador está apoiado numa superfície física (chão).
+     *
+     * @return {@code true} se estiver no chão, {@code false} se estiver no ar.
+     */
     public boolean getIsGrounded() {
         return isGrounded;
     }
 
+    /**
+     * Define o estado de contacto com o chão.
+     * Geralmente atualizado pelo sistema de colisão do terreno.
+     *
+     * @param isGrounded O novo estado.
+     */
     public void setIsGrounded(boolean isGrounded) {
         this.isGrounded = isGrounded;
     }
 
+    /**
+     * Obtém o mapa de inputs de direção.
+     * Indica quais as teclas que estão a ser premidas no momento.
+     *
+     * @return Mapa vinculando {@link Direction} a um booleano (ativo/inativo).
+     */
     public Map<Direction, Boolean> getDirections() {
         return directions;
     }
 
+    /**
+     * Atualiza o estado de uma direção de movimento específica.
+     *
+     * @param direction A direção a atualizar.
+     * @param aux       {@code true} se a tecla foi premida, {@code false} se foi solta.
+     */
     public void setMovingDirection(Direction direction, boolean aux) {
         directions.put(direction, aux);
     }
 
+    /**
+     * Obtém a Hitbox de ataque ativa no momento.
+     *
+     * @return O objeto {@link HurtBox} se estiver a atacar, ou {@code null} caso contrário.
+     */
     public HurtBox getAttack() {
         return attack;
     }
 
+    /**
+     * Define a Hitbox de ataque atual.
+     *
+     * @param attack A nova HurtBox ou {@code null} para cancelar o ataque.
+     */
     public void setAttack(HurtBox attack) {
         this.attack = attack;
     }
 
+    /**
+     * Obtém o momento (millis) em que o último ataque foi iniciado.
+     * Usado para calcular a duração e o cooldown.
+     *
+     * @return O tempo em milissegundos.
+     */
     public float getAttackTime() {
         return attackTime;
     }
 
+    /**
+     * Define o momento do último ataque.
+     *
+     * @param attackTime O tempo em milissegundos.
+     */
     public void setAttackTime(float attackTime) {
         this.attackTime = attackTime;
     }
 
+    /**
+     * Obtém o estado atual de movimento da personagem (ex: IDLE, RUNNING).
+     *
+     * @return O enum {@link MovementState}.
+     */
     public MovementState getMovement() {
         return this.movement;
     }
 
+    /**
+     * Define manualmente o último estado de movimento registado.
+     * Usado para detetar transições de estado.
+     *
+     * @param lastMovement O estado anterior.
+     */
     public void setLastMovement(MovementState lastMovement) {
         this.lastMovement = lastMovement;
     }
 
+    /**
+     * Obtém o estado de movimento registado no frame anterior.
+     *
+     * @return O enum {@link MovementState}.
+     */
     public MovementState getLastMovement() {
         return this.lastMovement;
     }
 
+    /**
+     * Define o estado atual de movimento da personagem.
+     *
+     * @param movement O novo estado.
+     */
     public void setMovement(MovementState movement) {
         this.movement = movement;
     }
 
+    /**
+     * Reinicia os contadores de animação.
+     * Chamado sempre que o estado de movimento muda (ex: de correr para saltar),
+     * para garantir que a nova animação começa do primeiro frame.
+     *
+     * @param now O tempo atual em milissegundos.
+     */
     public void resetAnimation(int now) {
         this.spriteIndex = 0;
         this.spriteTime = now;
     }
 
-    //TODO RETORNAR PVECTOR
+    /**
+     * Realiza a ação de saltar.
+     * Aplica uma velocidade vertical instantânea definida por {@code JUMP_STRENGTH}.
+     */
     public void jump() {
         this.setVelocity(new PVector(this.getVelocity().x, JUMP_STRENGTH));
     }
 
-    //TODO RETORNAR PVECTOR
+    /**
+     * Move a personagem para a direita.
+     * Incrementa a velocidade horizontal até ao limite definido por {@code SPEED}.
+     */
     public void moveRight() {
         setVelocity(new PVector(Math.min(SPEED, getVelocity().x + SPEED), getVelocity().y));
     }
 
-    //TODO RETORNAR PVECTOR
+    /**
+     * Move a personagem para a esquerda.
+     * Decrementa a velocidade horizontal até ao limite definido por {@code -SPEED}.
+     */
     public void moveLeft() {
         setVelocity(new PVector(Math.max(-SPEED, getVelocity().x - SPEED), getVelocity().y));
     }
 
-    //TODO RETORNAR PVECTOR
+    /**
+     * Para o movimento horizontal da personagem.
+     * Aplica uma força de atrito/fricção (reduzindo a velocidade em 50% por frame)
+     * até que a personagem pare.
+     */
     public void stopMovement() {
         setVelocity(new PVector(0.5f * getVelocity().x, getVelocity().y));
     }
 
+    /**
+     * Inicia a lógica de ataque do jogador.
+     * Verifica se o tempo de recarga (cooldown) já passou antes de criar uma nova HurtBox de ataque.
+     *
+     * @param now O tempo atual em milissegundos.
+     */
     public void playerAttack(int now) {
         if (now - attackTime > TheKnight.ATTACK_COOLDOWN) {
             this.attack = attack();
@@ -153,6 +273,14 @@ public class TheKnight extends Entity implements IVisualizable {
         }
     }
 
+    /**
+     * Cria a geometria do ataque (HurtBox) baseada na direção do input.
+     * <p>
+     * Determina a direção do ataque (Cima, Baixo, Esquerda, Direita) baseada nas teclas premidas
+     * e desenha o polígono da HurtBox correspondente à espada do cavaleiro.
+     *
+     * @return Uma nova instância de {@link HurtBox} configurada.
+     */
     private HurtBox attack() {
         HurtBox.Builder builder = new HurtBox.Builder();
         Direction facingDirection;
@@ -180,6 +308,19 @@ public class TheKnight extends Entity implements IVisualizable {
         return builder.build();
     }
 
+    /**
+     * Renderiza o jogador no ecrã.
+     * <p>
+     * Este método gere:
+     * 1. A seleção do sprite correto baseado no estado (IDLE, RUNNING, etc.) e no tempo (animação).
+     * 2. A conversão de coordenadas do mundo para pixels.
+     * 3. A inversão horizontal do sprite (scale -1, 1) se estiver a olhar para a esquerda.
+     * 4. O desenho da Hitbox para fins de debug.
+     *
+     * @param p       O contexto gráfico do Processing.
+     * @param painter O objeto auxiliar de desenho de linhas.
+     * @param plt     O objeto SubPlot para conversão de coordenadas.
+     */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
 

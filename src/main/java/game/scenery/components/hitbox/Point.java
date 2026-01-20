@@ -1,7 +1,5 @@
 package game.scenery.components.hitbox;
 
-import processing.core.PVector;
-
 /**
  * Representa um ponto geométrico no espaço 2D.
  * <p>
