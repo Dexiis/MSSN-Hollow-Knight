@@ -20,12 +20,12 @@ public class Crawlid extends Enemy implements IVisualizable {
     public Crawlid(PVector position) {
         super(position);
         this.hitbox = new Hitbox(new Point(position.x, position.y), 80, 100);
-        this.mass = 10f;
+        this.mass = 3f;
         this.health = 6;
 
         this.dna = new DNA(this);
         this.dna.setMaxSpeed(SPEED);
-        this.behaviour = new Seek(getMass());
+        this.behaviour = new Seek(getMass(), true);
     }
 
     public HurtBox attack(Direction direction) {

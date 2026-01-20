@@ -27,7 +27,7 @@ public class Aspids extends Enemy implements IVisualizable {
 
         this.dna = new DNA(this);
         this.dna.setMaxSpeed(SPEED);
-        this.behaviour = new Seek(getMass());
+        this.behaviour = new Seek(getMass(), false);
     }
 
     public HurtBox attack(Direction direction) {
