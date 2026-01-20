@@ -81,12 +81,13 @@ public class Game extends PApplet {
                 player.setLastFacingDirection(Direction.RIGHT);
                 player.moveRight();
             }
+
             if (player.getDirections().get(Direction.LEFT)) {
                 player.setLastFacingDirection(Direction.LEFT);
                 player.moveLeft();
             }
 
-            // Este if é 'repetido' umas linhas a baixo mas este tem uma condição "else" anterior necessária
+            // Este if é 'repetido' umas linhas a baixo, mas este tem uma condição "else" anterior necessária
             if (player.getIsGrounded())
                 player.setMovement((player.getDirections().get(Direction.RIGHT) || player.getDirections().get(Direction.LEFT)) ? MovementState.RUNNING : MovementState.IDLE);
         }
@@ -114,14 +115,11 @@ public class Game extends PApplet {
         if (player.getAttack() != null) {
             player.getAttack().setPosition(player.getPosition());
 
-
-            if (map.getEnemies() != null) {
-                for (int i = map.getEnemies().size() - 1; i >= 0; i--) {
-                    Enemy enemy = map.getEnemies().get(i);
-                    if (player.getAttack().intersected(enemy.getHitbox())) {
-                        enemy.damage(this);
-                        if (enemy.isDead()) map.removeEnemy(enemy);
-                    }
+            if (map.getEnemies() != null) for (int i = map.getEnemies().size() - 1; i >= 0; i--) {
+                Enemy enemy = map.getEnemies().get(i);
+                if (player.getAttack().intersected(enemy.getHitbox())) {
+                    enemy.damage(this);
+                    if (enemy.isDead()) map.removeEnemy(enemy);
                 }
             }
 
@@ -132,19 +130,10 @@ public class Game extends PApplet {
 
     private void handleMonstersAttacks(float dt) {
         //TODO OUTROS CONTRA MIM
-        if (map.getEnemies() != null) {
+        if (map.getEnemies() != null) for (Enemy enemy : map.getEnemies()) {
+            enemy.applyBehaviour(enemy.getBehaviour(), dt);
 
-            for (Enemy enemy : map.getEnemies()) {
-                enemy.applyBehaviour(enemy.getBehaviour(), dt);
-
-                if (enemy.getHitbox().intersected(player.getHitbox())) {
-                    player.damage(this);
-                    //PVector direction = PVector.sub(player.getPosition(), enemy.getPosition()).normalize();
-                    //direction = direction.mult(100);
-                    //player.setVelocity(new PVector(0, 0));
-                    //player.applyForce(direction);
-                }
-            }
+            if (enemy.getHitbox().intersected(player.getHitbox())) player.damage(this);
         }
     }
 
@@ -203,9 +192,6 @@ public class Game extends PApplet {
             double[] w = plt.getWorldCoord(mouseX, mouseY);
             player.setPosition(new PVector((float) w[0], (float) w[1]));
             player.setVelocity(new PVector(0, 0));
-        } else if (mouseButton == LEFT) {
-            player.playerAttack(now);
-        }
+        } else if (mouseButton == LEFT) player.playerAttack(now);
     }
-
 }
