@@ -5,9 +5,11 @@ import game.scenery.characters.attributes.Behaviour;
 import processing.core.PVector;
 
 public class Wander extends Behaviour {
+    private boolean grounded;
 
-    public Wander(float weight) {
+    public Wander(float weight, boolean grounded) {
         super(weight);
+        this.grounded = grounded;
     }
 
     @Override
@@ -21,8 +23,7 @@ public class Wander extends Behaviour {
         center.normalize().mult(me.getDNA().getDeltaTWander());
         center.add(me.getPosition());
 
-        PVector targetDisplacement = new PVector(me.getDNA().getRadiusWander() * (float) Math.cos(newPhiWander),
-                me.getDNA().getRadiusWander() * (float) Math.sin(newPhiWander));
+        PVector targetDisplacement = new PVector(me.getDNA().getRadiusWander() * (float) Math.cos(newPhiWander), me.getDNA().getRadiusWander() * (float) Math.sin(newPhiWander));
         PVector targetPosition = PVector.add(center, targetDisplacement);
 
         PVector desiredVelocity = PVector.sub(targetPosition, me.getPosition());

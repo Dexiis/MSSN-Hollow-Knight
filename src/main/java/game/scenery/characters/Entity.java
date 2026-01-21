@@ -172,6 +172,9 @@ public abstract class Entity extends Movement implements IVisualizable {
         if (eye != null) eye.look();
         PVector vd = new PVector();
         float sumWeights = 0;
+
+
+        /// ///
         for (Behaviour behaviour : behaviours)
             sumWeights += behaviour.getWeight();
 
@@ -180,6 +183,8 @@ public abstract class Entity extends Movement implements IVisualizable {
             vdd.mult(behaviour.getWeight() / sumWeights);
             vd.add(vdd);
         }
+
+        /// ///
         move(dt, vd);
     }
 
@@ -194,9 +199,7 @@ public abstract class Entity extends Movement implements IVisualizable {
     @Override
     public void move(float dt) {
         super.move(dt);
-        if (hitbox != null) {
-            hitbox.setPosition(position);
-        }
+        if (hitbox != null) hitbox.setPosition(position);
     }
 
     /**

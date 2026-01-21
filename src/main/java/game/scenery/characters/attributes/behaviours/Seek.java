@@ -35,9 +35,17 @@ public class Seek extends Behaviour {
      */
     @Override
     public PVector getDesiredVelocity(Entity me) {
-        Entity characterTarget = me.getEye().getTarget();
-        PVector vetor = PVector.sub(characterTarget.getPosition(), me.getPosition());
-        if (grounded) return new PVector(vetor.x, 0);
-        return vetor;
+        if (checkBehaviour(me)) {
+            Entity characterTarget = me.getEye().getTarget();
+            PVector vetor = PVector.sub(characterTarget.getPosition(), me.getPosition());
+
+            if (grounded) return new PVector(vetor.x, 0);
+            return vetor;
+        }
+        return new PVector(0, 0);
+    }
+
+    private boolean checkBehaviour(Entity me) {
+        return me.getEye().getFarSight().contains(me.getEye().getTarget()); // da run calma
     }
 }

@@ -73,7 +73,7 @@ public class Map {
         enemies.add(new Aspids(new PVector(-100, 100)));
         entities.add(enemies.getLast());
 
-        enemies.add(new Crawlid(new PVector(200, 200)));
+        enemies.add(new Crawlid(new PVector(200, 50)));
         entities.add(enemies.getLast());
 
         for (Enemy enemy : enemies)

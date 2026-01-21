@@ -139,8 +139,13 @@ public class Game extends PApplet {
 
         background(255);
 
-        for (Entity entity : map.getEntities())
-            if (!(entity instanceof Aspids)) entity.applyForce(gravity(entity.getMass()));
+        for (Entity entity : map.getEntities()) {
+            if (!(entity instanceof TheKnight)) {
+                entity.applyBehaviours(((Enemy) entity).getBehaviours(), dt);
+                entity.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
+            }
+            if (!(entity instanceof Aspids)) entity.applyForce(gravity(entity));
+        }
 
         handleInputMovement();
         handleKnighAttack();
@@ -158,11 +163,11 @@ public class Game extends PApplet {
     /**
      * Calcula a força gravitacional a ser aplicada a uma entidade.
      *
-     * @param mass A massa da entidade.
+     * @param entity A entidade aonde será aplicada a gravidade.
      * @return Um vetor {@link PVector} representando a força da gravidade (ou vetor nulo se a velocidade terminal for atingida).
      */
-    private PVector gravity(float mass) {
-        if (player.getAcceleration().mag() < 12.8f) return new PVector(0, -1280 * mass);
+    private PVector gravity(Entity entity) {
+        if (entity.getAcceleration().y < 12.8f) return new PVector(0, -1280 * entity.getMass());
         else return new PVector(0, 0);
     }
 
@@ -244,11 +249,8 @@ public class Game extends PApplet {
      */
     private void handleMonstersAttacks(float dt) {
         //TODO OUTROS CONTRA MIM
-        if (map.getEnemies() != null) for (Enemy enemy : map.getEnemies()) {
-            enemy.applyBehaviour(enemy.getBehaviour(), dt);
-
+        if (map.getEnemies() != null) for (Enemy enemy : map.getEnemies())
             if (enemy.getHitbox().intersected(player.getHitbox())) player.damage(this);
-        }
     }
 
     /**

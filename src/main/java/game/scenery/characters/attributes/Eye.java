@@ -18,6 +18,7 @@ public class Eye {
     public Eye(Entity me, Entity target) {
         this.me = me;
         this.target = target;
+        addTarget(target);
     }
 
     public void setTarget(Entity target) {
