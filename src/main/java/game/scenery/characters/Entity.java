@@ -162,8 +162,7 @@ public abstract class Entity extends Movement implements IVisualizable {
     /**
      * Aplica uma lista de comportamentos combinados.
      * <p>
-     * Calcula uma média ponderada das velocidades desejadas de todos os comportamentos fornecidos.
-     * Isto permite comportamentos complexos (ex: perseguir o jogador enquanto evita obstáculos).
+     * Calcula a soma das velocidades desejadas de todos os comportamentos fornecidos.
      *
      * @param behaviours A lista de comportamentos a processar.
      * @param dt         O intervalo de tempo para a atualização física.
@@ -171,20 +170,18 @@ public abstract class Entity extends Movement implements IVisualizable {
     public void applyBehaviours(List<Behaviour> behaviours, float dt) {
         if (eye != null) eye.look();
         PVector vd = new PVector();
-        float sumWeights = 0;
+//      float sumWeights = 0;
 
-
-        /// ///
-        for (Behaviour behaviour : behaviours)
-            sumWeights += behaviour.getWeight();
+//      for (Behaviour behaviour : behaviours)                        // ISTO NÃO DEVE DE SER NECESSÁRIO MAS DEIXAR POR ENQUANTO
+//          sumWeights += behaviour.getWeight();
 
         for (Behaviour behaviour : behaviours) {
             PVector vdd = behaviour.getDesiredVelocity(this);
-            vdd.mult(behaviour.getWeight() / sumWeights);
+//          vdd.mult(behaviour.getWeight() / sumWeights);             O MESMO PARA ISTO
+//          vdd.mult(behaviour.getWeight());
             vd.add(vdd);
         }
 
-        /// ///
         move(dt, vd);
     }
 

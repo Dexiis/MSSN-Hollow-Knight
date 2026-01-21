@@ -7,7 +7,7 @@ import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.MovementState;
 import game.scenery.characters.types.TheKnight;
-import game.scenery.characters.types.enemies.Aspids;
+import game.scenery.characters.types.enemies.AspidHunter;
 import game.scenery.components.Terrain;
 import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
@@ -144,7 +144,7 @@ public class Game extends PApplet {
                 entity.applyBehaviours(((Enemy) entity).getBehaviours(), dt);
                 entity.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
             }
-            if (!(entity instanceof Aspids)) entity.applyForce(gravity(entity));
+            if (!(entity instanceof AspidHunter)) entity.applyForce(gravity(entity));
         }
 
         handleInputMovement();

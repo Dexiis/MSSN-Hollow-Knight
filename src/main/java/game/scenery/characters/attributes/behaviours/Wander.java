@@ -4,32 +4,67 @@ import game.scenery.characters.Entity;
 import game.scenery.characters.attributes.Behaviour;
 import processing.core.PVector;
 
+/**
+ * Implementa o comportamento de "Vaguear" (Wander).
+ * <p>
+ * Este comportamento gera um movimento aleatório suave e natural, projetando um círculo
+ * à frente da entidade e selecionando um alvo aleatório na sua circunferência.
+ * Isso evita a vibração excessiva (jitter) que ocorreria com aleatoriedade pura.
+ */
 public class Wander extends Behaviour {
-    private boolean grounded;
 
-    public Wander(float weight, boolean grounded) {
+    /**
+     * Construtor do comportamento Wander.
+     *
+     * @param weight O peso ou prioridade deste comportamento.
+     */
+    public Wander(float weight) {
         super(weight);
-        this.grounded = grounded;
     }
 
+    /**
+     * Calcula a velocidade desejada para o movimento de vagueio.
+     * <p>
+     * O algoritmo atualiza um ângulo aleatório (phiWander) com um pequeno deslocamento,
+     * projeta um ponto à frente da entidade e calcula o vetor de direção para um ponto
+     * na circunferência desse círculo projetado.
+     *
+     * @param me A entidade que está a executar o comportamento.
+     * @return O vetor de velocidade desejada ou (0,0) se o comportamento não estiver ativo.
+     */
     @Override
     public PVector getDesiredVelocity(Entity me) {
+        if (checkBehaviour(me)) {
+            float newPhiWander = me.getPhiWander();
+            newPhiWander += (float) (2 * (Math.random() - 0.5) * me.getDNA().getDeltaPhiWander());
+            me.setPhiWander(newPhiWander);
 
-        float newPhiWander = me.getPhiWander();
-        newPhiWander += 2 * (Math.random() - 0.5) * me.getDNA().getDeltaPhiWander();
-        me.setPhiWander(newPhiWander);
+            PVector center = me.getVelocity().copy();
+            center.normalize().mult(me.getDNA().getDeltaTWander());
+            center.add(me.getPosition());
 
-        PVector center = me.getVelocity().copy();
-        center.normalize().mult(me.getDNA().getDeltaTWander());
-        center.add(me.getPosition());
+            PVector targetDisplacement = new PVector(me.getDNA().getRadiusWander() * (float) Math.cos(newPhiWander), me.getDNA().getRadiusWander() * (float) Math.sin(newPhiWander));
+            PVector targetPosition = PVector.add(center, targetDisplacement);
 
-        PVector targetDisplacement = new PVector(me.getDNA().getRadiusWander() * (float) Math.cos(newPhiWander), me.getDNA().getRadiusWander() * (float) Math.sin(newPhiWander));
-        PVector targetPosition = PVector.add(center, targetDisplacement);
+            PVector desiredVelocity = PVector.sub(targetPosition, me.getPosition());
 
-        PVector desiredVelocity = PVector.sub(targetPosition, me.getPosition());
+            desiredVelocity.setMag(me.getDNA().getMaxSpeed());
 
-        desiredVelocity.setMag(me.getDNA().getMaxSpeed());
+            return desiredVelocity;
+        }
+        return new PVector(0, 0);
+    }
 
-        return desiredVelocity;
+    /**
+     * Verifica as condições para ativar o vagueio.
+     * <p>
+     * O comportamento é ativado apenas quando a entidade <b>não</b> tem o seu alvo
+     * dentro do campo de visão distante (FarSight). Ou seja, vagueia quando não vê nada relevante.
+     *
+     * @param me A entidade atual.
+     * @return {@code true} se não houver alvos à vista, {@code false} caso contrário.
+     */
+    private boolean checkBehaviour(Entity me) {
+        return (me.getEye().getFarSight().isEmpty());
     }
 }
