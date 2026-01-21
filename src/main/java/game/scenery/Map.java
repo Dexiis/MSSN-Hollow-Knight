@@ -43,13 +43,31 @@ public class Map {
         this.p = p;
         this.painter = painter;
 
-        terrains.add(new Terrain(new PVector(0, -100), 1000, 200));
-        terrains.add(new Terrain(new PVector(0, 1100), 1000, 200));
-        terrains.add(new Terrain(new PVector(600, 500), 200, 1200));
-        terrains.add(new Terrain(new PVector(-600, 500), 200, 1200));
-        terrains.add(new Terrain(new PVector(0, 300), 500, 100));
+        // Secção 1
+        terrains.add(new Terrain(new PVector(-150, 400), 200, 1200));
+        terrains.add(new Terrain(new PVector(450, -100), 1000, 200));
+        terrains.add(new Terrain(new PVector(200, 600), 150, 800));
 
-        this.player = new TheKnight(new PVector(0, 40), p);
+        // Plataformas
+        terrains.add(new Terrain(new PVector(700, 200), 400, 75));
+        terrains.add(new Terrain(new PVector(1300, 350), 400, 75));
+        terrains.add(new Terrain(new PVector(1800, 600), 400, 75));
+
+        // Secção 2
+        terrains.add(new Terrain(new PVector(2700, 300), 1000, 1000));
+
+        // Plataformas
+        terrains.add(new Terrain(new PVector(3500, 1000), 400, 75));
+        terrains.add(new Terrain(new PVector(4100, 1200), 400, 75));
+        terrains.add(new Terrain(new PVector(4750, 1325), 600, 75));
+        terrains.add(new Terrain(new PVector(5275, 1325), 150, 75));
+
+        // Boss Room
+        terrains.add(new Terrain(new PVector(6000, -100), 2500, 200));
+        terrains.add(new Terrain(new PVector(4650, 200), 200, 800));
+        terrains.add(new Terrain(new PVector(7350, 200), 200, 800));
+
+        this.player = new TheKnight(new PVector(50, 800), p);
         entities.add(player);
 
         enemies.add(new Aspids(new PVector(-100, 100)));

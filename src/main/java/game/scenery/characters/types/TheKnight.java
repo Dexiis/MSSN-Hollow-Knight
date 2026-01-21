@@ -362,6 +362,6 @@ public class TheKnight extends Entity implements IVisualizable {
 
         p.popMatrix();
 
-        this.hitbox.draw(painter, plt);
+        // this.hitbox.draw(painter, plt);
     }
 }
