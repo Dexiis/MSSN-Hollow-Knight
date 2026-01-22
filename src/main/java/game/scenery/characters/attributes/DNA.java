@@ -1,7 +1,7 @@
 package game.scenery.characters.attributes;
 
 import game.scenery.characters.Entity;
-import game.scenery.characters.types.enemies.AspidHunter;
+import game.scenery.characters.types.enemies.Squit;
 import game.scenery.characters.types.enemies.FalseKnight;
 import game.scenery.characters.types.enemies.HuskHornhead;
 
@@ -33,7 +33,7 @@ public class DNA {
      */
     public DNA(Entity me) { //TODO FAZER O DNA PARA CADA UM
 
-        if (me instanceof AspidHunter) {
+        if (me instanceof Squit) {
 
             maxSpeed = random(100f, 200f);
             maxForce = random(150f, 250f);

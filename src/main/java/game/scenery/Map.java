@@ -5,7 +5,7 @@ import game.scenery.characters.Entity;
 import game.scenery.characters.attributes.Eye;
 import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.TheKnight;
-import game.scenery.characters.types.enemies.AspidHunter;
+import game.scenery.characters.types.enemies.Squit;
 import game.scenery.characters.types.enemies.HuskHornhead;
 import game.scenery.components.Terrain;
 import game.scenery.components.hitbox.LinePainter;
@@ -70,7 +70,7 @@ public class Map {
         this.player = new TheKnight(new PVector(50, 800), p);
         entities.add(player);
 
-        enemies.add(new AspidHunter(new PVector(-100, 100)));
+        enemies.add(new Squit(new PVector(-100, 100), p));
         entities.add(enemies.getLast());
 
         enemies.add(new HuskHornhead(new PVector(200, 50)));

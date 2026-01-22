@@ -28,6 +28,8 @@ public abstract class Entity extends Movement implements IVisualizable {
     protected float lastTimeHit;
     protected float phiWander;
 
+    protected boolean finishedDeath = false;
+
     protected float[] positions;
     private double[] window;
 
@@ -50,13 +52,23 @@ public abstract class Entity extends Movement implements IVisualizable {
         return health;
     }
 
+    // TODO ARRANJAR JAVADOC
+
     /**
      * Verifica se a entidade está morta.
      *
      * @return {@code true} se a vida for menor ou igual a zero, {@code false} caso contrário.
      */
     public boolean isDead() {
-        return health <= 0;
+        return health <= 0 && hasFinishedDeath();
+    }
+
+    public boolean hasFinishedDeath() {
+        return finishedDeath;
+    }
+
+    public void setFinishedDeath(boolean finishedDeath) {
+        this.finishedDeath = finishedDeath;
     }
 
     /**

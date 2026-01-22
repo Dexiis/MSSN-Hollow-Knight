@@ -7,7 +7,7 @@ import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.MovementState;
 import game.scenery.characters.types.TheKnight;
-import game.scenery.characters.types.enemies.AspidHunter;
+import game.scenery.characters.types.enemies.Squit;
 import game.scenery.components.Terrain;
 import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
@@ -144,15 +144,17 @@ public class Game extends PApplet {
                 entity.applyBehaviours(((Enemy) entity).getBehaviours(), dt);
                 entity.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
             }
-            if (!(entity instanceof AspidHunter)) entity.applyForce(gravity(entity));
+            if (!(entity instanceof Squit)) entity.applyForce(gravity(entity));
         }
 
         handleInputMovement();
-        handleKnighAttack();
+        handleKnightAttack();
         handleMonstersAttacks(dt);
 
-        for (Entity entity : map.getEntities())
+        for (Entity entity : map.getEntities()) {
             entity.move(dt);
+            if (entity.isDead()) map.removeEnemy((Enemy) entity);
+        }
 
         checkCollisions();
 
@@ -222,7 +224,7 @@ public class Game extends PApplet {
      * Atualiza a posição da área de ataque (hitbox), verifica interseções com inimigos,
      * aplica dano e remove inimigos derrotados.
      */
-    private void handleKnighAttack() {
+    private void handleKnightAttack() {
         if (player.getAttack() != null) {
             player.getAttack().setPosition(player.getPosition());
 
@@ -230,7 +232,6 @@ public class Game extends PApplet {
                 Enemy enemy = map.getEnemies().get(i);
                 if (player.getAttack().intersected(enemy.getHitbox())) {
                     enemy.damage(this);
-                    if (enemy.isDead()) map.removeEnemy(enemy);
                 }
             }
 
