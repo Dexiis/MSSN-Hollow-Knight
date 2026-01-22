@@ -28,7 +28,7 @@ public abstract class Entity extends Movement implements IVisualizable {
     protected float lastTimeHit;
     protected float phiWander;
 
-    protected boolean finishedDeath = false;
+    protected boolean dead = false;
 
     protected float[] positions;
     private double[] window;
@@ -60,15 +60,15 @@ public abstract class Entity extends Movement implements IVisualizable {
      * @return {@code true} se a vida for menor ou igual a zero, {@code false} caso contrário.
      */
     public boolean isDead() {
-        return health <= 0 && hasFinishedDeath();
+        return this.dead;
     }
 
-    public boolean hasFinishedDeath() {
-        return finishedDeath;
+    public void setDead(boolean dead) {
+        this.dead = dead;
     }
 
-    public void setFinishedDeath(boolean finishedDeath) {
-        this.finishedDeath = finishedDeath;
+    public boolean isDying() {
+        return health <= 0;
     }
 
     /**

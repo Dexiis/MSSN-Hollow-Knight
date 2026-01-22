@@ -16,7 +16,7 @@ import processing.core.PVector;
 
 public class HuskHornhead extends Enemy implements IVisualizable {
     private static final float SPEED = 75f;
-    public static final float ATTACK_DURANTION = 2000f;
+    public static final float ATTACK_DURATION = 2000f;
 
     public HuskHornhead(PVector position) {
         super(position);
@@ -39,5 +39,9 @@ public class HuskHornhead extends Enemy implements IVisualizable {
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         this.hitbox.draw(painter, plt);
+
+        // TODO MUDAR QUANDO TIVER SPRITES
+        if(isDying())
+            setDead(true);
     }
 }

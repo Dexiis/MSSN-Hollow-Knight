@@ -72,7 +72,7 @@ public class Squit extends Enemy implements IVisualizable {
 
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
-        // this.hitbox.draw(painter, plt);
+        this.hitbox.draw(painter, plt);
         float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
 
         currentDirection = this.getVelocity().x < 0 ? Direction.LEFT : Direction.RIGHT;
@@ -80,12 +80,13 @@ public class Squit extends Enemy implements IVisualizable {
             state = STATE.TURNING;
         latestDirection = currentDirection;
 
-        if(getHealth() <= 0)
+        if(isDying())
             state = STATE.DEATH;
 
         if(state != latestState)
             resetAnimation(p.millis());
-        
+
+        // TODO ACABAR ANIMAÇÕES
         switch (state) {
             case STATE.IDLE:
                 if (p.millis() - spriteTime > 120) {
@@ -119,22 +120,25 @@ public class Squit extends Enemy implements IVisualizable {
                     spriteTime = p.millis();
                     spriteIndex++;
                     if (spriteIndex > 2) {
-                        setFinishedDeath(true);
+                        setDead(true);
                         spriteIndex = 0;
                         state = STATE.IDLE;
                     }
                 }
                 break;
         }
-
         latestState = state;
+
+        // Diminuir o tamanho da sprite
+        float spriteScale = 0.7f;
 
         p.pushMatrix();
 
-        p.translate(pp[0] - multValue * SPRITE_SIZE / 2f, pp[1] - SPRITE_SIZE / 2f);
-        p.scale(multValue, 1);
-        p.image(this.sprite, 0, 0);
+        p.translate(pp[0], pp[1]);
+        p.scale(multValue * spriteScale, spriteScale);
+        p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f);
 
         p.popMatrix();
+
     }
 }
