@@ -8,7 +8,6 @@ import game.scenery.characters.attributes.behaviours.SafeSeek;
 import game.scenery.characters.attributes.behaviours.Wander;
 import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
-import game.scenery.characters.types.TheKnight;
 import game.scenery.components.hitbox.Hitbox;
 import game.scenery.components.hitbox.HurtBox;
 import game.scenery.components.hitbox.LinePainter;
@@ -36,6 +35,7 @@ public class Squit extends Enemy implements IVisualizable {
 
     private final Attack attackBehaviour;
     private int attackTime;
+    private float attackAngle;
 
     enum STATE {
         IDLE, TURNING, STARTLED, ANTICIPATION, ATTACK, DEATH
@@ -80,21 +80,17 @@ public class Squit extends Enemy implements IVisualizable {
         this.hitbox.draw(painter, plt);
         float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
 
-        currentDirection = this.getVelocity().x < 0 ? Direction.LEFT : Direction.RIGHT;
-        if (currentDirection != latestDirection)
-            state = STATE.TURNING;
-        latestDirection = currentDirection;
-
-        if(isDying())
-            state = STATE.DEATH;
-
         setAttacking(state == STATE.ATTACK);
         if(isColliding()) state = STATE.IDLE;
 
-        if(state != latestState)
-            resetAnimation(p.millis());
+        // Define a direção do Squit
+        currentDirection = this.getVelocity().x < 0 ? Direction.LEFT : Direction.RIGHT;
+        if (currentDirection != latestDirection) state = STATE.TURNING;
+        latestDirection = currentDirection;
 
-        // TODO ACABAR ANIMAÇÕES
+        if(isDying()) state = STATE.DEATH;
+        if(state != latestState) resetAnimation(p.millis());
+
         switch (state) {
             case STATE.IDLE:
                 if(!isAttacking() && attackBehaviour.checkBehaviour(this) && p.millis() - attackTime > ATTACK_COOLDOWN)
@@ -137,6 +133,9 @@ public class Squit extends Enemy implements IVisualizable {
                     if (spriteIndex > 5) {
                         spriteIndex = 0;
                         state = STATE.ATTACK;
+
+                        PVector targetVector = PVector.sub(this.getEye().getTarget().getPosition(), this.getPosition()).normalize();
+                        attackAngle = targetVector.heading();
                     }
                 }
                 break;
@@ -175,7 +174,17 @@ public class Squit extends Enemy implements IVisualizable {
         p.pushMatrix();
 
         p.translate(pp[0], pp[1]);
-        p.scale(multValue * spriteScale, spriteScale);
+
+        // Roda o Squit durante o ataque em direção ao jogador
+        if (state == STATE.ATTACK) {
+            int multiplier = Math.abs(PApplet.degrees(attackAngle)) < 90 ? -1 : 1;
+
+            p.scale(spriteScale, multiplier * spriteScale);
+            p.rotate(-multiplier * attackAngle + PApplet.radians(225));
+        } else {
+            p.scale(multValue * spriteScale, spriteScale);
+        }
+
         p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f);
 
         p.popMatrix();
