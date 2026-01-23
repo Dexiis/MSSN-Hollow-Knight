@@ -6,6 +6,8 @@ import processing.core.PVector;
 
 public class Attack extends Behaviour {
 
+    private PVector targetPosition;
+
     /**
      * Construtor do comportamento Attack.
      *
@@ -17,11 +19,19 @@ public class Attack extends Behaviour {
 
     @Override
     public PVector getDesiredVelocity(Entity me) {
-        //TODO
+        if(checkBehaviour(me)) {
+            if(me.isAttacking()) {
+                return PVector.mult(PVector.sub(targetPosition, me.getPosition()), 10);
+            } else {
+                targetPosition = me.getEye().getTarget().getPosition();
+            }
+        }
+
+        me.setAttacking(false);
         return new PVector(0, 0);
     }
 
-    private boolean checkBehaviour(Entity me) {
+    public boolean checkBehaviour(Entity me) {
         return me.getEye().getNearSight().contains(me.getEye().getTarget());
     }
 }

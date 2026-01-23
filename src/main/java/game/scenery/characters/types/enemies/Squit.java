@@ -18,8 +18,8 @@ import processing.core.PImage;
 import processing.core.PVector;
 
 public class Squit extends Enemy implements IVisualizable {
-    private static final float SPEED = 75f;
-    public static final float ATTACK_DURATION = 2000f;
+    private static final float SPEED = 275f;
+    public static final float ATTACK_COOLDOWN = 2000f;
 
     private static final int SPRITE_SIZE = 150;
     private static final int SPRITE_COUNT = 6;
@@ -34,6 +34,9 @@ public class Squit extends Enemy implements IVisualizable {
     private Direction latestDirection;
     private int multValue = 1;
 
+    private final Attack attackBehaviour;
+    private int attackTime;
+
     enum STATE {
         IDLE, TURNING, STARTLED, ANTICIPATION, ATTACK, DEATH
     }
@@ -44,11 +47,13 @@ public class Squit extends Enemy implements IVisualizable {
         this.mass = 1f;
         this.health = 3;
 
+        this.attackBehaviour = new Attack(1);
+
         this.dna = new DNA(this);
         this.dna.setMaxSpeed(SPEED);
         this.behaviours.add(new SafeSeek(1));
         this.behaviours.add(new Wander(1));
-        this.behaviours.add(new Attack(1));
+        this.behaviours.add(this.attackBehaviour);
 
         // Enche o array de sprites iterativamente
         PImage sprites = p.loadImage("img/SquitSprites.png");
@@ -83,12 +88,17 @@ public class Squit extends Enemy implements IVisualizable {
         if(isDying())
             state = STATE.DEATH;
 
+        setAttacking(state == STATE.ATTACK);
+        if(isColliding()) state = STATE.IDLE;
+
         if(state != latestState)
             resetAnimation(p.millis());
 
         // TODO ACABAR ANIMAÇÕES
         switch (state) {
             case STATE.IDLE:
+                if(!isAttacking() && attackBehaviour.checkBehaviour(this) && p.millis() - attackTime > ATTACK_COOLDOWN)
+                    state = STATE.STARTLED;
                 if (p.millis() - spriteTime > 120) {
                     this.sprite = spriteArray[spriteIndex][0];
                     spriteTime = p.millis();
@@ -109,10 +119,40 @@ public class Squit extends Enemy implements IVisualizable {
                 }
                 break;
             case STATE.STARTLED:
+                if (p.millis() - spriteTime > 120) {
+                    this.sprite = spriteArray[spriteIndex][1];
+                    spriteTime = p.millis();
+                    spriteIndex++;
+                    if (spriteIndex > 3) {
+                        spriteIndex = 0;
+                        state = STATE.ANTICIPATION;
+                    }
+                }
                 break;
             case STATE.ANTICIPATION:
+                if (p.millis() - spriteTime > 80) {
+                    this.sprite = spriteArray[spriteIndex][2];
+                    spriteTime = p.millis();
+                    spriteIndex++;
+                    if (spriteIndex > 5) {
+                        spriteIndex = 0;
+                        state = STATE.ATTACK;
+                    }
+                }
                 break;
             case STATE.ATTACK:
+                if (p.millis() - spriteTime > 120) {
+                    this.sprite = spriteArray[spriteIndex][3];
+                    spriteTime = p.millis();
+                    spriteIndex++;
+                    if (spriteIndex > 2) {
+                        spriteIndex = 0;
+                    }
+                }
+                if(!attackBehaviour.checkBehaviour(this)) {
+                    state = STATE.IDLE;
+                    attackTime = p.millis();
+                }
                 break;
             case STATE.DEATH:
                 if (p.millis() - spriteTime > 120) {

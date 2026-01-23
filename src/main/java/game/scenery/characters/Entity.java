@@ -29,6 +29,9 @@ public abstract class Entity extends Movement implements IVisualizable {
     protected float phiWander;
 
     protected boolean dead = false;
+    protected boolean attacking = false;
+
+    protected boolean colliding = false;
 
     protected float[] positions;
     private double[] window;
@@ -69,6 +72,22 @@ public abstract class Entity extends Movement implements IVisualizable {
 
     public boolean isDying() {
         return health <= 0;
+    }
+
+    public boolean isAttacking() {
+        return attacking;
+    }
+
+    public void setAttacking(boolean attacking) {
+        this.attacking = attacking;
+    }
+
+    public boolean isColliding() {
+        return colliding;
+    }
+
+    public void setColliding(boolean colliding) {
+        this.colliding = colliding;
     }
 
     /**

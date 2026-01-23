@@ -73,8 +73,8 @@ public class Map {
         enemies.add(new Squit(new PVector(-100, 100), p));
         entities.add(enemies.getLast());
 
-        enemies.add(new HuskHornhead(new PVector(200, 50)));
-        entities.add(enemies.getLast());
+        //enemies.add(new HuskHornhead(new PVector(200, 50)));
+        //entities.add(enemies.getLast());
 
         for (Enemy enemy : enemies)
             enemy.setEye(new Eye(enemy, player));

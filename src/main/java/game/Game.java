@@ -275,8 +275,11 @@ public class Game extends PApplet {
      */
     private void checkCollisions() {
         player.setIsGrounded(false);
-        for (Entity entity : map.getEntities())
+        for (Entity entity : map.getEntities()) {
+            entity.setColliding(false);
             for (Terrain terrain : map.getTerrains()) terrain.elaborateIntersects(entity);
+        }
+
     }
 
     /**

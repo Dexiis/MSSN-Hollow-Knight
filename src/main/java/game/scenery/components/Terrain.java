@@ -54,27 +54,29 @@ public class Terrain extends Hitbox implements IVisualizable {
         float overlapX = combinedHalfW - Math.abs(dx);
         float overlapY = combinedHalfH - Math.abs(dy);
 
-        if (overlapX > 0 && overlapY > 0) if (overlapX < overlapY) {
-            entity.setVelocity(new PVector(0, entity.getVelocity().y));
+        if (overlapX > 0 && overlapY > 0) {
+            entity.setColliding(true);
+            if (overlapX < overlapY) {
+                entity.setVelocity(new PVector(0, entity.getVelocity().y));
 
-            float newX;
-            if (dx > 0) newX = this.getPosition().x + this.width / 2 + otherHitbox.getWidth() / 2;
-            else newX = this.getPosition().x - this.width / 2 - otherHitbox.getWidth() / 2;
+                float newX;
+                if (dx > 0) newX = this.getPosition().x + this.width / 2 + otherHitbox.getWidth() / 2;
+                else newX = this.getPosition().x - this.width / 2 - otherHitbox.getWidth() / 2;
 
-            entity.setPosition(new PVector(newX, entity.getPosition().y));
+                entity.setPosition(new PVector(newX, entity.getPosition().y));
 
-        } else {
-            entity.setVelocity(new PVector(entity.getVelocity().x, 0));
+            } else {
+                entity.setVelocity(new PVector(entity.getVelocity().x, 0));
 
-            float newY;
-            if (dy > 0) {
-                newY = this.getPosition().y + this.height / 2 + otherHitbox.getHeight() / 2;
-                if (entity instanceof TheKnight) ((TheKnight) entity).setIsGrounded(true);
-            } else newY = this.getPosition().y - this.height / 2 - otherHitbox.getHeight() / 2;
+                float newY;
+                if (dy > 0) {
+                    newY = this.getPosition().y + this.height / 2 + otherHitbox.getHeight() / 2;
+                    if (entity instanceof TheKnight) ((TheKnight) entity).setIsGrounded(true);
+                } else newY = this.getPosition().y - this.height / 2 - otherHitbox.getHeight() / 2;
 
-            entity.setPosition(new PVector(entity.getPosition().x, newY));
+                entity.setPosition(new PVector(entity.getPosition().x, newY));
+            }
         }
-
     }
 
     /**
