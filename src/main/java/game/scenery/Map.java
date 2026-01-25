@@ -73,7 +73,7 @@ public class Map {
         enemies.add(new Squit(new PVector(-100, 100), p));
         entities.add(enemies.getLast());
 
-        enemies.add(new HuskHornhead(new PVector(200, 100), p));
+        enemies.add(new HuskHornhead(new PVector(50, 1000), p));
         entities.add(enemies.getLast());
 
         for (Enemy enemy : enemies)

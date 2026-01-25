@@ -16,11 +16,13 @@ import processing.core.PImage;
 import processing.core.PVector;
 
 public class HuskHornhead extends Enemy implements IVisualizable {
-    private static final float SPEED = 75f;
+    private static final float WALK_SPEED = 75f;
+    private static final float ATTACK_SPEED = 250f;
     public static final float ATTACK_COOLDOWN = 2000f;
 
     private static final int SPRITE_SIZE = 150;
     private static final int SPRITE_COUNT = 8;
+    private static final int PIXEL_CORRECTION = 10;
     private static final PImage[][] spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
     private PImage sprite;
     private int spriteTime = 0;
@@ -43,10 +45,10 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         super(position);
         this.hitbox = new Hitbox(new Point(position.x, position.y), 80, 100);
         this.mass = 2f;
-        this.health = 6;
+        this.health = 5;
 
         this.dna = new DNA(this);
-        this.dna.setMaxSpeed(SPEED);
+        this.dna.setMaxSpeed(WALK_SPEED);
 
         this.attackBehaviour = new Attack(1);
         this.behaviours.add(new AgressiveSeek(1));
@@ -79,7 +81,7 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
 
         setAttacking(state == STATE.ATTACK);
-        if(isColliding()) state = STATE.WALKING;
+        this.getDNA().setMaxSpeed(WALK_SPEED);
 
         // Define a direção do Squit
         currentDirection = this.getVelocity().x < 0 ? Direction.LEFT : Direction.RIGHT;
@@ -124,6 +126,7 @@ public class HuskHornhead extends Enemy implements IVisualizable {
                 }
                 break;
             case STATE.ATTACK:
+                this.getDNA().setMaxSpeed(ATTACK_SPEED);
                 if (p.millis() - spriteTime > 120) {
                     this.sprite = spriteArray[spriteIndex][3];
                     spriteTime = p.millis();
@@ -153,13 +156,13 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         latestState = state;
 
         // Diminuir o tamanho da sprite
-        float spriteScale = 0.7f;
+        float spriteScale = 0.6f;
 
         p.pushMatrix();
 
         p.translate(pp[0], pp[1]);
         p.scale(multValue * spriteScale, spriteScale);
-        p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f);
+        p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f + PIXEL_CORRECTION);
 
         p.popMatrix();
     }

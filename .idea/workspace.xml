@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/Game.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/HuskHornhead.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/HuskHornhead.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/Squit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/Squit.java" afterDir="false" />
     </list>
@@ -161,7 +159,7 @@
       <workItem from="1769022437390" duration="9274000" />
       <workItem from="1769187680214" duration="19719000" />
       <workItem from="1769259938127" duration="301000" />
-      <workItem from="1769348769879" duration="2700000" />
+      <workItem from="1769348769879" duration="3901000" />
     </task>
     <task id="LOCAL-00001" summary="File restructure.">
       <option name="closed" value="true" />

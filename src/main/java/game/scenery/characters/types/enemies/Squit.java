@@ -17,7 +17,8 @@ import processing.core.PImage;
 import processing.core.PVector;
 
 public class Squit extends Enemy implements IVisualizable {
-    private static final float SPEED = 275f;
+    private static final float IDLE_SPEED = 150f;
+    private static final float ATTACK_SPEED = 275f;
     public static final float ATTACK_COOLDOWN = 2000f;
 
     private static final int SPRITE_SIZE = 150;
@@ -50,7 +51,7 @@ public class Squit extends Enemy implements IVisualizable {
         this.attackBehaviour = new Attack(1);
 
         this.dna = new DNA(this);
-        this.dna.setMaxSpeed(SPEED);
+        this.dna.setMaxSpeed(IDLE_SPEED);
         this.behaviours.add(new SafeSeek(1));
         this.behaviours.add(new Wander(1));
         this.behaviours.add(this.attackBehaviour);
@@ -81,6 +82,7 @@ public class Squit extends Enemy implements IVisualizable {
         float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
 
         setAttacking(state == STATE.ATTACK);
+        this.getDNA().setMaxSpeed(IDLE_SPEED);
         if(isColliding()) state = STATE.IDLE;
 
         // Define a direção do Squit
@@ -140,6 +142,7 @@ public class Squit extends Enemy implements IVisualizable {
                 }
                 break;
             case STATE.ATTACK:
+                this.getDNA().setMaxSpeed(ATTACK_SPEED);
                 if (p.millis() - spriteTime > 120) {
                     this.sprite = spriteArray[spriteIndex][3];
                     spriteTime = p.millis();
