@@ -244,6 +244,9 @@ public class Game extends PApplet {
             if (map.getEnemies() != null) for (int i = map.getEnemies().size() - 1; i >= 0; i--) {
                 Enemy enemy = map.getEnemies().get(i);
                 if (player.getAttack().intersected(enemy.getHitbox())) {
+                    // Pequeno salto ao bater para baixo no ar
+                    if(!player.getIsGrounded())
+                        player.setVelocity(new PVector(player.getVelocity().x, 400f));
                     enemy.damage(this);
                 }
             }

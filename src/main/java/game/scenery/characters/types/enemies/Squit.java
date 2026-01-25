@@ -37,7 +37,7 @@ public class Squit extends Enemy implements IVisualizable {
     private int attackTime;
     private float attackAngle;
 
-    enum STATE {
+    private enum STATE {
         IDLE, TURNING, STARTLED, ANTICIPATION, ATTACK, DEATH
     }
 

@@ -292,9 +292,6 @@ public class TheKnight extends Entity implements IVisualizable {
 
         switch (facingDirection) {
             case DOWN:
-                // Pequeno salto ao bater para baixo no ar
-                if(!isGrounded)
-                    this.setVelocity(new PVector(getVelocity().x, 500f));
                 builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, -100).addPoint(25, -150).addPoint(-25, -150).addPoint(-55, -100);
                 break;
             case LEFT:
