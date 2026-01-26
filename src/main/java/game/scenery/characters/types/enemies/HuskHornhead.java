@@ -17,7 +17,7 @@ import processing.core.PVector;
 
 public class HuskHornhead extends Enemy implements IVisualizable {
     private static final float WALK_SPEED = 75f;
-    private static final float ATTACK_SPEED = 250f;
+    private static final float ATTACK_SPEED = 300f;
     public static final float ATTACK_COOLDOWN = 2000f;
 
     private static final int SPRITE_SIZE = 150;
@@ -44,7 +44,7 @@ public class HuskHornhead extends Enemy implements IVisualizable {
     public HuskHornhead(PVector position, PApplet p) {
         super(position);
         this.hitbox = new Hitbox(new Point(position.x, position.y), 80, 100);
-        this.mass = 2f;
+        this.mass = 1f;
         this.health = 5;
 
         this.dna = new DNA(this);
@@ -80,21 +80,23 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         this.hitbox.draw(painter, plt);
         float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
 
-        setAttacking(state == STATE.ATTACK);
-        this.getDNA().setMaxSpeed(WALK_SPEED);
-
         // Define a direção do Squit
         currentDirection = this.getVelocity().x < 0 ? Direction.LEFT : Direction.RIGHT;
         if (currentDirection != latestDirection) state = STATE.TURNING;
         latestDirection = currentDirection;
+
+        setAttacking(state == STATE.ATTACK);
+        this.getDNA().setMaxSpeed(WALK_SPEED);
 
         if(isDying()) state = STATE.DEATH;
         if(state != latestState) resetAnimation(p.millis());
 
         switch (state) {
             case STATE.WALKING:
-                if(!isAttacking() && attackBehaviour.checkBehaviour(this) && p.millis() - attackTime > ATTACK_COOLDOWN)
+                if(!isAttacking() && attackBehaviour.checkBehaviour(this) && p.millis() - attackTime > ATTACK_COOLDOWN) {
                     state = STATE.ANTICIPATION;
+                    resetAnimation(p.millis());
+                }
                 if (p.millis() - spriteTime > 120) {
                     this.sprite = spriteArray[spriteIndex][0];
                     spriteTime = p.millis();
@@ -119,7 +121,7 @@ public class HuskHornhead extends Enemy implements IVisualizable {
                     this.sprite = spriteArray[spriteIndex][2];
                     spriteTime = p.millis();
                     spriteIndex++;
-                    if (spriteIndex > 3) {
+                    if (spriteIndex > 4) {
                         spriteIndex = 0;
                         state = STATE.ATTACK;
                     }
@@ -131,7 +133,7 @@ public class HuskHornhead extends Enemy implements IVisualizable {
                     this.sprite = spriteArray[spriteIndex][3];
                     spriteTime = p.millis();
                     spriteIndex++;
-                    if (spriteIndex > 2) {
+                    if (spriteIndex > 3) {
                         spriteIndex = 0;
                     }
                 }
@@ -145,7 +147,7 @@ public class HuskHornhead extends Enemy implements IVisualizable {
                     this.sprite = spriteArray[spriteIndex][4];
                     spriteTime = p.millis();
                     spriteIndex++;
-                    if (spriteIndex > 6) {
+                    if (spriteIndex > 7) {
                         setDead(true);
                         spriteIndex = 0;
                         state = STATE.WALKING;
