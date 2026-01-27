@@ -35,6 +35,7 @@ public class HuskHornhead extends Enemy implements IVisualizable {
     private int multValue = 1;
 
     private final Attack attackBehaviour;
+    private final AgressiveSeek seekBehaviour;
     private int attackTime;
 
     private static final int EDGE_DETECTION = 150;
@@ -57,8 +58,9 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         this.dna.setMaxSpeed(WALK_SPEED);
 
         this.attackBehaviour = new Attack(1);
-        this.behaviours.add(new AgressiveSeek(1));
+        this.seekBehaviour = new AgressiveSeek(1);
         this.behaviours.add(new Wander(1));
+        this.behaviours.add(seekBehaviour);
         this.behaviours.add(attackBehaviour);
 
         // Enche o array de sprites iterativamente
@@ -78,6 +80,8 @@ public class HuskHornhead extends Enemy implements IVisualizable {
 
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
+        float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
+
         this.hitbox.draw(painter, plt);
         this.rightEdge.draw(painter, plt);
         this.leftEdge.draw(painter, plt);
@@ -85,20 +89,21 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         this.leftEdge.setPosition(new PVector(getPosition().x - EDGE_DETECTION, getPosition().y - SPRITE_SIZE / 2));
         this.rightEdge.setPosition(new PVector(getPosition().x + EDGE_DETECTION, getPosition().y - SPRITE_SIZE / 2));
 
-        if(isLeftEdgeEnding()) {
+        seekBehaviour.setEnabled(true);
+
+        if(!isLeftEdgeColliding()) {
+            // Se for para continuar a andar em direção ao void para
+            if(seekBehaviour.getDesiredVelocity(this).x < 0) seekBehaviour.setEnabled(false);
             currentDirection = Direction.RIGHT;
-            state = STATE.TURNING;
         }
-        if(isRightEdgeEnding()) {
+
+        if(!isRightEdgeColliding())  {
+            // Se for para continuar a andar em direção ao void para
+            if(seekBehaviour.getDesiredVelocity(this).x > 0) seekBehaviour.setEnabled(false);
             currentDirection = Direction.LEFT;
-            state = STATE.TURNING;
         }
 
-        p.println(isRightEdgeColliding());
-
-        float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
-
-        // Define a direção do Squit
+        // Definir a direção
         currentDirection = this.getVelocity().x < 0 ? Direction.LEFT : Direction.RIGHT;
         if (currentDirection != latestDirection) state = STATE.TURNING;
         latestDirection = currentDirection;
