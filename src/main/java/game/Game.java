@@ -1,6 +1,7 @@
 package game;
 
 import game.core.SubPlot;
+import game.scenery.GUI;
 import game.scenery.Map;
 import game.scenery.characters.Entity;
 import game.scenery.characters.types.Direction;
@@ -27,6 +28,7 @@ public class Game extends PApplet {
     private final double[] window = {-800, 800, -450, 450};
 
     private Map map;
+    private GUI gui;
     private TheKnight player;
     private SubPlot plt;
     private float lastUpdateTime;
@@ -73,54 +75,8 @@ public class Game extends PApplet {
         textSize(22);
 
         map = new Map(this, painter);
+        gui = new GUI(this);
         player = map.getPlayer();
-    }
-
-    /**
-     * Captura o evento de tecla pressionada.
-     * <p>
-     * Atualiza o mapa de direções do jogador ou inicia um ataque se a tecla correspondente for premida.
-     */
-    @Override
-    public void keyPressed() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉTODO. A LÓGICA NÃO É FEITA AQUI
-        if (key == 'w' || key == 'W' || key == ' ') {
-            player.setMovingDirection(Direction.UPRELEASED, false);
-            player.setMovingDirection(Direction.UP, true);
-        }
-        if (key == 's' || key == 'S') player.setMovingDirection(Direction.DOWN, true);
-        if (key == 'a' || key == 'A') player.setMovingDirection(Direction.LEFT, true);
-        if (key == 'd' || key == 'D') player.setMovingDirection(Direction.RIGHT, true);
-
-        if (key == ENTER || key == RETURN) player.playerAttack(now);
-    }
-
-    /**
-     * Captura o evento de tecla libertada.
-     * <p>
-     * Atualiza o mapa de direções do jogador, indicando que o movimento numa direção cessou.
-     */
-    @Override
-    public void keyReleased() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉTODO. A LÓGICA NÃO É FEITA AQUI
-        if (key == 'w' || key == 'W' || key == ' ') player.setMovingDirection(Direction.UPRELEASED, true);
-        if (key == 's' || key == 'S') player.setMovingDirection(Direction.DOWN, false);
-        if (key == 'a' || key == 'A') player.setMovingDirection(Direction.LEFT, false);
-        if (key == 'd' || key == 'D') player.setMovingDirection(Direction.RIGHT, false);
-        if (key == 'm' || key == 'M') player.setPosition(new PVector(0, 50)); //APENAS PARA DEBUG. REMOVER MAIS TARDE
-    }
-
-    /**
-     * Captura eventos do rato.
-     * <p>
-     * Botão Direito: Teletransporta o jogador para a posição do rato (Debug).
-     * Botão Esquerdo: Inicia um ataque do jogador.
-     */
-    @Override
-    public void mousePressed() {
-        if (mouseButton == RIGHT) {
-            double[] w = plt.getWorldCoord(mouseX, mouseY);
-            player.setPosition(new PVector((float) w[0], (float) w[1]));
-            player.setVelocity(new PVector(0, 0));
-        } else if (mouseButton == LEFT) player.playerAttack(now);
     }
 
     /**
@@ -142,9 +98,7 @@ public class Game extends PApplet {
         lastUpdateTime = now;
 
         background(255);
-
-        fill(0);
-        text("Health: " + player.getHealth(), 10, 20);
+        gui.display(map.getPlayer());
 
         for (Entity entity : map.getEntities()) {
             if (!(entity instanceof TheKnight)) {
@@ -251,7 +205,7 @@ public class Game extends PApplet {
                 }
             }
 
-            player.getAttack().draw(painter, plt);
+            player.getAttack().display(this, painter, plt);
             if (now - player.getAttackTime() > TheKnight.ATTACK_DURATION) player.setAttack(null);
         }
     }
@@ -301,5 +255,52 @@ public class Game extends PApplet {
         window[3] = playerPosition.y + 450; // Fundo (Maior valor)
 
         plt.setWindow(window);
+    }
+
+    /**
+     * Captura o evento de tecla pressionada.
+     * <p>
+     * Atualiza o mapa de direções do jogador ou inicia um ataque se a tecla correspondente for premida.
+     */
+    @Override
+    public void keyPressed() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉTODO. A LÓGICA NÃO É FEITA AQUI
+        if (key == 'w' || key == 'W' || key == ' ') {
+            player.setMovingDirection(Direction.UPRELEASED, false);
+            player.setMovingDirection(Direction.UP, true);
+        }
+        if (key == 's' || key == 'S') player.setMovingDirection(Direction.DOWN, true);
+        if (key == 'a' || key == 'A') player.setMovingDirection(Direction.LEFT, true);
+        if (key == 'd' || key == 'D') player.setMovingDirection(Direction.RIGHT, true);
+
+        if (key == ENTER || key == RETURN) player.playerAttack(now);
+    }
+
+    /**
+     * Captura o evento de tecla libertada.
+     * <p>
+     * Atualiza o mapa de direções do jogador, indicando que o movimento numa direção cessou.
+     */
+    @Override
+    public void keyReleased() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉTODO. A LÓGICA NÃO É FEITA AQUI
+        if (key == 'w' || key == 'W' || key == ' ') player.setMovingDirection(Direction.UPRELEASED, true);
+        if (key == 's' || key == 'S') player.setMovingDirection(Direction.DOWN, false);
+        if (key == 'a' || key == 'A') player.setMovingDirection(Direction.LEFT, false);
+        if (key == 'd' || key == 'D') player.setMovingDirection(Direction.RIGHT, false);
+        if (key == 'm' || key == 'M') player.setPosition(new PVector(0, 50)); //APENAS PARA DEBUG. REMOVER MAIS TARDE
+    }
+
+    /**
+     * Captura eventos do rato.
+     * <p>
+     * Botão Direito: Teletransporta o jogador para a posição do rato (Debug).
+     * Botão Esquerdo: Inicia um ataque do jogador.
+     */
+    @Override
+    public void mousePressed() {
+        if (mouseButton == RIGHT) {
+            double[] w = plt.getWorldCoord(mouseX, mouseY);
+            player.setPosition(new PVector((float) w[0], (float) w[1]));
+            player.setVelocity(new PVector(0, 0));
+        } else if (mouseButton == LEFT) player.playerAttack(now);
     }
 }

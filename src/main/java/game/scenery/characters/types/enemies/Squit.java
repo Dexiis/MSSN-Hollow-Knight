@@ -68,11 +68,6 @@ public class Squit extends Enemy implements IVisualizable {
         this.state = STATE.IDLE;
     }
 
-    public HurtBox attack(Direction direction) {
-        //TODO ATTACK Cria gajos??
-        return null;
-    }
-
     public void resetAnimation(int now) {
         this.spriteIndex = 0;
         this.spriteTime = now;

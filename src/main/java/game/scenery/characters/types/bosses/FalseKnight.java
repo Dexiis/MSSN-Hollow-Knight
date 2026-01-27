@@ -5,6 +5,7 @@ import game.scenery.characters.IVisualizable;
 import game.scenery.characters.attributes.DNA;
 import game.scenery.characters.attributes.behaviours.AgressiveSeek;
 import game.scenery.characters.attributes.behaviours.Attack;
+import game.scenery.characters.attributes.behaviours.Wander;
 import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
 import game.scenery.components.hitbox.Hitbox;
@@ -12,27 +13,50 @@ import game.scenery.components.hitbox.HurtBox;
 import game.scenery.components.hitbox.LinePainter;
 import game.scenery.components.hitbox.Point;
 import processing.core.PApplet;
+import processing.core.PImage;
 import processing.core.PVector;
 
 public class FalseKnight extends Enemy implements IVisualizable {
-    private static final float SPEED = 50f;
+    private static final float WALK_SPEED = 50f;
     public static final float ATTACK_DURANTION = 1000f;
+    private Attack attackBehaviour;
 
-    public FalseKnight(PVector position) {
-        super(position);
-        this.hitbox = new Hitbox(new Point(position.x, position.y), 80, 100);
-        this.mass = 2f;
-        this.health = 6;
+    private static final int SPRITE_SIZE = 150;
+    private static final int SPRITE_COUNT = 8;
+    private static final int PIXEL_CORRECTION = 10;
+    private static final PImage[][] spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
+    private PImage sprite;
+    private int spriteTime = 0;
+    private int spriteIndex = 0;
 
-        this.dna = new DNA(this);
-        this.dna.setMaxSpeed(SPEED);
-        this.behaviours.add(new AgressiveSeek(1));
-        this.behaviours.add(new Attack(1));
+    private STATE state;
+
+    private enum STATE {
+        IDLE, TURNING, STARTLED, ANTICIPATION, ATTACK, DEATH
     }
 
-    public HurtBox attack(Direction direction) {
-        //TODO ATTACK
-        return null;
+    public FalseKnight(PVector position, PApplet p) {
+        super(position);
+        this.hitbox = new Hitbox(new Point(position.x, position.y), 80, 40);
+        this.mass = 1f;
+        this.health = 3;
+
+        this.attackBehaviour = new Attack(1);
+
+        this.dna = new DNA(this);
+        this.dna.setMaxSpeed(WALK_SPEED);
+        this.behaviours.add(new AgressiveSeek(1));
+        this.behaviours.add(new Wander(1));
+        this.behaviours.add(this.attackBehaviour);
+
+        // Enche o array de sprites iterativamente
+        PImage sprites = p.loadImage("img/SquitSprites.png");
+        for (int y = 0; y < SPRITE_COUNT; y++)
+            for (int x = 0; x < SPRITE_COUNT; x++)
+                spriteArray[x][y] = sprites.get(x * SPRITE_SIZE, y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
+
+        this.sprite = spriteArray[0][0];
+        this.state = STATE.IDLE;
     }
 
     @Override

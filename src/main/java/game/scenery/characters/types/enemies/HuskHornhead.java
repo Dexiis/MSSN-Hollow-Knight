@@ -71,11 +71,6 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         this.state = STATE.WALKING;
     }
 
-    public void attack(Direction direction) {
-        //TODO ATTACK
-        //TODO APONTA O CORNO PARA A FRENTE E COMEÇA A CORRER
-    }
-
     private void resetAnimation(int now) {
         this.spriteIndex = 0;
         this.spriteTime = now;

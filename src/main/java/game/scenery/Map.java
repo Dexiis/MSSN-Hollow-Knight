@@ -5,6 +5,7 @@ import game.scenery.characters.Entity;
 import game.scenery.characters.attributes.Eye;
 import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.TheKnight;
+import game.scenery.characters.types.enemies.FalseKnight;
 import game.scenery.characters.types.enemies.Squit;
 import game.scenery.characters.types.enemies.HuskHornhead;
 import game.scenery.components.Terrain;
@@ -74,6 +75,9 @@ public class Map {
         entities.add(enemies.getLast());
 
         enemies.add(new HuskHornhead(new PVector(50, 1000), p));
+        entities.add(enemies.getLast());
+
+        enemies.add(new FalseKnight(new PVector(1000, 0), p));
         entities.add(enemies.getLast());
 
         for (Enemy enemy : enemies)
