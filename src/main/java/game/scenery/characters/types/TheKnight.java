@@ -73,7 +73,7 @@ public class TheKnight extends Entity implements IVisualizable {
         this.directions.put(Direction.UPRELEASED, false);
 
         // Enche o array de sprites iterativamente
-        PImage sprites = p.loadImage("img/TheKnightSprites.png");
+        PImage sprites = p.loadImage("images/TheKnightSprites.png");
         for (int y = 0; y < SPRITE_COUNT; y++)
             for (int x = 0; x < SPRITE_COUNT; x++)
                 spriteArray[x][y] = sprites.get(x * TheKnight.SPRITE_SIZE, y * TheKnight.SPRITE_SIZE, TheKnight.SPRITE_SIZE, TheKnight.SPRITE_SIZE);

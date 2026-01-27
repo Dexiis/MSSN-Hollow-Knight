@@ -50,13 +50,13 @@ public class FalseKnight extends Enemy implements IVisualizable {
         this.behaviours.add(this.attackBehaviour);
 
         // Enche o array de sprites iterativamente
-        PImage sprites = p.loadImage("img/SquitSprites.png");
-        for (int y = 0; y < SPRITE_COUNT; y++)
-            for (int x = 0; x < SPRITE_COUNT; x++)
-                spriteArray[x][y] = sprites.get(x * SPRITE_SIZE, y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
-
-        this.sprite = spriteArray[0][0];
-        this.state = STATE.IDLE;
+//        PImage sprites = p.loadImage("images/FalseKnightSprites.png");
+//        for (int y = 0; y < SPRITE_COUNT; y++)
+//            for (int x = 0; x < SPRITE_COUNT; x++)
+//                spriteArray[x][y] = sprites.get(x * SPRITE_SIZE, y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
+//
+//        this.sprite = spriteArray[0][0];
+//        this.state = STATE.IDLE;
     }
 
     @Override

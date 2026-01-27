@@ -62,7 +62,7 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         this.behaviours.add(attackBehaviour);
 
         // Enche o array de sprites iterativamente
-        PImage sprites = p.loadImage("img/HuskSprites.png");
+        PImage sprites = p.loadImage("images/HuskSprites.png");
         for (int y = 0; y < SPRITE_COUNT; y++)
             for (int x = 0; x < SPRITE_COUNT; x++)
                 spriteArray[x][y] = sprites.get(x * SPRITE_SIZE, y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
