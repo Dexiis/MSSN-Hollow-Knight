@@ -5,88 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/game/core/Complex.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/bosses/FalseKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/bosses/FalseKnight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/HuskHornhead.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/HuskHornhead.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/Squit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/Squit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_blocker_charm_block.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_butterfly_blade.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_damage.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_damage_02.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_damage_less_harsh.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_damage_less_harsh_02.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_dash.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_death_extra_details.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_death_v2.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_double_damage.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_dream_nail_short_charge.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_dream_nail_slash.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_dream_nail_slash_only.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_dung_emit_loop.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_evade.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_falling.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fireball.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fluke_bounce_1.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fluke_bounce_10.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fluke_bounce_11.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fluke_bounce_12.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fluke_bounce_2.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fluke_bounce_3.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fluke_bounce_4.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fluke_bounce_5.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fluke_bounce_6.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fluke_bounce_7.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fluke_bounce_8.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fluke_bounce_9.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fluke_cast.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fury_charm_burst.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_fury_charm_loop.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_jump.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_land_hard mono test.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_land_hard.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_land_hard_02.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_land_shallow_splash.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_land_soft.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_mantis_claw.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_nail_art_charge_complete.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_nail_art_charge_initiate.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_nail_art_charge_loop.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_nail_art_cyclone_slash_long.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_nail_art_cyclone_slash_short.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_nail_art_great_slash.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_parry.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_quake_spell_dash.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_quake_spell_impact.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_quake_spell_prepare.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_run_footsteps_bones.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_run_footsteps_grass.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_run_footsteps_metal.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_run_footsteps_stone.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_run_footsteps_water.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_scream_spell.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_shade_dash_1.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_shade_dash_2.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_shade_dash_charge_pt_1.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_shade_dash_charge_pt_2.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_shroom_charm_poof.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_slug_crawl.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_super_dash_air_brake.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_super_dash_burst.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_super_dash_charge.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_super_dash_impact_wall.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_super_dash_loop.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_super_dash_ready.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_swim_loop.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_tentacle_sword.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_thorn_counter.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_unsheath.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_void_quake_impact.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_void_scream_spell.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_walk_footsteps_stone.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_wall_jump.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_wall_slide.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/sounds/The Knight/hero_wings.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/Background.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/Background.java" afterDir="false" />
     </list>
     <list id="35cb66f5-a107-43e2-b909-1cfb0e7d3476" name="Changes by Bernardo Aguiar" comment="" />
     <list id="572c0861-a753-4fa0-8d50-003e349ea9f1" name="Changes by david" comment="" />
@@ -140,36 +62,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.MainMenu.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;BD&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Bernardo Aguiar/Desktop/Cadeiras/GitHub/MSSN-Hollow-Knight&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.40386385&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.MainMenu.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "BD",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/bagui/Desktop/Pastas/Faculdade/GitHub/MSSN-Hollow-Knight/src/main/java/game/scenery/components",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.40386385",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "Errors",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\bagui\Desktop\Pastas\Faculdade\GitHub\MSSN-Hollow-Knight\src\main\java\game\scenery\components" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\bagui\Desktop\Pastas\Faculdade\GitHub\MSSN-Hollow-Knight\src\main\java\game\hitbox" />
       <recent name="C:\Users\bagui\Desktop\Pastas\Faculdade\GitHub\MSSN-Hollow-Knight\src\main\java\game\core" />

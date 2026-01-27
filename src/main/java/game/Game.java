@@ -1,6 +1,7 @@
 package game;
 
 import game.core.SubPlot;
+import game.scenery.Background;
 import game.scenery.GUI;
 import game.scenery.Map;
 import game.scenery.characters.Entity;
@@ -27,10 +28,13 @@ public class Game extends PApplet {
     private final float[] viewport = {0f, 0f, 1f, 1f};
     private final double[] window = {-800, 800, -450, 450};
 
+    private SubPlot plt;
+    private Background background;
     private Map map;
     private GUI gui;
+
     private TheKnight player;
-    private SubPlot plt;
+
     private float lastUpdateTime;
     private int now = millis();
 
@@ -76,6 +80,8 @@ public class Game extends PApplet {
 
         map = new Map(this, painter);
         gui = new GUI(this);
+        background = new Background(this);
+
         player = map.getPlayer();
     }
 
@@ -97,7 +103,7 @@ public class Game extends PApplet {
         float dt = (now - lastUpdateTime) / 1000f;
         lastUpdateTime = now;
 
-        background(255);
+        background.display(player.getPosition());
         gui.display(map.getPlayer());
 
         for (Entity entity : map.getEntities()) {
