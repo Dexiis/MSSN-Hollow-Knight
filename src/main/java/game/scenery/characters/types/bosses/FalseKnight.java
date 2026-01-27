@@ -36,7 +36,7 @@ public class FalseKnight extends Enemy implements IVisualizable {
     }
 
     public FalseKnight(PVector position, PApplet p) {
-        super(position);
+        super(position, p);
         this.hitbox = new Hitbox(new Point(position.x, position.y), 80, 40);
         this.mass = 1f;
         this.health = 3;
@@ -57,6 +57,26 @@ public class FalseKnight extends Enemy implements IVisualizable {
 //
 //        this.sprite = spriteArray[0][0];
 //        this.state = STATE.IDLE;
+    }
+
+    @Override
+    protected void idling() {
+
+    }
+
+    @Override
+    protected void turning() {
+
+    }
+
+    @Override
+    protected void attacking() {
+
+    }
+
+    @Override
+    protected void death() {
+
     }
 
     @Override

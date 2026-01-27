@@ -18,59 +18,119 @@ import processing.core.PImage;
 import processing.core.PVector;
 
 public class Squit extends Enemy implements IVisualizable {
-    private static final float IDLE_SPEED = 150f;
-    private static final float ATTACK_SPEED = 275f;
-    public static final float ATTACK_COOLDOWN = 2000f;
-
-    private static final int SPRITE_SIZE = 150;
-    private static final int SPRITE_COUNT = 6;
-    private static final PImage[][] spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
-    private PImage sprite;
-    private int spriteTime = 0;
-    private int spriteIndex = 0;
-
-    private STATE state;
-    private STATE latestState;
-    private Direction currentDirection;
-    private Direction latestDirection;
-    private int multValue = 1;
-
-    private final Attack attackBehaviour;
-    private int attackTime;
     private float attackAngle;
 
-    private enum STATE {
-        IDLE, TURNING, STARTLED, ANTICIPATION, ATTACK, DEATH
-    }
+    private static final PImage[][] spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
 
     public Squit(PVector position, PApplet p) {
-        super(position);
+        super(position, p);
         this.hitbox = new Hitbox(new Point(position.x, position.y), 80, 40);
         this.mass = 1f;
         this.health = 3;
         this.entityType = TYPE.AIR;
 
-        this.attackBehaviour = new Attack(1);
+        IDLE_SPEED = 150f;
+        ATTACK_SPEED = 275f;
+        ATTACK_COOLDOWN = 2000f;
 
-        this.dna = new DNA(this);
+        SPRITE_SIZE = 150;
+        PIXEL_CORRECTION = 0;
+
         this.dna.setMaxSpeed(IDLE_SPEED);
+
         this.behaviours.add(new SafeSeek(1));
         this.behaviours.add(new Wander(1));
         this.behaviours.add(this.attackBehaviour);
 
-        // Enche o array de sprites iterativamente
-        PImage sprites = p.loadImage("images/SquitSprites.png");
-        for (int y = 0; y < SPRITE_COUNT; y++)
-            for (int x = 0; x < SPRITE_COUNT; x++)
-                spriteArray[x][y] = sprites.get(x * SPRITE_SIZE, y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
-
-        this.sprite = spriteArray[0][0];
-        this.state = STATE.IDLE;
+        loadSpriteSheet("images/SquitSprites.png", p, spriteArray);
     }
 
-    public void resetAnimation(int now) {
-        this.spriteIndex = 0;
-        this.spriteTime = now;
+    @Override
+    protected void turning() {
+        if (p.millis() - spriteTime > 120) {
+            this.sprite = spriteArray[spriteIndex][5];
+            spriteTime = p.millis();
+            spriteIndex++;
+            if (spriteIndex > 0) {
+                multValue = currentDirection == Direction.RIGHT ? -1 : 1;
+                spriteIndex = 0;
+                state = STATE.IDLE;
+            }
+        }
+    }
+
+    @Override
+    protected void idling() {
+        if(!isAttacking() && attackBehaviour.checkBehaviour(this) && p.millis() - attackTime > ATTACK_COOLDOWN) {
+            state = STATE.STARTLED;
+            resetAnimation(p.millis());
+        }
+        if (p.millis() - spriteTime > 120) {
+            this.sprite = spriteArray[spriteIndex][0];
+            spriteTime = p.millis();
+            spriteIndex++;
+            if (spriteIndex > 2) spriteIndex = 0;
+        }
+    }
+
+    @Override
+    protected void attacking() {
+        this.getDNA().setMaxSpeed(ATTACK_SPEED);
+        if (p.millis() - spriteTime > 120) {
+            this.sprite = spriteArray[spriteIndex][3];
+            spriteTime = p.millis();
+            spriteIndex++;
+            if (spriteIndex > 2) {
+                spriteIndex = 0;
+            }
+        }
+        if(!attackBehaviour.checkBehaviour(this)) {
+            state = STATE.IDLE;
+            attackTime = p.millis();
+        }
+    }
+
+    @Override
+    protected void startled() {
+        if (p.millis() - spriteTime > 120) {
+            this.sprite = spriteArray[spriteIndex][1];
+            spriteTime = p.millis();
+            spriteIndex++;
+            if (spriteIndex > 3) {
+                spriteIndex = 0;
+                state = STATE.ANTICIPATION;
+            }
+        }
+    }
+
+    @Override
+    protected void anticipating() {
+        if (p.millis() - spriteTime > 80) {
+            this.sprite = spriteArray[spriteIndex][2];
+            spriteTime = p.millis();
+            spriteIndex++;
+            if (spriteIndex > 5) {
+                spriteIndex = 0;
+                state = STATE.ATTACK;
+
+                PVector targetVector = PVector.sub(this.getEye().getTarget().getPosition(), this.getPosition()).normalize();
+                attackAngle = targetVector.heading();
+            }
+        }
+    }
+
+    @Override
+    protected void death() {
+        if (p.millis() - spriteTime > 120) {
+            this.sprite = spriteArray[spriteIndex][4];
+            spriteTime = p.millis();
+            spriteIndex++;
+            if (spriteIndex > 2) {
+                setDead(true);
+                spriteIndex = 0;
+                state = STATE.IDLE;
+            }
+        }
     }
 
     @Override
@@ -82,91 +142,12 @@ public class Squit extends Enemy implements IVisualizable {
         this.getDNA().setMaxSpeed(IDLE_SPEED);
         if(isColliding()) state = STATE.IDLE;
 
-        // Define a direção do Squit
-        currentDirection = this.getVelocity().x < 0 ? Direction.LEFT : Direction.RIGHT;
-        if (currentDirection != latestDirection) state = STATE.TURNING;
-        latestDirection = currentDirection;
+        directionChange();
 
         if(isDying()) state = STATE.DEATH;
         if(state != latestState) resetAnimation(p.millis());
 
-        switch (state) {
-            case STATE.IDLE:
-                if(!isAttacking() && attackBehaviour.checkBehaviour(this) && p.millis() - attackTime > ATTACK_COOLDOWN)
-                    state = STATE.STARTLED;
-                if (p.millis() - spriteTime > 120) {
-                    this.sprite = spriteArray[spriteIndex][0];
-                    spriteTime = p.millis();
-                    spriteIndex++;
-                    if (spriteIndex > 2) spriteIndex = 0;
-                }
-                break;
-            case STATE.TURNING:
-                if (p.millis() - spriteTime > 120) {
-                    this.sprite = spriteArray[spriteIndex][5];
-                    spriteTime = p.millis();
-                    spriteIndex++;
-                    if (spriteIndex > 0) {
-                        multValue *= -1;
-                        spriteIndex = 0;
-                        state = STATE.IDLE;
-                    }
-                }
-                break;
-            case STATE.STARTLED:
-                if (p.millis() - spriteTime > 120) {
-                    this.sprite = spriteArray[spriteIndex][1];
-                    spriteTime = p.millis();
-                    spriteIndex++;
-                    if (spriteIndex > 3) {
-                        spriteIndex = 0;
-                        state = STATE.ANTICIPATION;
-                    }
-                }
-                break;
-            case STATE.ANTICIPATION:
-                if (p.millis() - spriteTime > 80) {
-                    this.sprite = spriteArray[spriteIndex][2];
-                    spriteTime = p.millis();
-                    spriteIndex++;
-                    if (spriteIndex > 5) {
-                        spriteIndex = 0;
-                        state = STATE.ATTACK;
-
-                        PVector targetVector = PVector.sub(this.getEye().getTarget().getPosition(), this.getPosition()).normalize();
-                        attackAngle = targetVector.heading();
-                    }
-                }
-                break;
-            case STATE.ATTACK:
-                this.getDNA().setMaxSpeed(ATTACK_SPEED);
-                if (p.millis() - spriteTime > 120) {
-                    this.sprite = spriteArray[spriteIndex][3];
-                    spriteTime = p.millis();
-                    spriteIndex++;
-                    if (spriteIndex > 2) {
-                        spriteIndex = 0;
-                    }
-                }
-                if(!attackBehaviour.checkBehaviour(this)) {
-                    state = STATE.IDLE;
-                    attackTime = p.millis();
-                }
-                break;
-            case STATE.DEATH:
-                if (p.millis() - spriteTime > 120) {
-                    this.sprite = spriteArray[spriteIndex][4];
-                    spriteTime = p.millis();
-                    spriteIndex++;
-                    if (spriteIndex > 2) {
-                        setDead(true);
-                        spriteIndex = 0;
-                        state = STATE.IDLE;
-                    }
-                }
-                break;
-        }
-        latestState = state;
+        stateMachine();
 
         // Diminuir o tamanho da sprite
         float spriteScale = 0.7f;
