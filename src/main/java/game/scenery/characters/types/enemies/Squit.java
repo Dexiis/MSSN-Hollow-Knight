@@ -1,6 +1,7 @@
 package game.scenery.characters.types.enemies;
 
 import game.core.SubPlot;
+import game.scenery.characters.Entity;
 import game.scenery.characters.IVisualizable;
 import game.scenery.characters.attributes.DNA;
 import game.scenery.characters.attributes.behaviours.Attack;
@@ -47,6 +48,7 @@ public class Squit extends Enemy implements IVisualizable {
         this.hitbox = new Hitbox(new Point(position.x, position.y), 80, 40);
         this.mass = 1f;
         this.health = 3;
+        this.entityType = TYPE.AIR;
 
         this.attackBehaviour = new Attack(1);
 

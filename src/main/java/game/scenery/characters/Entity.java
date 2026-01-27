@@ -24,6 +24,16 @@ public abstract class Entity extends Movement implements IVisualizable {
     protected DNA dna;
     protected Hitbox hitbox;
 
+    protected Hitbox rightEdge;
+    protected Hitbox leftEdge;
+
+    protected boolean leftEdgeColliding = false;
+    protected boolean rightEdgeColliding = false;
+    protected boolean leftEdgeEnding = false;
+    protected boolean rightEdgeEnding = false;
+
+    protected TYPE entityType;
+
     protected int health;
     protected float lastTimeHit;
     protected float phiWander;
@@ -35,6 +45,10 @@ public abstract class Entity extends Movement implements IVisualizable {
 
     protected float[] positions;
     private double[] window;
+
+    public enum TYPE {
+        GROUND, AIR
+    }
 
     /**
      * Construtor da entidade.
@@ -88,6 +102,49 @@ public abstract class Entity extends Movement implements IVisualizable {
 
     public void setColliding(boolean colliding) {
         this.colliding = colliding;
+    }
+
+    public TYPE getEntityType() {
+        return entityType;
+    }
+
+    public boolean isLeftEdgeColliding() {
+        return leftEdgeColliding;
+    }
+
+    public void setLeftEdgeColliding(boolean leftEdgeColliding) {
+        this.leftEdgeColliding = leftEdgeColliding;
+    }
+    public boolean isRightEdgeColliding() {
+        return rightEdgeColliding;
+    }
+
+    public void setRightEdgeColliding(boolean rightEdgeColliding) {
+        this.rightEdgeColliding = rightEdgeColliding;
+    }
+
+    public Hitbox getLeftEdge() {
+        return leftEdge;
+    }
+
+    public Hitbox getRightEdge() {
+        return rightEdge;
+    }
+
+    public boolean isRightEdgeEnding() {
+        return rightEdgeEnding;
+    }
+
+    public void setRightEdgeEnding(boolean rightEdgeEnding) {
+        this.rightEdgeEnding = rightEdgeEnding;
+    }
+
+    public boolean isLeftEdgeEnding() {
+        return leftEdgeEnding;
+    }
+
+    public void setLeftEdgeEnding(boolean leftEdgeEnding) {
+        this.leftEdgeEnding = leftEdgeEnding;
     }
 
     /**

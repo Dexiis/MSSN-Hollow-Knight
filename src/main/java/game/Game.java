@@ -280,9 +280,13 @@ public class Game extends PApplet {
         player.setIsGrounded(false);
         for (Entity entity : map.getEntities()) {
             entity.setColliding(false);
-            for (Terrain terrain : map.getTerrains()) terrain.elaborateIntersects(entity);
+            for (Terrain terrain : map.getTerrains()) {
+                terrain.elaborateIntersects(entity);
+                if(entity.getEntityType() == Entity.TYPE.GROUND) {
+                    // TODO LOGICA DE DETECAO DE COLISOES DAS EDGES
+                }
+            }
         }
-
     }
 
     /**

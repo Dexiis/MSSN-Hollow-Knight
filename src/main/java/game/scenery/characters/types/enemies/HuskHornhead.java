@@ -37,6 +37,8 @@ public class HuskHornhead extends Enemy implements IVisualizable {
     private final Attack attackBehaviour;
     private int attackTime;
 
+    private static final int EDGE_DETECTION = 150;
+
     private enum STATE {
         WALKING, TURNING, ANTICIPATION, ATTACK, DEATH
     }
@@ -46,6 +48,10 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         this.hitbox = new Hitbox(new Point(position.x, position.y), 80, 100);
         this.mass = 1f;
         this.health = 5;
+        this.entityType = TYPE.GROUND;
+
+        this.rightEdge = new Hitbox(new Point(position.x + 50, position.y), 5, 10);
+        this.leftEdge = new Hitbox(new Point(position.x - 50, position.y), 5, 10);
 
         this.dna = new DNA(this);
         this.dna.setMaxSpeed(WALK_SPEED);
@@ -70,7 +76,7 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         //TODO APONTA O CORNO PARA A FRENTE E COMEÇA A CORRER
     }
 
-    public void resetAnimation(int now) {
+    private void resetAnimation(int now) {
         this.spriteIndex = 0;
         this.spriteTime = now;
     }
@@ -78,6 +84,23 @@ public class HuskHornhead extends Enemy implements IVisualizable {
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         this.hitbox.draw(painter, plt);
+        this.rightEdge.draw(painter, plt);
+        this.leftEdge.draw(painter, plt);
+
+        this.leftEdge.setPosition(new PVector(getPosition().x - EDGE_DETECTION, getPosition().y - SPRITE_SIZE / 2));
+        this.rightEdge.setPosition(new PVector(getPosition().x + EDGE_DETECTION, getPosition().y - SPRITE_SIZE / 2));
+
+        if(isLeftEdgeEnding()) {
+            currentDirection = Direction.RIGHT;
+            state = STATE.TURNING;
+        }
+        if(isRightEdgeEnding()) {
+            currentDirection = Direction.LEFT;
+            state = STATE.TURNING;
+        }
+
+        p.println(isRightEdgeColliding());
+
         float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
 
         // Define a direção do Squit
