@@ -13,6 +13,8 @@ import processing.core.PVector;
  */
 public class AgressiveSeek extends Behaviour {
 
+    private boolean enabled = true;
+
     /**
      * Construtor do comportamento AgressiveSeek.
      *
@@ -34,7 +36,7 @@ public class AgressiveSeek extends Behaviour {
      */
     @Override
     public PVector getDesiredVelocity(Entity me) {
-        if (checkBehaviour(me)) {
+        if (checkBehaviour(me) && isEnabled()) {
             Entity characterTarget = me.getEye().getTarget();
             PVector vetor = PVector.sub(characterTarget.getPosition(), me.getPosition());
 
@@ -52,5 +54,13 @@ public class AgressiveSeek extends Behaviour {
      */
     private boolean checkBehaviour(Entity me) {
         return me.getEye().getFarSight().contains(me.getEye().getTarget());
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }
