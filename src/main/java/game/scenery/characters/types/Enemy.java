@@ -97,7 +97,10 @@ public abstract class Enemy extends Entity {
 
     protected void directionChange() {
         currentDirection = this.getVelocity().x < 0 ? Direction.LEFT : Direction.RIGHT;
-        if (currentDirection != latestDirection) state = STATE.TURNING;
+        if (currentDirection != latestDirection) {
+            resetAnimation(p.millis());
+            state = STATE.TURNING;
+        }
         latestDirection = currentDirection;
     }
 
