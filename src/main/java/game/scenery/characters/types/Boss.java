@@ -1,13 +1,12 @@
 package game.scenery.characters.types;
 
-import game.scenery.characters.Entity;
+import processing.core.PApplet;
 import processing.core.PVector;
 
-public abstract class Boss extends Entity {
+public abstract class Boss extends Enemy {
 
-    protected Boss(PVector position) {
-        super(position);
-        this.mass = 1; //Todo Escolher a massa
+    protected Boss(PVector position, PApplet p) {
+        super(position, p);
     }
 
 }

@@ -1,4 +1,4 @@
-package game.scenery.characters.types.enemies;
+package game.scenery.characters.types.bosses;
 
 import game.core.SubPlot;
 import game.scenery.characters.IVisualizable;
@@ -6,10 +6,8 @@ import game.scenery.characters.attributes.DNA;
 import game.scenery.characters.attributes.behaviours.AgressiveSeek;
 import game.scenery.characters.attributes.behaviours.Attack;
 import game.scenery.characters.attributes.behaviours.Wander;
-import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
 import game.scenery.components.hitbox.Hitbox;
-import game.scenery.components.hitbox.HurtBox;
 import game.scenery.components.hitbox.LinePainter;
 import game.scenery.components.hitbox.Point;
 import processing.core.PApplet;

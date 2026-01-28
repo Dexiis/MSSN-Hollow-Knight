@@ -5,11 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terrainvariables/DeathFloor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terrainvariables/TrapDoor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/Enemy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/Enemy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/Background.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/Background.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/Boss.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/Boss.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/bosses/FalseKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/bosses/FalseKnight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/HuskHornhead.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/HuskHornhead.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/Squit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/Squit.java" afterDir="false" />
     </list>
     <list id="35cb66f5-a107-43e2-b909-1cfb0e7d3476" name="Changes by Bernardo Aguiar" comment="" />
     <list id="572c0861-a753-4fa0-8d50-003e349ea9f1" name="Changes by david" comment="" />
@@ -122,8 +124,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.240" />
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.29346.240" />
+        <option value="bundled-jdk-9823dce3aa75-84258761d1cc-intellij.indexing.shared.core-IU-243.28141.18" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.28141.18" />
       </set>
     </attachedChunks>
   </component>
@@ -164,6 +166,7 @@
       <workItem from="1769187680214" duration="19719000" />
       <workItem from="1769259938127" duration="301000" />
       <workItem from="1769348769879" duration="3901000" />
+      <workItem from="1769557340242" duration="875000" />
     </task>
     <task id="LOCAL-00001" summary="File restructure.">
       <option name="closed" value="true" />

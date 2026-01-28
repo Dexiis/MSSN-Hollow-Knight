@@ -2,7 +2,7 @@ package game.scenery.characters.attributes;
 
 import game.scenery.characters.Entity;
 import game.scenery.characters.types.enemies.Squit;
-import game.scenery.characters.types.enemies.FalseKnight;
+import game.scenery.characters.types.bosses.FalseKnight;
 import game.scenery.characters.types.enemies.HuskHornhead;
 
 /**

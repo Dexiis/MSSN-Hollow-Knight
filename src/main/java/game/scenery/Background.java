@@ -44,9 +44,6 @@ public class Background {
                 if (iter == MAX_ITER) {
                     col = p.color(255); // Interior branco
                 } else {
-                    // Exterior predominantemente branco com tons de vermelho
-                    // Quanto menor o iter (fundo), mais branco (val ~ 255)
-                    // Quanto maior o iter (perto do fractal), mais vermelho (val ~ 0)
                     int val = 255 - (iter % 16) * 16;
                     col = p.color(255, val, val);
                 }
