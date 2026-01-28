@@ -10,6 +10,7 @@ import game.scenery.characters.types.enemies.Squit;
 import game.scenery.characters.types.enemies.HuskHornhead;
 import game.scenery.components.Terrain;
 import game.scenery.components.hitbox.LinePainter;
+import game.scenery.components.terrainvariables.DeathFloor;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -67,6 +68,9 @@ public class Map {
         terrains.add(new Terrain(new PVector(6000, -100), 2500, 200));
         terrains.add(new Terrain(new PVector(4650, 200), 200, 800));
         terrains.add(new Terrain(new PVector(7350, 200), 200, 800));
+
+        // Death Platform
+        terrains.add(new DeathFloor(new PVector(4000, -2000), 10000, 1000, this, p));
 
         this.player = new TheKnight(new PVector(50, 800), p);
         entities.add(player);

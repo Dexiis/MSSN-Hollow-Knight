@@ -301,9 +301,6 @@ public class Game extends PApplet {
     public void mousePressed() {
         if (mouseButton == RIGHT) {
             double[] w = plt.getWorldCoord(mouseX, mouseY);
-            System.out.print(w[0]);
-            System.out.print(" ");
-            System.out.println(w[1]);
             player.setPosition(new PVector((float) w[0], (float) w[1]));
             player.setVelocity(new PVector(0, 0));
         } else if (mouseButton == LEFT) player.playerAttack(now);

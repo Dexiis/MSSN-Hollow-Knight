@@ -35,7 +35,7 @@ public class FalseKnight extends Enemy implements IVisualizable {
 
     public FalseKnight(PVector position, PApplet p) {
         super(position, p);
-        this.hitbox = new Hitbox(new Point(position.x, position.y), 80, 40);
+        this.hitbox = new Hitbox(new Point(position.x, position.y), 200, 300);
         this.mass = 1f;
         this.health = 3;
 

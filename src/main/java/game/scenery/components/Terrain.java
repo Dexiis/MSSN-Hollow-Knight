@@ -79,22 +79,6 @@ public class Terrain extends Hitbox implements IVisualizable {
         }
     }
 
-    public boolean edgeColliding(Hitbox hitbox) {
-        if (!this.roughHitbox.isIntersecting(hitbox.getRoughHitbox())) return false;
-
-        float dx = hitbox.getPosition().x - this.getPosition().x;
-        float dy = hitbox.getPosition().y - this.getPosition().y;
-
-        float combinedHalfW = (hitbox.getWidth() / 2) + (this.width / 2);
-        float combinedHalfH = (hitbox.getHeight() / 2) + (this.height / 2);
-
-        float overlapX = combinedHalfW - Math.abs(dx);
-        float overlapY = combinedHalfH - Math.abs(dy);
-
-        return overlapX > 0 && overlapY > 0;
-
-    }
-
     /**
      * Desenha o terreno no ecrã.
      * Delega a renderização para a classe pai {@link Hitbox}.
