@@ -4,6 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
+    <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes." />
+=======
     <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes.">
       <change afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terrainvariables/DeathFloor.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terrainvariables/TrapDoor.java" afterDir="false" />
@@ -13,6 +16,7 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/Boss.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/Boss.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/bosses/FalseKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/bosses/FalseKnight.java" afterDir="false" />
     </list>
+>>>>>>> ab9a4f4b2ad62cd884d314d60f47648689f5f22a
     <list id="35cb66f5-a107-43e2-b909-1cfb0e7d3476" name="Changes by Bernardo Aguiar" comment="" />
     <list id="572c0861-a753-4fa0-8d50-003e349ea9f1" name="Changes by david" comment="" />
     <list id="caa23359-5f65-48a1-8ee5-b34609ea65fd" name="Changes by pitad" comment="" />

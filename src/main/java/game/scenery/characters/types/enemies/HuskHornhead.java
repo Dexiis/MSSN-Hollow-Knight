@@ -27,7 +27,6 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         this.hitbox = new Hitbox(new Point(position.x, position.y), 80, 100);
         this.mass = 1f;
         this.health = 5;
-        this.entityType = TYPE.GROUND;
 
         IDLE_SPEED = 75f;
         ATTACK_SPEED = 300f;
@@ -35,9 +34,6 @@ public class HuskHornhead extends Enemy implements IVisualizable {
 
         SPRITE_SIZE = 150;
         PIXEL_CORRECTION = 10;
-
-        this.rightEdge = new Hitbox(new Point(position.x + 50, position.y), 5, 10);
-        this.leftEdge = new Hitbox(new Point(position.x - 50, position.y), 5, 10);
 
         this.dna.setMaxSpeed(IDLE_SPEED);
 
@@ -126,25 +122,8 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
 
         this.hitbox.draw(painter, plt);
-        this.rightEdge.draw(painter, plt);
-        this.leftEdge.draw(painter, plt);
-
-        this.leftEdge.setPosition(new PVector(getPosition().x - EDGE_DETECTION, getPosition().y - SPRITE_SIZE / 2));
-        this.rightEdge.setPosition(new PVector(getPosition().x + EDGE_DETECTION, getPosition().y - SPRITE_SIZE / 2));
 
         seekBehaviour.setEnabled(true);
-
-        if(!isLeftEdgeColliding()) {
-            // Se for para continuar a andar em direção ao void para
-            if(seekBehaviour.getDesiredVelocity(this).x < 0) seekBehaviour.setEnabled(false);
-            if(wanderBehaviour.getDesiredVelocity(this).x < 0) setVelocity(new PVector(-getVelocity().x, getVelocity().y));
-        }
-
-        if(!isRightEdgeColliding())  {
-            // Se for para continuar a andar em direção ao void para
-            if(seekBehaviour.getDesiredVelocity(this).x > 0) seekBehaviour.setEnabled(false);
-            if(wanderBehaviour.getDesiredVelocity(this).x > 0) setVelocity(new PVector(-getVelocity().x, getVelocity().y));
-        }
 
         setAttacking(state == STATE.ATTACK);
         this.getDNA().setMaxSpeed(IDLE_SPEED);

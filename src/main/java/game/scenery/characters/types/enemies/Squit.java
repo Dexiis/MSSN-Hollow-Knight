@@ -27,7 +27,6 @@ public class Squit extends Enemy implements IVisualizable {
         this.hitbox = new Hitbox(new Point(position.x, position.y), 80, 40);
         this.mass = 1f;
         this.health = 3;
-        this.entityType = TYPE.AIR;
 
         IDLE_SPEED = 150f;
         ATTACK_SPEED = 275f;
