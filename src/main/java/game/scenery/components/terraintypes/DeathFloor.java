@@ -1,4 +1,4 @@
-package game.scenery.components.terrainvariables;
+package game.scenery.components.terraintypes;
 
 import game.scenery.Map;
 import game.scenery.characters.Entity;
@@ -9,8 +9,8 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 public class DeathFloor extends Terrain {
-    private Map map;
-    private PApplet p;
+    private final Map map;
+    private final PApplet p;
 
     /**
      * Constrói um objeto de terreno retangular.
@@ -25,9 +25,11 @@ public class DeathFloor extends Terrain {
         this.p = p;
     }
 
+    @Override
     public void elaborateIntersects(Entity entity) {
         this.intersected(entity);
     }
+
 
     public void intersected(Entity entity) {
         if (super.intersected(entity.getHitbox())) {

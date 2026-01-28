@@ -2,6 +2,7 @@ package game.scenery.characters.attributes;
 
 import game.core.SubPlot;
 import game.scenery.characters.Entity;
+import game.scenery.characters.types.Enemy;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -19,7 +20,7 @@ public class Eye {
     private List<Entity> allTrackingBodies = new ArrayList<>();
     private List<Entity> farSight = new ArrayList<>();
     private List<Entity> nearSight = new ArrayList<>();
-    private final Entity me;
+    private final Enemy me;
     protected Entity target;
 
     /**
@@ -29,7 +30,7 @@ public class Eye {
      * @param me     A entidade a quem este olho pertence.
      * @param target O alvo inicial a ser rastreado.
      */
-    public Eye(Entity me, Entity target) {
+    public Eye(Enemy me, Entity target) {
         this.me = me;
         this.target = target;
         addTarget(target);

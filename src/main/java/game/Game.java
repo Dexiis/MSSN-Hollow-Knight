@@ -88,7 +88,7 @@ public class Game extends PApplet {
     /**
      * O ciclo principal de execução do jogo (Game Loop).
      * <p>
-     * Este método é executado continuamente frame a frame. É responsável por:
+     * Este mét.odo é executado continuamente frame a frame. É responsável por:
      * 1. Calcular o tempo delta (dt).
      * 2. Limpar o ecrã.
      * 3. Aplicar forças físicas (gravidade).
@@ -108,16 +108,17 @@ public class Game extends PApplet {
 
         for (Entity entity : map.getEntities()) {
             if (!(entity instanceof TheKnight)) {
-                entity.applyBehaviours(((Enemy) entity).getBehaviours(), dt);
-                entity.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
+                ((Enemy) entity).applyBehaviours(((Enemy) entity).getBehaviours(), dt);
+                //entity.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
             }
             if (!(entity instanceof Squit)) entity.applyForce(gravity(entity));
-            if ((entity instanceof Squit) && entity.isDying()) entity.applyForce(new PVector(0, -450 * entity.getMass())); // Queda na morte do Squit
+            if ((entity instanceof Squit) && entity.isDying())
+                entity.applyForce(new PVector(0, -450 * entity.getMass())); // Queda na morte do Squit
         }
 
         handleInputMovement();
         handleKnightAttack();
-        handleMonstersAttacks(dt);
+        handleMonstersAttacks();
 
         ArrayList<Enemy> deadEnemies = new ArrayList<>();
 
@@ -205,8 +206,7 @@ public class Game extends PApplet {
                 Enemy enemy = map.getEnemies().get(i);
                 if (player.getAttack().intersected(enemy.getHitbox())) {
                     // Pequeno salto ao bater para baixo no ar
-                    if(!player.getIsGrounded())
-                        player.setVelocity(new PVector(player.getVelocity().x, 400f));
+                    if (!player.getIsGrounded()) player.setVelocity(new PVector(player.getVelocity().x, 400f));
                     enemy.damage(this);
                 }
             }
@@ -221,11 +221,8 @@ public class Game extends PApplet {
      * <p>
      * Executa a inteligência artificial (Behaviour) de cada inimigo e verifica
      * colisão física entre o inimigo e o jogador para aplicar dano ao jogador.
-     *
-     * @param dt O tempo delta decorrido desde o último frame.
      */
-    private void handleMonstersAttacks(float dt) {
-        //TODO OUTROS CONTRA MIM
+    private void handleMonstersAttacks() {
         if (map.getEnemies() != null) for (Enemy enemy : map.getEnemies())
             if (enemy.getHitbox().intersected(player.getHitbox()) && !enemy.isDying()) player.damage(this);
     }
@@ -240,8 +237,10 @@ public class Game extends PApplet {
         player.setIsGrounded(false);
         for (Entity entity : map.getEntities()) {
             entity.setColliding(false);
-            for (Terrain terrain : map.getTerrains())
+            for (int i = map.getTerrains().size() - 1; i >= 0; i--) {
+                Terrain terrain = map.getTerrains().get(i);
                 terrain.elaborateIntersects(entity);
+            }
         }
     }
 
@@ -265,7 +264,7 @@ public class Game extends PApplet {
      * Atualiza o mapa de direções do jogador ou inicia um ataque se a tecla correspondente for premida.
      */
     @Override
-    public void keyPressed() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉTODO. A LÓGICA NÃO É FEITA AQUI
+    public void keyPressed() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉT.ODO. A LÓGICA NÃO É FEITA AQUI
         if (key == 'w' || key == 'W' || key == ' ') {
             player.setMovingDirection(Direction.UPRELEASED, false);
             player.setMovingDirection(Direction.UP, true);
@@ -283,18 +282,17 @@ public class Game extends PApplet {
      * Atualiza o mapa de direções do jogador, indicando que o movimento numa direção cessou.
      */
     @Override
-    public void keyReleased() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉTODO. A LÓGICA NÃO É FEITA AQUI
+    public void keyReleased() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉT.ODO. A LÓGICA NÃO É FEITA AQUI
         if (key == 'w' || key == 'W' || key == ' ') player.setMovingDirection(Direction.UPRELEASED, true);
         if (key == 's' || key == 'S') player.setMovingDirection(Direction.DOWN, false);
         if (key == 'a' || key == 'A') player.setMovingDirection(Direction.LEFT, false);
         if (key == 'd' || key == 'D') player.setMovingDirection(Direction.RIGHT, false);
-        if (key == 'm' || key == 'M') player.setPosition(new PVector(0, 50)); //APENAS PARA DEBUG. REMOVER MAIS TARDE
+        if (key == 'm' || key == 'M') player.setPosition(new PVector(0, 50)); // DEBUGGING - TODO RETIRAR MAIS TARDE
     }
 
     /**
      * Captura eventos do rato.
      * <p>
-     * Botão Direito: Teletransporta o jogador para a posição do rato (Debug).
      * Botão Esquerdo: Inicia um ataque do jogador.
      */
     @Override

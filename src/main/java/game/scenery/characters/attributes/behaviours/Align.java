@@ -2,6 +2,7 @@ package game.scenery.characters.attributes.behaviours;
 
 import game.scenery.characters.Entity;
 import game.scenery.characters.attributes.Behaviour;
+import game.scenery.characters.types.Enemy;
 import processing.core.PVector;
 
 public class Align extends Behaviour {
@@ -10,12 +11,11 @@ public class Align extends Behaviour {
         super(weight);
     }
 
-    public PVector getDesiredVelocity(Entity me) {
+    public PVector getDesiredVelocity(Enemy me) {
         PVector desiredVelocity = me.getVelocity().copy();
         for (Entity character : me.getEye().getFarSight())
             desiredVelocity.add(character.getVelocity());
 
         return desiredVelocity.div(me.getEye().getFarSight().size() + 1);
     }
-
 }

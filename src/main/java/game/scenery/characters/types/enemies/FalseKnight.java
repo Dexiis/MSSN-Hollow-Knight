@@ -1,31 +1,22 @@
-package game.scenery.characters.types.bosses;
+package game.scenery.characters.types.enemies;
 
 import game.core.SubPlot;
 import game.scenery.characters.IVisualizable;
 import game.scenery.characters.attributes.DNA;
-import game.scenery.characters.attributes.behaviours.AgressiveSeek;
 import game.scenery.characters.attributes.behaviours.Attack;
+import game.scenery.characters.attributes.behaviours.Seek;
 import game.scenery.characters.attributes.behaviours.Wander;
 import game.scenery.characters.types.Enemy;
 import game.scenery.components.hitbox.Hitbox;
 import game.scenery.components.hitbox.LinePainter;
 import game.scenery.components.hitbox.Point;
 import processing.core.PApplet;
-import processing.core.PImage;
 import processing.core.PVector;
 
 public class FalseKnight extends Enemy implements IVisualizable {
-    private static final float WALK_SPEED = 50f;
+    public static final float WALK_SPEED = 50f;
     public static final float ATTACK_DURANTION = 1000f;
     private Attack attackBehaviour;
-
-    private static final int SPRITE_SIZE = 150;
-    private static final int SPRITE_COUNT = 8;
-    private static final int PIXEL_CORRECTION = 10;
-    private static final PImage[][] spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
-    private PImage sprite;
-    private int spriteTime = 0;
-    private int spriteIndex = 0;
 
     private STATE state;
 
@@ -43,7 +34,7 @@ public class FalseKnight extends Enemy implements IVisualizable {
 
         this.dna = new DNA(this);
         this.dna.setMaxSpeed(WALK_SPEED);
-        this.behaviours.add(new AgressiveSeek(1));
+        this.behaviours.add(new Seek(1));
         this.behaviours.add(new Wander(1));
         this.behaviours.add(this.attackBehaviour);
 

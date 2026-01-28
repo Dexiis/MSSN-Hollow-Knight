@@ -5,12 +5,12 @@ import game.scenery.characters.Entity;
 import game.scenery.characters.attributes.Eye;
 import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.TheKnight;
-import game.scenery.characters.types.bosses.FalseKnight;
-import game.scenery.characters.types.enemies.Squit;
+import game.scenery.characters.types.enemies.FalseKnight;
 import game.scenery.characters.types.enemies.HuskHornhead;
 import game.scenery.components.Terrain;
 import game.scenery.components.hitbox.LinePainter;
-import game.scenery.components.terrainvariables.DeathFloor;
+import game.scenery.components.terraintypes.DeathFloor;
+import game.scenery.components.terraintypes.TrapDoor;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -62,12 +62,12 @@ public class Map {
         terrains.add(new Terrain(new PVector(3500, 1000), 400, 75));
         terrains.add(new Terrain(new PVector(4100, 1200), 400, 75));
         terrains.add(new Terrain(new PVector(4750, 1325), 600, 75));
-        terrains.add(new Terrain(new PVector(5275, 1325), 150, 75));
+        terrains.add(new TrapDoor(new PVector(5275, 1325), 150, 75, this));
 
         // Boss Room
-        terrains.add(new Terrain(new PVector(6000, -100), 2500, 200));
-        terrains.add(new Terrain(new PVector(4650, 200), 200, 800));
-        terrains.add(new Terrain(new PVector(7350, 200), 200, 800));
+        terrains.add(new Terrain(new PVector(6000, -800), 2500, 200));
+        terrains.add(new Terrain(new PVector(4650, -500), 200, 800));
+        terrains.add(new Terrain(new PVector(7350, -500), 200, 800));
 
         // Death Platform
         terrains.add(new DeathFloor(new PVector(4000, -2000), 10000, 1000, this, p));
@@ -75,8 +75,8 @@ public class Map {
         this.player = new TheKnight(new PVector(50, 800), p);
         entities.add(player);
 
-        enemies.add(new Squit(new PVector(-100, 100), p));
-        entities.add(enemies.getLast());
+        //enemies.add(new Squit(new PVector(-100, 100), p));
+        //entities.add(enemies.getLast());
 
         enemies.add(new HuskHornhead(new PVector(50, 1000), p));
         entities.add(enemies.getLast());
@@ -135,6 +135,10 @@ public class Map {
     public void removeEnemy(Enemy enemy) {
         enemies.remove(enemy);
         entities.remove(enemy);
+    }
+
+    public void removeTerrain(Terrain terrain) {
+        terrains.remove(terrain);
     }
 
     /**

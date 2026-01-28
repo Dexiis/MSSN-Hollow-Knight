@@ -1,7 +1,7 @@
 package game.scenery.characters.attributes.behaviours;
 
-import game.scenery.characters.Entity;
 import game.scenery.characters.attributes.Behaviour;
+import game.scenery.characters.types.Enemy;
 import processing.core.PVector;
 
 /**
@@ -33,7 +33,7 @@ public class Wander extends Behaviour {
      * @return O vetor de velocidade desejada ou (0,0) se o comportamento não estiver ativo.
      */
     @Override
-    public PVector getDesiredVelocity(Entity me) {
+    public PVector getDesiredVelocity(Enemy me) {
         if (checkBehaviour(me)) {
             float newPhiWander = me.getPhiWander();
             newPhiWander += (float) (2 * (Math.random() - 0.5) * me.getDNA().getDeltaPhiWander());
@@ -58,13 +58,13 @@ public class Wander extends Behaviour {
     /**
      * Verifica as condições para ativar o vagueio.
      * <p>
-     * O comportamento é ativado apenas quando a entidade <b>não</b> tem o seu alvo
-     * dentro do campo de visão distante (FarSight). Ou seja, vagueia quando não vê nada relevante.
+     * O comportamento é ativado apenas quando a entidade <b>não</b> tem nenhuma entidade
+     * no seu campo de visão distante (FarSight). Ou seja, vagueia quando não vê nada.
      *
      * @param me A entidade atual.
      * @return {@code true} se não houver alvos à vista, {@code false} caso contrário.
      */
-    private boolean checkBehaviour(Entity me) {
+    private boolean checkBehaviour(Enemy me) {
         return (me.getEye().getFarSight().isEmpty());
     }
 }

@@ -2,6 +2,7 @@ package game.scenery.characters.attributes.behaviours;
 
 import game.scenery.characters.Entity;
 import game.scenery.characters.attributes.Behaviour;
+import game.scenery.characters.types.Enemy;
 import processing.core.PVector;
 
 public class Cohesion extends Behaviour {
@@ -11,7 +12,7 @@ public class Cohesion extends Behaviour {
     }
 
     @Override
-    public PVector getDesiredVelocity(Entity me) {
+    public PVector getDesiredVelocity(Enemy me) {
         PVector target = me.getPosition().copy();
         for (Entity character : me.getEye().getFarSight())
             target.add(character.getPosition());

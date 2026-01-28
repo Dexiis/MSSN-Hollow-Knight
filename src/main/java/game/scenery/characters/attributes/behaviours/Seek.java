@@ -2,6 +2,7 @@ package game.scenery.characters.attributes.behaviours;
 
 import game.scenery.characters.Entity;
 import game.scenery.characters.attributes.Behaviour;
+import game.scenery.characters.types.Enemy;
 import processing.core.PVector;
 
 /**
@@ -10,14 +11,15 @@ import processing.core.PVector;
  * A entidade persegue o alvo apenas se este estiver visível ao longe (FarSight)
  * mas não estiver demasiado perto (NearSight vazio), mantendo assim uma distância de segurança.
  */
-public class SafeSeek extends Behaviour {
+public class Seek extends Behaviour {
+    private boolean enabled = true;
 
     /**
      * Construtor do comportamento SafeSeek.
      *
      * @param weight O peso ou prioridade deste comportamento.
      */
-    public SafeSeek(float weight) {
+    public Seek(float weight) {
         super(weight);
     }
 
@@ -31,7 +33,7 @@ public class SafeSeek extends Behaviour {
      * @return O vetor de direção para o alvo ou (0,0) se não for seguro avançar.
      */
     @Override
-    public PVector getDesiredVelocity(Entity me) {
+    public PVector getDesiredVelocity(Enemy me) {
         if (checkBehaviour(me)) {
             Entity characterTarget = me.getEye().getTarget();
 
@@ -49,7 +51,25 @@ public class SafeSeek extends Behaviour {
      * @param me A entidade atual.
      * @return {@code true} se for seguro perseguir, {@code false} caso contrário.
      */
-    private boolean checkBehaviour(Entity me) {
+    private boolean checkBehaviour(Enemy me) {
         return me.getEye().getFarSight().contains(me.getEye().getTarget()) && me.getEye().getNearSight().isEmpty();
+    }
+
+    /**
+     * Verifica se o comportamento está globalmente ativado.
+     *
+     * @return {@code true} se estiver ativo, {@code false} caso contrário.
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * Ativa ou desativa este comportamento.
+     *
+     * @param enabled O novo estado de ativação.
+     */
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

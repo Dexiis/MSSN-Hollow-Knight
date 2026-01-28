@@ -1,10 +1,10 @@
 package game.scenery.characters.attributes;
 
-import game.scenery.characters.Entity;
+import game.scenery.characters.types.Enemy;
 import processing.core.PVector;
 
 public interface IBehaviour {
-    PVector getDesiredVelocity(Entity me);
+    PVector getDesiredVelocity(Enemy me);
 
     void setWeight(float weight);
 

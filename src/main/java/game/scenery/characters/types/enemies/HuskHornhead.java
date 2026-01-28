@@ -2,10 +2,7 @@ package game.scenery.characters.types.enemies;
 
 import game.core.SubPlot;
 import game.scenery.characters.IVisualizable;
-import game.scenery.characters.attributes.DNA;
-import game.scenery.characters.attributes.behaviours.AgressiveSeek;
-import game.scenery.characters.attributes.behaviours.Attack;
-import game.scenery.characters.attributes.behaviours.Wander;
+import game.scenery.characters.attributes.behaviours.Seek;
 import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
 import game.scenery.components.hitbox.Hitbox;
@@ -16,15 +13,11 @@ import processing.core.PImage;
 import processing.core.PVector;
 
 public class HuskHornhead extends Enemy implements IVisualizable {
-    private final AgressiveSeek seekBehaviour;
-
-    private static final int EDGE_DETECTION = 150;
-
-    private static final PImage[][] spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
+    private final Seek seekBehaviour;
 
     public HuskHornhead(PVector position, PApplet p) {
         super(position, p);
-        this.hitbox = new Hitbox(new Point(position.x, position.y), 80, 100);
+        this.hitbox = new Hitbox(new Point(position.x, position.y), 75, 95);
         this.mass = 1f;
         this.health = 5;
 
@@ -33,11 +26,12 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         ATTACK_COOLDOWN = 2000f;
 
         SPRITE_SIZE = 150;
-        PIXEL_CORRECTION = 10;
+        PIXEL_CORRECTION = 7;
+        super.spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
 
         this.dna.setMaxSpeed(IDLE_SPEED);
 
-        this.seekBehaviour = new AgressiveSeek(1);
+        this.seekBehaviour = new Seek(1);
         this.behaviours.add(wanderBehaviour);
         this.behaviours.add(seekBehaviour);
         this.behaviours.add(attackBehaviour);
@@ -47,7 +41,7 @@ public class HuskHornhead extends Enemy implements IVisualizable {
 
     @Override
     protected void idling() {
-        if(!isAttacking() && attackBehaviour.checkBehaviour(this) && p.millis() - attackTime > ATTACK_COOLDOWN) {
+        if (!isAttacking() && attackBehaviour.checkBehaviour(this) && p.millis() - attackTime > ATTACK_COOLDOWN) {
             state = STATE.ANTICIPATION;
             resetAnimation(p.millis());
         }
@@ -81,6 +75,9 @@ public class HuskHornhead extends Enemy implements IVisualizable {
             spriteIndex++;
             if (spriteIndex > 4) {
                 spriteIndex = 0;
+                this.hitbox = new Hitbox(new Point(position.x, position.y), 75, 50);
+                this.position = new PVector(position.x, position.y - 22);
+                PIXEL_CORRECTION = -31;
                 state = STATE.ATTACK;
             }
         }
@@ -97,7 +94,10 @@ public class HuskHornhead extends Enemy implements IVisualizable {
                 spriteIndex = 0;
             }
         }
-        if(!attackBehaviour.checkBehaviour(this)) {
+        if (!attackBehaviour.checkBehaviour(this)) {
+            this.hitbox = new Hitbox(new Point(position.x, position.y), 75, 95);
+            this.position = new PVector(position.x, position.y + 22);
+            PIXEL_CORRECTION = 7;
             state = STATE.IDLE;
             attackTime = p.millis();
         }
@@ -130,8 +130,8 @@ public class HuskHornhead extends Enemy implements IVisualizable {
 
         directionChange();
 
-        if(isDying()) state = STATE.DEATH;
-        if(state != latestState) resetAnimation(p.millis());
+        if (isDying()) state = STATE.DEATH;
+        if (state != latestState) resetAnimation(p.millis());
 
         stateMachine();
 

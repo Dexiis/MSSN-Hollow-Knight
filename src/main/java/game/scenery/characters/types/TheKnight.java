@@ -26,18 +26,11 @@ import java.util.Map;
  * </ul>
  */
 public class TheKnight extends Entity implements IVisualizable {
-    private static final float JUMP_STRENGTH = 1000f;
-    private static final float SPEED = 275f;
-    private static final int PIXEL_CORRECTION = 6;
+    public static final float JUMP_STRENGTH = 1000f;
+    public static final float SPEED = 275f;
+
     public static final float ATTACK_DURATION = 100f;
     public static final float ATTACK_COOLDOWN = 400f;
-
-    private static final int SPRITE_SIZE = 80;
-    private static final int SPRITE_COUNT = 12;
-    private static final PImage[][] spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
-    private PImage sprite;
-    private int spriteTime = 0;
-    private int spriteIndex = 0;
 
     private MovementState movement;
     private MovementState lastMovement;
@@ -46,7 +39,6 @@ public class TheKnight extends Entity implements IVisualizable {
     private Direction lastFacingDirection; // LEFT or RIGHT
 
     private HurtBox attack = null;
-    private float attackTime = 0f;
 
     private boolean isGrounded = false;
 
@@ -61,7 +53,7 @@ public class TheKnight extends Entity implements IVisualizable {
      */
     public TheKnight(PVector position, PApplet p) {
         super(position);
-        this.hitbox = new Hitbox(new Point(position.x, position.y), 30, 80);
+        this.hitbox = new Hitbox(new Point(position.x, position.y), 35, 70);
         this.mass = 1f;
         this.health = 10;
 
@@ -72,11 +64,16 @@ public class TheKnight extends Entity implements IVisualizable {
         this.directions.put(Direction.LEFT, false);
         this.directions.put(Direction.UPRELEASED, false);
 
+        PIXEL_CORRECTION = 2;
+        SPRITE_SIZE = 80;
+        SPRITE_COUNT = 12;
+        super.spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
+
         // Enche o array de sprites iterativamente
         PImage sprites = p.loadImage("images/TheKnightSprites.png");
         for (int y = 0; y < SPRITE_COUNT; y++)
             for (int x = 0; x < SPRITE_COUNT; x++)
-                spriteArray[x][y] = sprites.get(x * TheKnight.SPRITE_SIZE, y * TheKnight.SPRITE_SIZE, TheKnight.SPRITE_SIZE, TheKnight.SPRITE_SIZE);
+                spriteArray[x][y] = sprites.get(x * SPRITE_SIZE, y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
 
         this.sprite = spriteArray[0][0];
         movement = MovementState.IDLE;
@@ -362,6 +359,6 @@ public class TheKnight extends Entity implements IVisualizable {
 
         p.popMatrix();
 
-        // this.hitbox.draw(painter, plt);
+        this.hitbox.draw(painter, plt);
     }
 }

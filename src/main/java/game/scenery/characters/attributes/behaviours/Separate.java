@@ -2,6 +2,7 @@ package game.scenery.characters.attributes.behaviours;
 
 import game.scenery.characters.Entity;
 import game.scenery.characters.attributes.Behaviour;
+import game.scenery.characters.types.Enemy;
 import processing.core.PVector;
 
 public class Separate extends Behaviour {
@@ -11,7 +12,7 @@ public class Separate extends Behaviour {
     }
 
     @Override
-    public PVector getDesiredVelocity(Entity me) {
+    public PVector getDesiredVelocity(Enemy me) {
         PVector desiredVelocity = new PVector();
         for (Entity character : me.getEye().getNearSight()) {
             PVector direction = PVector.sub(me.getPosition(), character.getPosition());

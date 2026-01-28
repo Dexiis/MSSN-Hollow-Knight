@@ -1,8 +1,6 @@
 package game.scenery.components.hitbox;
 
-import game.core.SubPlot;
 import game.scenery.characters.IVisualizable;
-import processing.core.PApplet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,22 +22,6 @@ public class HurtBox extends Hitbox implements IVisualizable {
      */
     public HurtBox(List<Point> points) {
         super(points);
-    }
-
-    /**
-     * Exibe a HurtBox no ecrã.
-     * <p>
-     * Este método desenha a forma poligonal definida pelos segmentos de reta e também
-     * a caixa delimitadora aproximada (RoughHitbox) para fins de depuração ou visualização técnica.
-     *
-     * @param p       O contexto gráfico do Processing.
-     * @param painter O objeto responsável pelo desenho das linhas.
-     * @param plt     O objeto SubPlot para conversão de coordenadas.
-     */
-    @Override
-    public void display(PApplet p, LinePainter painter, SubPlot plt) {
-        draw(painter, plt);
-        roughHitbox.draw(p, plt);
     }
 
     /**

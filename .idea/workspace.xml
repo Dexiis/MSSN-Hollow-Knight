@@ -5,12 +5,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/TrapDoor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/core/Complex.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/core/Complex.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/bosses/FalseKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/bosses/FalseKnight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/Terrain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/Terrain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/terrainvariables/DeathFloor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terrainvariables/DeathFloor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/Entity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/DNA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/DNA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/Eye.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/Eye.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/IBehaviour.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/IBehaviour.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/behaviours/AgressiveSeek.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/behaviours/Align.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/behaviours/Align.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/behaviours/Attack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/behaviours/Attack.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/behaviours/Cohesion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/behaviours/Cohesion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/behaviours/Flee.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/behaviours/SafeSeek.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/behaviours/Seek.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/behaviours/Separate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/behaviours/Separate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/behaviours/Wander.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/attributes/behaviours/Wander.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/Boss.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/Enemy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/Enemy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/bosses/FalseKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/FalseKnight.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/HuskHornhead.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/HuskHornhead.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/Squit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/Squit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/Hitbox.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/Hitbox.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/HurtBox.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/HurtBox.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/LineEquation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/LineEquation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/terrainvariables/DeathFloor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/DeathFloor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/terrainvariables/TrapDoor.java" beforeDir="false" />
     </list>
     <list id="35cb66f5-a107-43e2-b909-1cfb0e7d3476" name="Changes by Bernardo Aguiar" comment="" />
     <list id="572c0861-a753-4fa0-8d50-003e349ea9f1" name="Changes by david" comment="" />
@@ -38,17 +60,17 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
-        &quot;lastFilter&quot;: {
-        &quot;state&quot;: &quot;OPEN&quot;,
-        &quot;assignee&quot;: &quot;rnaguiar&quot;
-        }
-        }</component>
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;rnaguiar&quot;
+  }
+}</component>
   <component name="GithubPullRequestsUISettings">{
-        &quot;selectedUrlAndAccountId&quot;: {
-        &quot;url&quot;: &quot;https://github.com/Dexiis/MSSN-Hollow-Knight.git&quot;,
-        &quot;accountId&quot;: &quot;d0088d2c-32c9-4b17-86c7-48b0939a96cf&quot;
-        }
-        }</component>
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Dexiis/MSSN-Hollow-Knight.git&quot;,
+    &quot;accountId&quot;: &quot;d0088d2c-32c9-4b17-86c7-48b0939a96cf&quot;
+  }
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -166,6 +188,9 @@
       <workItem from="1769259938127" duration="301000" />
       <workItem from="1769348769879" duration="3901000" />
       <workItem from="1769557340242" duration="875000" />
+      <workItem from="1769610039333" duration="5828000" />
+      <workItem from="1769616456871" duration="582000" />
+      <workItem from="1769617050185" duration="3051000" />
     </task>
     <task id="LOCAL-00001" summary="File restructure.">
       <option name="closed" value="true" />

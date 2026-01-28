@@ -68,7 +68,7 @@ public class LineEquation {
     /**
      * Calcula o ponto de interseção entre esta reta e outra, considerando-as infinitas.
      * <p>
-     * Este método gere quatro cenários de interseção:
+     * Este mét.odo gere quatro cenários de interseção:
      * 1. Ambas verticais (retorna null).
      * 2. Apenas esta reta é vertical.
      * 3. Apenas a outra reta é vertical.

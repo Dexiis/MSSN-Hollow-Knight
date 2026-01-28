@@ -1,13 +1,9 @@
 package game.scenery.characters;
 
-import game.scenery.characters.attributes.Behaviour;
-import game.scenery.characters.attributes.DNA;
-import game.scenery.characters.attributes.Eye;
 import game.scenery.components.hitbox.Hitbox;
 import processing.core.PApplet;
+import processing.core.PImage;
 import processing.core.PVector;
-
-import java.util.List;
 
 /**
  * Classe abstrata que representa uma entidade viva ou interativa no jogo.
@@ -18,23 +14,24 @@ import java.util.List;
  */
 public abstract class Entity extends Movement implements IVisualizable {
 
+    protected PImage[][] spriteArray;
+    protected int PIXEL_CORRECTION;
+    protected int spriteIndex = 0;
+    protected int spriteTime = 0;
+    protected int SPRITE_COUNT;
+    protected int SPRITE_SIZE;
+    protected PImage sprite;
+
     private static final int I_FRAMES = 700;
-
-    protected Eye eye;
-    protected DNA dna;
-    protected Hitbox hitbox;
-
+    protected float attackTime = 0f;
+    private float lastTimeHit;
     protected int health;
-    protected float lastTimeHit;
-    protected float phiWander;
 
-    protected boolean dead = false;
-    protected boolean attacking = false;
+    private boolean attacking = false;
+    private boolean colliding = false;
+    private boolean dead = false;
 
-    protected boolean colliding = false;
-
-    protected float[] positions;
-    private double[] window;
+    protected Hitbox hitbox;
 
     /**
      * Construtor da entidade.
@@ -55,41 +52,6 @@ public abstract class Entity extends Movement implements IVisualizable {
         return health;
     }
 
-    // TODO ARRANJAR JAVADOC
-
-    /**
-     * Verifica se a entidade está morta.
-     *
-     * @return {@code true} se a vida for menor ou igual a zero, {@code false} caso contrário.
-     */
-    public boolean isDead() {
-        return this.dead;
-    }
-
-    public void setDead(boolean dead) {
-        this.dead = dead;
-    }
-
-    public boolean isDying() {
-        return health <= 0;
-    }
-
-    public boolean isAttacking() {
-        return attacking;
-    }
-
-    public void setAttacking(boolean attacking) {
-        this.attacking = attacking;
-    }
-
-    public boolean isColliding() {
-        return colliding;
-    }
-
-    public void setColliding(boolean colliding) {
-        this.colliding = colliding;
-    }
-
     /**
      * Obtém a área de colisão (Hitbox) da entidade.
      *
@@ -100,56 +62,75 @@ public abstract class Entity extends Movement implements IVisualizable {
     }
 
     /**
-     * Obtém o sensor visual (Olho) da entidade.
+     * Verifica se a entidade está atualmente a executar um ataque.
      *
-     * @return O objeto Eye.
+     * @return {@code true} se estiver a atacar.
      */
-    public Eye getEye() {
-        return this.eye;
+    public boolean isAttacking() {
+        return attacking;
     }
 
     /**
-     * Define o sensor visual da entidade.
+     * Verifica se a entidade está num estado de colisão.
      *
-     * @param eye O novo objeto Eye.
+     * @return {@code true} se estiver a colidir.
      */
-    public void setEye(Eye eye) {
-        this.eye = eye;
+    public boolean isColliding() {
+        return colliding;
     }
 
     /**
-     * Obtém o ângulo atual de "vaguear" (wander angle).
-     * Usado por comportamentos de movimento aleatório suave.
+     * Verifica se a entidade está marcada como morta (estado final).
      *
-     * @return O valor do ângulo em radianos.
+     * @return {@code true} se a entidade estiver morta, {@code false} caso contrário.
      */
-    public float getPhiWander() {
-        return phiWander;
+    public boolean isDead() {
+        return this.dead;
     }
 
     /**
-     * Define o ângulo de "vaguear".
+     * Verifica se a entidade está a morrer (vida esgotada).
+     * <p>
+     * Difere de {@code isDead()} pois indica apenas que a vida chegou a zero,
+     * enquanto {@code isDead()} pode indicar que a animação de morte já terminou.
      *
-     * @param newPhiWander O novo ângulo em radianos.
+     * @return {@code true} se a saúde for menor ou igual a zero.
      */
-    public void setPhiWander(float newPhiWander) {
-        this.phiWander = newPhiWander;
+    public boolean isDying() {
+        return health <= 0;
     }
 
     /**
-     * Obtém os atributos genéticos (DNA) da entidade.
-     * O DNA contém limites físicos como velocidade máxima e força máxima.
+     * Define o estado de ataque da entidade.
      *
-     * @return O objeto DNA.
+     * @param attacking {@code true} para iniciar o estado de ataque, {@code false} para terminar.
      */
-    public DNA getDNA() {
-        return dna;
+    public void setAttacking(boolean attacking) {
+        this.attacking = attacking;
+    }
+
+    /**
+     * Define o estado de colisão da entidade.
+     *
+     * @param colliding {@code true} se houver colisão.
+     */
+    public void setColliding(boolean colliding) {
+        this.colliding = colliding;
+    }
+
+    /**
+     * Define o estado de morte da entidade.
+     *
+     * @param dead {@code true} para marcar a entidade como morta.
+     */
+    public void setDead(boolean dead) {
+        this.dead = dead;
     }
 
     /**
      * Define manualmente a posição da entidade.
      * <p>
-     * Sobrescreve o método da superclasse para sincronizar imediatamente a {@link Hitbox}
+     * Sobrescreve o mét.odo da superclasse para sincronizar imediatamente a {@link Hitbox}
      * para o mesmo local.
      *
      * @param position O novo vetor de posição.
@@ -176,47 +157,6 @@ public abstract class Entity extends Movement implements IVisualizable {
     }
 
     /**
-     * Aplica um comportamento de direção (steering behaviour) único à entidade.
-     * <p>
-     * O método ativa o sensor visual (se existir), calcula a velocidade desejada pelo comportamento
-     * e aplica a força de movimento correspondente.
-     *
-     * @param behaviour O comportamento a aplicar.
-     * @param dt        O intervalo de tempo para a atualização física.
-     */
-    public void applyBehaviour(Behaviour behaviour, float dt) {
-        if (eye != null) eye.look();
-        PVector vd = behaviour.getDesiredVelocity(this);
-        move(dt, vd);
-    }
-
-    /**
-     * Aplica uma lista de comportamentos combinados.
-     * <p>
-     * Calcula a soma das velocidades desejadas de todos os comportamentos fornecidos.
-     *
-     * @param behaviours A lista de comportamentos a processar.
-     * @param dt         O intervalo de tempo para a atualização física.
-     */
-    public void applyBehaviours(List<Behaviour> behaviours, float dt) {
-        if (eye != null) eye.look();
-        PVector vd = new PVector();
-//      float sumWeights = 0;
-
-//      for (Behaviour behaviour : behaviours)                        // ISTO NÃO DEVE DE SER NECESSÁRIO MAS DEIXAR POR ENQUANTO
-//          sumWeights += behaviour.getWeight();
-
-        for (Behaviour behaviour : behaviours) {
-            PVector vdd = behaviour.getDesiredVelocity(this);
-//          vdd.mult(behaviour.getWeight() / sumWeights);             O MESMO PARA ISTO
-//          vdd.mult(behaviour.getWeight());
-            vd.add(vdd);
-        }
-
-        move(dt, vd);
-    }
-
-    /**
      * Atualiza a posição física da entidade baseada no tempo delta.
      * <p>
      * Sobrescreve o método da superclasse para garantir que a {@link Hitbox} acompanha
@@ -228,21 +168,5 @@ public abstract class Entity extends Movement implements IVisualizable {
     public void move(float dt) {
         super.move(dt);
         if (hitbox != null) hitbox.setPosition(position);
-    }
-
-    /**
-     * Executa o movimento baseado numa velocidade desejada (Steering Force).
-     * <p>
-     * Implementa a fórmula de Reynolds: Força = Velocidade Desejada - Velocidade Atual.
-     * A força resultante é limitada pela força máxima definida no DNA da entidade.
-     *
-     * @param dt O intervalo de tempo.
-     * @param vd O vetor de velocidade desejada (Desired Velocity).
-     */
-    public void move(float dt, PVector vd) {
-        vd.normalize().mult(dna.getMaxSpeed());
-        PVector fs = PVector.sub(vd, velocity);
-        applyForce(fs.limit(dna.getMaxForce()));
-        move(dt);
     }
 }

@@ -131,7 +131,7 @@ public class Hitbox {
     }
 
     /**
-     * Sobrecarga do método setPosition que aceita um PVector.
+     * Sobrecarga do mét.odo setPosition que aceita um PVector.
      *
      * @param position O novo vetor de posição.
      */
@@ -154,6 +154,21 @@ public class Hitbox {
             for (LineSegment otherLine : other.getLines()) if (line.intersects(otherLine)) return true;
 
         return false;
+    }
+
+    /**
+     * Exibe a HurtBox no ecrã.
+     * <p>
+     * Este mét.odo desenha a forma poligonal definida pelos segmentos de reta e também
+     * a caixa delimitadora aproximada (RoughHitbox) para fins de depuração ou visualização técnica.
+     *
+     * @param p       O contexto gráfico do Processing.
+     * @param painter O objeto responsável pelo desenho das linhas.
+     * @param plt     O objeto SubPlot para conversão de coordenadas.
+     */
+    public void display(PApplet p, LinePainter painter, SubPlot plt) {
+        draw(painter, plt);
+        roughHitbox.draw(p, plt);
     }
 
     /**
