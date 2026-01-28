@@ -1,9 +1,9 @@
 package game.scenery.characters.types.enemies.attributes;
 
-import game.scenery.characters.Entity;
-import game.scenery.characters.types.enemies.Squit;
 import game.scenery.characters.types.enemies.FalseKnight;
 import game.scenery.characters.types.enemies.HuskHornhead;
+import game.scenery.characters.types.enemies.Squit;
+import game.scenery.components.flock.Flock;
 
 /**
  * Define os atributos genéticos e físicos de uma entidade.
@@ -23,76 +23,60 @@ public class DNA {
     protected float deltaPhiWander;
     protected float visionAttackAngle;
 
-    /**
-     * Construtor da classe DNA.
-     * <p>
-     * Inicializa os atributos com valores aleatórios dentro de intervalos específicos,
-     * dependendo do tipo concreto da entidade fornecida (ex: Squit, HuskHornhead).
-     *
-     * @param me A entidade à qual este DNA pertence.
-     */
-    public DNA(Entity me) { //TODO FAZER O DNA PARA CADA UM
+    public DNA(Squit me) { //TODO Modificar atributos corretamente
+        maxSpeed = random(100f, 200f);
+        maxForce = random(150f, 250f);
 
-        if (me instanceof Squit) {
-            maxSpeed = random(100f, 200f);
-            maxForce = random(150f, 250f);
+        visionDistance = random(500f, 800f);
+        visionAngle = (float) Math.PI * 2f;
 
-            visionDistance = random(500f, 800f);
-            visionAngle = (float) Math.PI * 2f;
+        visionAttack = 0.60f * visionDistance;
+        visionAttackAngle = (float) Math.PI * 2f;
 
-            visionAttack = 0.60f * visionDistance;
-            visionAttackAngle = (float) Math.PI * 2f;
+        deltaTWander = 2f;
+        radiusWander = random(100f, 150f);
+        deltaPhiWander = (float) Math.PI / 8;
+    }
 
-            deltaTWander = 2f;
-            radiusWander = random(100f, 150f);
-            deltaPhiWander = (float) Math.PI / 8;
+    public DNA(HuskHornhead me) { //TODO Modificar atributos corretamente
+        maxSpeed = random(100f, 200f);
+        maxForce = random(150f, 250f);
 
-        } else if (me instanceof HuskHornhead) {
+        visionDistance = random(500f, 800f);
+        visionAngle = (float) Math.PI * 2f;
 
-            maxSpeed = random(100f, 200f);
-            maxForce = random(150f, 250f);
+        visionAttack = 0.30f * visionDistance;
+        visionAttackAngle = (float) Math.PI * 2f;
 
-            visionDistance = random(500f, 800f);
-            visionAngle = (float) Math.PI * 2f;
+        deltaTWander = 2f;
+        radiusWander = random(100f, 150f);
+        deltaPhiWander = (float) Math.PI / 8;
+    }
 
-            visionAttack = 0.30f * visionDistance;
-            visionAttackAngle = (float) Math.PI * 2f;
+    public DNA(FalseKnight me) { //TODO Modificar atributos corretamente
+        maxSpeed = random(100f, 200f);
+        maxForce = random(150f, 250f);
 
-            deltaTWander = 2f;
-            radiusWander = random(100f, 150f);
-            deltaPhiWander = (float) Math.PI / 8;
+        visionDistance = random(500f, 800f);
+        visionAngle = (float) Math.PI * 2f;
 
-        } else if (me instanceof FalseKnight) {
+        visionAttack = 0.60f * visionDistance;
+        visionAttackAngle = (float) Math.PI * 2f;
 
-            maxSpeed = random(100f, 200f);
-            maxForce = random(150f, 250f);
+        deltaTWander = 2f;
+        radiusWander = random(100f, 150f);
+        deltaPhiWander = (float) Math.PI / 8;
+    }
 
-            visionDistance = random(500f, 800f);
-            visionAngle = (float) Math.PI * 2f;
+    public DNA(Flock me) { //TODO MUDAR!!!!!!
+        maxSpeed = random(1f, 2f);
+        maxForce = random(1f, 2f);
 
-            visionAttack = 0.60f * visionDistance;
-            visionAttackAngle = (float) Math.PI * 2f;
+        visionDistance = random(100f, 200f);
+        visionAngle = (float) Math.PI * 2f;
 
-            deltaTWander = 2f;
-            radiusWander = random(100f, 150f);
-            deltaPhiWander = (float) Math.PI / 8;
-
-        } else {
-
-            maxSpeed = random(100f, 200f);
-            maxForce = random(150f, 250f);
-
-            visionDistance = random(500f, 800f);
-            visionAngle = (float) Math.PI * 2f;
-
-            visionAttack = 0.60f * visionDistance;
-            visionAttackAngle = (float) Math.PI * 2f;
-
-            deltaTWander = 2f;
-            radiusWander = random(100f, 150f);
-            deltaPhiWander = (float) Math.PI / 8;
-
-        }
+        visionAttack = 0.30f * visionDistance;
+        visionAttackAngle = (float) Math.PI * 2f;
     }
 
     /**
@@ -266,5 +250,21 @@ public class DNA {
      */
     protected static float random(float min, float max) {
         return (float) (min + (max - min) * Math.random());
+    }
+
+    public float getVisionAttackAngle() {
+        return visionAttackAngle;
+    }
+
+    public void setVisionAttackAngle(float visionAttackAngle) {
+        this.visionAttackAngle = visionAttackAngle;
+    }
+
+    public float getVisionAttack() {
+        return visionAttack;
+    }
+
+    public void setVisionAttack(float visionAttack) {
+        this.visionAttack = visionAttack;
     }
 }

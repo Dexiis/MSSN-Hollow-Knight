@@ -1,6 +1,7 @@
 package game.scenery.characters.types;
 
 import game.scenery.characters.Entity;
+import game.scenery.characters.types.enemies.FalseKnight;
 import game.scenery.characters.types.enemies.attributes.Behaviour;
 import game.scenery.characters.types.enemies.attributes.DNA;
 import game.scenery.characters.types.enemies.attributes.Eye;
@@ -58,8 +59,6 @@ public abstract class Enemy extends Entity {
         super(position);
 
         this.p = p;
-
-        this.dna = new DNA(this);
         this.attackBehaviour = new Attack(1);
         this.wanderBehaviour = new Wander(1);
 
@@ -170,15 +169,16 @@ public abstract class Enemy extends Entity {
     @Override
     public void damage(PApplet p, PVector other) {
         if (p.millis() - lastTimeHit > I_FRAMES) {
-            int direction;
-            if (other.x > this.position.x) direction = -1;
-            else direction = 1;
+            if (!(this instanceof FalseKnight)) {
+                int direction;
+                if (other.x > this.position.x) direction = -1;
+                else direction = 1;
 
-            this.setVelocity(new PVector(50 * direction, 100));
+                this.setVelocity(new PVector(50 * direction, 100));
 
-            this.stunned = true;
-            this.stunnedTimer = p.millis();
-
+                this.stunned = true;
+                this.stunnedTimer = p.millis();
+            }
             health--;
             lastTimeHit = p.millis();
         }

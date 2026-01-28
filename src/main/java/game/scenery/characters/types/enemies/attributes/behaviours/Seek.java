@@ -3,6 +3,7 @@ package game.scenery.characters.types.enemies.attributes.behaviours;
 import game.scenery.characters.Entity;
 import game.scenery.characters.types.enemies.attributes.Behaviour;
 import game.scenery.characters.types.Enemy;
+import game.scenery.components.flock.Flock;
 import processing.core.PVector;
 
 /**
@@ -39,6 +40,10 @@ public class Seek extends Behaviour {
 
             return PVector.sub(characterTarget.getPosition(), me.getPosition());
         }
+        return new PVector(0, 0);
+    }
+
+    public PVector getDesiredVelocity(Flock me) {
         return new PVector(0, 0);
     }
 

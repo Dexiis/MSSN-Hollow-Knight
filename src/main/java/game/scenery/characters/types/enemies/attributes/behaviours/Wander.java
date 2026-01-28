@@ -1,7 +1,8 @@
 package game.scenery.characters.types.enemies.attributes.behaviours;
 
-import game.scenery.characters.types.enemies.attributes.Behaviour;
 import game.scenery.characters.types.Enemy;
+import game.scenery.characters.types.enemies.attributes.Behaviour;
+import game.scenery.components.flock.Flock;
 import processing.core.PVector;
 
 /**
@@ -52,6 +53,10 @@ public class Wander extends Behaviour {
 
             return desiredVelocity;
         }
+        return new PVector(0, 0);
+    }
+
+    public PVector getDesiredVelocity(Flock me) {
         return new PVector(0, 0);
     }
 

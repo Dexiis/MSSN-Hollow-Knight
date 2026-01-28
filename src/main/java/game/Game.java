@@ -11,9 +11,12 @@ import game.scenery.characters.types.MovementState;
 import game.scenery.characters.types.TheKnight;
 import game.scenery.characters.types.enemies.Squit;
 import game.scenery.components.Terrain;
+import game.scenery.components.flock.Flock;
 import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
 import processing.core.PVector;
+
+import java.util.ArrayList;
 
 /**
  * Classe principal do jogo que estende a {@link PApplet}.
@@ -102,6 +105,8 @@ public class Game extends PApplet {
         lastUpdateTime = now;
 
         background.display(player.getPosition());
+        moveFlock(background.getFlock(), dt);
+
         gui.display(map.getPlayer());
 
         handleNaturalMovements(dt);
@@ -120,6 +125,12 @@ public class Game extends PApplet {
 
         setWindow(player.getPosition());
         map.display(plt);
+    }
+
+    private void moveFlock(ArrayList<Flock> flock, float dt){
+        for (Flock f : flock) {
+            f.applyBehaviours(dt);
+        }
     }
 
     /**

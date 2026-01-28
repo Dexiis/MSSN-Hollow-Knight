@@ -2,9 +2,10 @@ package game.scenery.characters.types.enemies;
 
 import game.core.SubPlot;
 import game.scenery.characters.IVisualizable;
-import game.scenery.characters.types.enemies.attributes.behaviours.Seek;
 import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
+import game.scenery.characters.types.enemies.attributes.DNA;
+import game.scenery.characters.types.enemies.attributes.behaviours.Seek;
 import game.scenery.components.hitbox.Hitbox;
 import game.scenery.components.hitbox.LinePainter;
 import game.scenery.components.hitbox.Point;
@@ -29,6 +30,7 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         PIXEL_CORRECTION = 7;
         super.spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
 
+        this.dna = new DNA(this);
         this.dna.setMaxSpeed(IDLE_SPEED);
 
         this.seekBehaviour = new Seek(1);

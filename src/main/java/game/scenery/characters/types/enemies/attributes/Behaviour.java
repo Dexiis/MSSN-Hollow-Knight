@@ -1,5 +1,8 @@
 package game.scenery.characters.types.enemies.attributes;
 
+import game.scenery.components.flock.Flock;
+import processing.core.PVector;
+
 /**
  * Classe base abstrata para todos os comportamentos de direção (steering behaviors).
  * <p>
@@ -38,4 +41,6 @@ public abstract class Behaviour implements IBehaviour {
     public float getWeight() {
         return weight;
     }
+
+    public abstract PVector getDesiredVelocity(Flock me);
 }

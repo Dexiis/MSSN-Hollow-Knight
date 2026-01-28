@@ -10,7 +10,7 @@ import game.core.SubPlot;
  */
 public interface LinePainter {
     /**
-     * Método responsável por desenhar uma linha entre dois pontos definidos.
+     * Mét.odo responsável por desenhar uma linha entre dois pontos definidos.
      *
      * @param x1  Coordenada X do ponto inicial.
      * @param y1  Coordenada Y do ponto inicial.
