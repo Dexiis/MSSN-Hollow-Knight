@@ -2,11 +2,12 @@ package game.scenery;
 
 import game.core.SubPlot;
 import game.scenery.characters.Entity;
-import game.scenery.characters.attributes.Eye;
 import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.TheKnight;
 import game.scenery.characters.types.enemies.FalseKnight;
 import game.scenery.characters.types.enemies.HuskHornhead;
+import game.scenery.characters.types.enemies.Squit;
+import game.scenery.characters.types.enemies.attributes.Eye;
 import game.scenery.components.Terrain;
 import game.scenery.components.hitbox.LinePainter;
 import game.scenery.components.terraintypes.DeathFloor;
@@ -75,10 +76,10 @@ public class Map {
         this.player = new TheKnight(new PVector(50, 800), p);
         entities.add(player);
 
-        //enemies.add(new Squit(new PVector(-100, 100), p));
-        //entities.add(enemies.getLast());
+        enemies.add(new Squit(new PVector(500, 500), p));
+        entities.add(enemies.getLast());
 
-        enemies.add(new HuskHornhead(new PVector(50, 1000), p));
+        enemies.add(new HuskHornhead(new PVector(300, 200), p));
         entities.add(enemies.getLast());
 
         enemies.add(new FalseKnight(new PVector(6100, 300), p));

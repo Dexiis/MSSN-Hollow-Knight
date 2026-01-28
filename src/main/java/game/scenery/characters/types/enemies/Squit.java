@@ -2,8 +2,8 @@ package game.scenery.characters.types.enemies;
 
 import game.core.SubPlot;
 import game.scenery.characters.IVisualizable;
-import game.scenery.characters.attributes.behaviours.Seek;
-import game.scenery.characters.attributes.behaviours.Wander;
+import game.scenery.characters.types.enemies.attributes.behaviours.Seek;
+import game.scenery.characters.types.enemies.attributes.behaviours.Wander;
 import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
 import game.scenery.components.hitbox.Hitbox;

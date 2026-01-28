@@ -1,4 +1,4 @@
-package game.scenery.characters.attributes;
+package game.scenery.characters.types.enemies.attributes;
 
 /**
  * Classe base abstrata para todos os comportamentos de direção (steering behaviors).

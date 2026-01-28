@@ -71,7 +71,7 @@ public class Terrain extends Hitbox implements IVisualizable {
                 float newY;
                 if (dy > 0) {
                     newY = this.getPosition().y + this.height / 2 + otherHitbox.getHeight() / 2;
-                    if (entity instanceof TheKnight) ((TheKnight) entity).setIsGrounded(true);
+                    if (entity instanceof TheKnight) ((TheKnight) entity).setGrounded(true);
                 } else newY = this.getPosition().y - this.height / 2 - otherHitbox.getHeight() / 2;
 
                 entity.setPosition(new PVector(entity.getPosition().x, newY));

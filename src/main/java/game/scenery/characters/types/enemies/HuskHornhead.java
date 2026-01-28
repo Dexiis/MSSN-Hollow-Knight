@@ -2,7 +2,7 @@ package game.scenery.characters.types.enemies;
 
 import game.core.SubPlot;
 import game.scenery.characters.IVisualizable;
-import game.scenery.characters.attributes.behaviours.Seek;
+import game.scenery.characters.types.enemies.attributes.behaviours.Seek;
 import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
 import game.scenery.components.hitbox.Hitbox;
@@ -133,8 +133,6 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         if (isDying()) state = STATE.DEATH;
         if (state != latestState) resetAnimation(p.millis());
 
-        stateMachine();
-
         // Diminuir o tamanho da sprite
         float spriteScale = 0.6f;
 
@@ -143,6 +141,8 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         p.translate(pp[0], pp[1]);
         p.scale(multValue * spriteScale, spriteScale);
         p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f + PIXEL_CORRECTION);
+
+        stateMachine();
 
         p.popMatrix();
     }

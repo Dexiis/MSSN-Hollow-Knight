@@ -22,14 +22,17 @@ public abstract class Entity extends Movement implements IVisualizable {
     protected int SPRITE_SIZE;
     protected PImage sprite;
 
-    private static final int I_FRAMES = 700;
+    protected int I_FRAMES;
     protected float attackTime = 0f;
-    private float lastTimeHit;
+    protected float lastTimeHit;
     protected int health;
 
     private boolean attacking = false;
     private boolean colliding = false;
     private boolean dead = false;
+
+    protected boolean stunned = false;
+    protected float stunnedTimer = 0f;
 
     protected Hitbox hitbox;
 
@@ -156,10 +159,12 @@ public abstract class Entity extends Movement implements IVisualizable {
         }
     }
 
+    public abstract void damage(PApplet p, PVector other);
+
     /**
      * Atualiza a posição física da entidade baseada no tempo delta.
      * <p>
-     * Sobrescreve o método da superclasse para garantir que a {@link Hitbox} acompanha
+     * Sobrescreve o mét.odo da superclasse para garantir que a {@link Hitbox} acompanha
      * sempre a nova posição da entidade.
      *
      * @param dt O intervalo de tempo decorrido.

@@ -1,11 +1,11 @@
 package game.scenery.characters.types;
 
 import game.scenery.characters.Entity;
-import game.scenery.characters.attributes.Behaviour;
-import game.scenery.characters.attributes.DNA;
-import game.scenery.characters.attributes.Eye;
-import game.scenery.characters.attributes.behaviours.Attack;
-import game.scenery.characters.attributes.behaviours.Wander;
+import game.scenery.characters.types.enemies.attributes.Behaviour;
+import game.scenery.characters.types.enemies.attributes.DNA;
+import game.scenery.characters.types.enemies.attributes.Eye;
+import game.scenery.characters.types.enemies.attributes.behaviours.Attack;
+import game.scenery.characters.types.enemies.attributes.behaviours.Wander;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
@@ -64,6 +64,8 @@ public abstract class Enemy extends Entity {
         this.wanderBehaviour = new Wander(1);
 
         SPRITE_COUNT = 8;
+
+        I_FRAMES = 450;
 
         this.state = STATE.IDLE;
     }
@@ -163,6 +165,23 @@ public abstract class Enemy extends Entity {
         }
 
         move(dt, vd);
+    }
+
+    @Override
+    public void damage(PApplet p, PVector other) {
+        if (p.millis() - lastTimeHit > I_FRAMES) {
+            int direction;
+            if (other.x > this.position.x) direction = -1;
+            else direction = 1;
+
+            this.setVelocity(new PVector(50 * direction, 100));
+
+            this.stunned = true;
+            this.stunnedTimer = p.millis();
+
+            health--;
+            lastTimeHit = p.millis();
+        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package game.scenery.characters.attributes;
+package game.scenery.characters.types.enemies.attributes;
 
 import game.core.SubPlot;
 import game.scenery.characters.Entity;

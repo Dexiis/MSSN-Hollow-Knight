@@ -30,7 +30,7 @@ public class TheKnight extends Entity implements IVisualizable {
     public static final float SPEED = 275f;
 
     public static final float ATTACK_DURATION = 100f;
-    public static final float ATTACK_COOLDOWN = 400f;
+    public static final float ATTACK_COOLDOWN = 500f;
 
     private MovementState movement;
     private MovementState lastMovement;
@@ -40,7 +40,7 @@ public class TheKnight extends Entity implements IVisualizable {
 
     private HurtBox attack = null;
 
-    private boolean isGrounded = false;
+    private boolean grounded = false;
 
     /**
      * Construtor do Cavaleiro.
@@ -63,6 +63,8 @@ public class TheKnight extends Entity implements IVisualizable {
         this.directions.put(Direction.RIGHT, false);
         this.directions.put(Direction.LEFT, false);
         this.directions.put(Direction.UPRELEASED, false);
+
+        I_FRAMES = 2000;
 
         PIXEL_CORRECTION = 2;
         SPRITE_SIZE = 80;
@@ -104,18 +106,38 @@ public class TheKnight extends Entity implements IVisualizable {
      *
      * @return {@code true} se estiver no chão, {@code false} se estiver no ar.
      */
-    public boolean getIsGrounded() {
-        return isGrounded;
+    public boolean isGrounded() {
+        return grounded;
     }
 
     /**
      * Define o estado de contacto com o chão.
      * Geralmente atualizado pelo sistema de colisão do terreno.
      *
-     * @param isGrounded O novo estado.
+     * @param grounded O novo estado.
      */
-    public void setIsGrounded(boolean isGrounded) {
-        this.isGrounded = isGrounded;
+    public void setGrounded(boolean grounded) {
+        this.grounded = grounded;
+    }
+
+    /**
+     * Verifica se o jogador está apoiado numa superfície física (chão).
+     *
+     * @return {@code true} se estiver no chão, {@code false} se estiver no ar.
+     */
+    public boolean isStunned() {
+        return stunned;
+    }
+
+    /**
+     * Define o estado de contacto com o chão.
+     * Geralmente atualizado pelo sistema de colisão do terreno.
+     *
+     * @param stunned O novo estado.
+     */
+    public void setStunned(boolean stunned, PApplet p) {
+        this.stunned = stunned;
+        if (stunned) this.stunnedTimer = p.millis();
     }
 
     /**
@@ -210,6 +232,31 @@ public class TheKnight extends Entity implements IVisualizable {
      */
     public void setMovement(MovementState movement) {
         this.movement = movement;
+    }
+
+    /**
+     * Aplica dano à entidade.
+     * <p>
+     * Implementa um sistema de "invencibilidade temporária" (I-Frames). A entidade só perde vida
+     * se tiver passado tempo suficiente (definido por {@code I_FRAMES}) desde o último golpe recebido.
+     *
+     * @param p O contexto da PApplet, usado para verificar o tempo atual (millis).
+     */
+    @Override
+    public void damage(PApplet p, PVector other) {
+        if (p.millis() - lastTimeHit > I_FRAMES) {
+            int direction;
+            if (other.x > this.position.x) direction = -1;
+            else direction = 1;
+
+            this.setVelocity(new PVector(500 * direction, 300));
+
+            this.stunned = true;
+            this.stunnedTimer = p.millis();
+
+            health--;
+            lastTimeHit = p.millis();
+        }
     }
 
     /**
@@ -308,7 +355,7 @@ public class TheKnight extends Entity implements IVisualizable {
     /**
      * Renderiza o jogador no ecrã.
      * <p>
-     * Este método gere:
+     * Este mét.odo gere:
      * 1. A seleção do sprite correto baseado no estado (IDLE, RUNNING, etc.) e no tempo (animação).
      * 2. A conversão de coordenadas do mundo para pixels.
      * 3. A inversão horizontal do sprite (scale -1, 1) se estiver a olhar para a esquerda.
@@ -320,7 +367,6 @@ public class TheKnight extends Entity implements IVisualizable {
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
-
         // Máquina de estados para aplicar sprites baseado no movimento com animação
         switch (movement) {
             case MovementState.IDLE:
@@ -345,6 +391,8 @@ public class TheKnight extends Entity implements IVisualizable {
                 }
                 break;
         }
+
+        if (stunned && p.millis() - stunnedTimer >= 500) this.stunned = false;
 
         int multValue = 1;
         if (lastFacingDirection == Direction.LEFT) multValue = -1;

@@ -1,6 +1,6 @@
-package game.scenery.characters.attributes.behaviours;
+package game.scenery.characters.types.enemies.attributes.behaviours;
 
-import game.scenery.characters.attributes.Behaviour;
+import game.scenery.characters.types.enemies.attributes.Behaviour;
 import game.scenery.characters.types.Enemy;
 import processing.core.PVector;
 

@@ -15,8 +15,6 @@ import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-import java.util.ArrayList;
-
 /**
  * Classe principal do jogo que estende a {@link PApplet}.
  * <p>
@@ -106,29 +104,17 @@ public class Game extends PApplet {
         background.display(player.getPosition());
         gui.display(map.getPlayer());
 
-        for (Entity entity : map.getEntities()) {
-            if (!(entity instanceof TheKnight)) {
-                ((Enemy) entity).applyBehaviours(((Enemy) entity).getBehaviours(), dt);
-                //entity.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
-            }
-            if (!(entity instanceof Squit)) entity.applyForce(gravity(entity));
-            if ((entity instanceof Squit) && entity.isDying())
-                entity.applyForce(new PVector(0, -450 * entity.getMass())); // Queda na morte do Squit
-        }
-
-        handleInputMovement();
+        handleNaturalMovements(dt);
+        if (!player.isStunned()) handleInputMovements();
         handleKnightAttack();
         handleMonstersAttacks();
 
-        ArrayList<Enemy> deadEnemies = new ArrayList<>();
+        for (int i = map.getEntities().size() - 1; i >= 0; i--) {
+            Entity entity = map.getEntities().get(i);
 
-        for (Entity entity : map.getEntities()) {
             entity.move(dt);
-            if (entity.isDead()) deadEnemies.add((Enemy) entity);
+            if (entity.isDead()) map.removeEnemy((Enemy) entity);
         }
-
-        for (Enemy enemy : deadEnemies)
-            map.removeEnemy(enemy);
 
         checkCollisions();
 
@@ -153,7 +139,7 @@ public class Game extends PApplet {
      * Controla a máquina de estados de movimento (IDLE, RUNNING, JUMPING, FALLING)
      * e aplica as ações correspondentes como mover para os lados ou saltar.
      */
-    private void handleInputMovement() {
+    private void handleInputMovements() {
         if ((!(player.getDirections().get(Direction.RIGHT)) && !(player.getDirections().get(Direction.LEFT))) || (player.getDirections().get(Direction.RIGHT)) && (player.getDirections().get(Direction.LEFT))) {
             player.stopMovement();
             player.setMovement(MovementState.IDLE);
@@ -169,11 +155,11 @@ public class Game extends PApplet {
             }
 
             // Este if é 'repetido' umas linhas a baixo, mas este tem uma condição "else" anterior necessária
-            if (player.getIsGrounded())
+            if (player.isGrounded())
                 player.setMovement((player.getDirections().get(Direction.RIGHT) || player.getDirections().get(Direction.LEFT)) ? MovementState.RUNNING : MovementState.IDLE);
         }
 
-        if (player.getIsGrounded()) {
+        if (player.isGrounded()) {
             if (player.getDirections().get(Direction.UP)) player.jump();
         } else player.setMovement(player.getVelocity().y < 0 ? MovementState.FALLING : MovementState.JUMPING);
 
@@ -206,8 +192,8 @@ public class Game extends PApplet {
                 Enemy enemy = map.getEnemies().get(i);
                 if (player.getAttack().intersected(enemy.getHitbox())) {
                     // Pequeno salto ao bater para baixo no ar
-                    if (!player.getIsGrounded()) player.setVelocity(new PVector(player.getVelocity().x, 400f));
-                    enemy.damage(this);
+                    if (!player.isGrounded()) player.setVelocity(new PVector(player.getVelocity().x, 400f));
+                    enemy.damage(this, player.getPosition());
                 }
             }
 
@@ -224,7 +210,21 @@ public class Game extends PApplet {
      */
     private void handleMonstersAttacks() {
         if (map.getEnemies() != null) for (Enemy enemy : map.getEnemies())
-            if (enemy.getHitbox().intersected(player.getHitbox()) && !enemy.isDying()) player.damage(this);
+            if (enemy.getHitbox().intersected(player.getHitbox()) && !enemy.isDying())
+                player.damage(this, enemy.getPosition());
+    }
+
+    private void handleNaturalMovements(float dt) {
+        for (Entity entity : map.getEntities()) {
+            if (!(entity instanceof TheKnight)) {
+                Enemy enemy = ((Enemy) entity);
+                enemy.applyBehaviours(enemy.getBehaviours(), dt);
+                enemy.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
+            }
+            if ((entity instanceof Squit) && entity.isDying())
+                entity.applyForce(new PVector(0, -450 * entity.getMass())); // Queda na morte do Squit
+            if (!(entity instanceof Squit)) entity.applyForce(gravity(entity));
+        }
     }
 
     /**
@@ -234,7 +234,7 @@ public class Game extends PApplet {
      * que as entidades atravessem paredes ou chão.
      */
     private void checkCollisions() {
-        player.setIsGrounded(false);
+        player.setGrounded(false);
         for (Entity entity : map.getEntities()) {
             entity.setColliding(false);
             for (int i = map.getTerrains().size() - 1; i >= 0; i--) {
