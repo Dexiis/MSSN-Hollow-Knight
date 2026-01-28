@@ -77,6 +77,7 @@ public class LineSegment {
      */
     public void setPosition(Point position) {
         this.position = position;
+        this.equation.setPosition(position);  // FALTA ESTA LINHA!
     }
 
     /**
@@ -90,7 +91,40 @@ public class LineSegment {
      */
     public boolean intersects(LineSegment other) {
         Point intersection = equation.solveIntersectionPoint(other.getEquation());
-        return intersection != null;
+
+        if (intersection == null) return false;
+
+        return this.isPointOnSegment(intersection) && other.isPointOnSegment(intersection);
+    }
+
+    /**
+     * Verifica se um ponto está contido neste segmento de reta finito.
+     * <p>
+     * Para o ponto estar no segmento, as suas coordenadas devem estar dentro dos
+     * limites definidos pelos pontos inicial e final (em coordenadas globais).
+     * Utiliza uma pequena tolerância (epsilon) para lidar com erros de arredondamento
+     * de ponto flutuante.
+     *
+     * @param p O ponto a verificar (em coordenadas globais).
+     * @return {@code true} se o ponto está no segmento, {@code false} caso contrário.
+     */
+    private boolean isPointOnSegment(Point p) {
+        float epsilon = 0.001f;
+
+        // Converter pontos locais para coordenadas globais
+        float x1 = start.x + position.x;
+        float y1 = start.y + position.y;
+        float x2 = stop.x + position.x;
+        float y2 = stop.y + position.y;
+
+        // Calcular os limites do segmento
+        float minX = Math.min(x1, x2) - epsilon;
+        float maxX = Math.max(x1, x2) + epsilon;
+        float minY = Math.min(y1, y2) - epsilon;
+        float maxY = Math.max(y1, y2) + epsilon;
+
+        // Verificar se o ponto está dentro dos limites
+        return p.x >= minX && p.x <= maxX && p.y >= minY && p.y <= maxY;
     }
 
     /**
