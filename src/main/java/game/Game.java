@@ -38,6 +38,7 @@ public class Game extends PApplet {
 
     private float lastUpdateTime;
     private int now = millis();
+    boolean firstLoop = true;
 
     LinePainter painter = new LinePainter() {
         /**
@@ -74,7 +75,6 @@ public class Game extends PApplet {
      */
     @Override
     public void setup() {
-        lastUpdateTime = millis();
         plt = new SubPlot(window, viewport, width, height);
 
         textSize(22);
@@ -100,6 +100,10 @@ public class Game extends PApplet {
      */
     @Override
     public void draw() {
+        if (firstLoop) {
+            lastUpdateTime = millis();
+            firstLoop = false;
+        }
         now = millis();
         float dt = (now - lastUpdateTime) / 1000f;
         lastUpdateTime = now;
@@ -127,7 +131,7 @@ public class Game extends PApplet {
         map.display(plt);
     }
 
-    private void moveFlock(ArrayList<Flock> flock, float dt){
+    private void moveFlock(ArrayList<Flock> flock, float dt) {
         for (Flock f : flock) {
             f.applyBehaviours(dt);
         }
