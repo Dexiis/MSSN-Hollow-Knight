@@ -26,6 +26,7 @@ public class DeathFloor extends Terrain {
     @Override
     public void elaborateIntersects(Entity entity) {
         this.intersected(entity);
+        super.elaborateIntersects(entity);
     }
 
 

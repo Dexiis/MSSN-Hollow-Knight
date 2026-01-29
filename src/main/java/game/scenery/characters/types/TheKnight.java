@@ -44,6 +44,7 @@ public class TheKnight extends Entity implements IVisualizable {
     private boolean grounded = false;
 
     private PImage auraSprite;
+    private static final int AURA_SIZE = 1600;
 
     /**
      * Construtor do Cavaleiro.
@@ -409,6 +410,13 @@ public class TheKnight extends Entity implements IVisualizable {
         if (lastFacingDirection == Direction.LEFT) multValue = -1;
 
         float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
+
+        p.pushStyle();
+
+        p.tint(255, 190);
+        p.image(auraSprite, pp[0] - AURA_SIZE / 2f, pp[1] - AURA_SIZE / 2f);
+
+        p.popStyle();
 
         p.pushMatrix();
 

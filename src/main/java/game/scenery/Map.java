@@ -13,6 +13,7 @@ import game.scenery.components.hitbox.LinePainter;
 import game.scenery.components.terraintypes.DeathFloor;
 import game.scenery.components.terraintypes.Platform;
 import game.scenery.components.terraintypes.TrapDoor;
+import game.scenery.components.terraintypes.Wall;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -48,7 +49,7 @@ public class Map {
         this.painter = painter;
 
         // Secção 1
-        terrains.add(new Terrain(new PVector(-150, 400), 200, 1200, p));
+        terrains.add(new Wall(new PVector(-150, 400), 200, 1200, p));
         terrains.add(new Terrain(new PVector(450, -100), 1000, 200, p));
         terrains.add(new Terrain(new PVector(200, 600), 150, 800, p));
 
@@ -72,7 +73,7 @@ public class Map {
         terrains.add(new Terrain(new PVector(7350, -500), 200, 800, p));
 
         // Death Platform
-        terrains.add(new DeathFloor(new PVector(4000, -2000), 10000, 1000, this, p));
+        terrains.add(new DeathFloor(new PVector(4000, -6500), 10000, 10000, this, p));
 
         this.player = new TheKnight(new PVector(50, 800), p);
         entities.add(player);
