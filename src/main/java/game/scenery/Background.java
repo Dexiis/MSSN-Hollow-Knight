@@ -22,7 +22,7 @@ public class Background {
         double[] WINDOW = {-3.55, 3.55, -2.0, 2.0};
         this.plt = new SubPlot(WINDOW, VIEWPORT, p.width, p.height);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 30; i++) {
             flock.add(new Flock(randomPVector(), plt, p));
         }
 
@@ -65,11 +65,12 @@ public class Background {
 
                 int col;
                 if (iter == MAX_ITER) {
-                    col = p.color(255); // Interior branco
+                    col = p.color(0); // Interior preto
                 } else {
-                    int val = 255 - (iter % 16) * 16;
-                    col = p.color(255, val, val);
+                    int val = (iter % 16) * 16;
+                    col = p.color(val, 0, 0); // Tons de vermelho sobre preto
                 }
+
 
                 p.pixels[x + y * p.width] = col;
             }

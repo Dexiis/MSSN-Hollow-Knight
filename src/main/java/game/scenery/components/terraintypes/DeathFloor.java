@@ -10,7 +10,6 @@ import processing.core.PVector;
 
 public class DeathFloor extends Terrain {
     private final Map map;
-    private final PApplet p;
 
     /**
      * Constrói um objeto de terreno retangular.
@@ -20,9 +19,8 @@ public class DeathFloor extends Terrain {
      * @param height A altura total.
      */
     public DeathFloor(PVector center, float width, float height, Map map, PApplet p) {
-        super(center, width, height);
+        super(center, width, height, p);
         this.map = map;
-        this.p = p;
     }
 
     @Override

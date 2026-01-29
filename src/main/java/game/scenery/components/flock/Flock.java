@@ -51,7 +51,7 @@ public class Flock extends Movement {
             vdd.mult(behaviour.getWeight() / sumWeights);
             vd.add(vdd);
         }
-        move(dt, vd);
+        this.move(dt, vd);
     }
 
     public FlockEye getEye() {
@@ -70,6 +70,7 @@ public class Flock extends Movement {
         vd.normalize().mult(dna.getMaxSpeed());
         PVector fs = PVector.sub(vd, velocity);
         applyForce(fs.limit(dna.getMaxForce()));
+
         super.move(dt);
 
         if (position.x < window[0]) position.x += (float) (window[1] - window[0]);
@@ -89,6 +90,29 @@ public class Flock extends Movement {
     @Override
     public void setPosition(PVector position) {
         this.position = position;
+    }
+
+    public PVector getToroidalDistanceVector(PVector targetPosition) {
+        PVector distance = PVector.sub(targetPosition, position);
+
+        double worldWidth = window[1] - window[0];
+        double worldHeight = window[3] - window[2];
+
+        if (Math.abs(distance.x) > worldWidth / 2) {
+            if (distance.x > 0)
+                distance.x -= (float) worldWidth;
+            else
+                distance.x += (float) worldWidth;
+        }
+
+        if (Math.abs(distance.y) > worldHeight / 2) {
+            if (distance.y > 0)
+                distance.y -= (float) worldHeight;
+            else
+                distance.y += (float) worldHeight;
+        }
+
+        return distance;
     }
 
     /**

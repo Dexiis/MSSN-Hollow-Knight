@@ -63,7 +63,6 @@ public abstract class Enemy extends Entity {
         this.wanderBehaviour = new Wander(1);
 
         SPRITE_COUNT = 8;
-
         I_FRAMES = 450;
 
         this.state = STATE.IDLE;
@@ -84,7 +83,7 @@ public abstract class Enemy extends Entity {
      *
      * @return O objeto DNA.
      */
-    public DNA getDNA() {
+    public DNA getDna() {
         return dna;
     }
 
@@ -128,7 +127,7 @@ public abstract class Enemy extends Entity {
     /**
      * Aplica um comportamento de direção (steering behaviour) único à entidade.
      * <p>
-     * O método ativa o sensor visual (se existir), calcula a velocidade desejada pelo comportamento
+     * O mét.odo ativa o sensor visual (se existir), calcula a velocidade desejada pelo comportamento
      * e aplica a força de movimento correspondente.
      *
      * @param behaviour O comportamento a aplicar.
@@ -151,15 +150,9 @@ public abstract class Enemy extends Entity {
     public void applyBehaviours(List<Behaviour> behaviours, float dt) {
         if (eye != null) eye.look();
         PVector vd = new PVector();
-//      float sumWeights = 0;
-
-//      for (Behaviour behaviour : behaviours)                        // ISTO NÃO DEVE DE SER NECESSÁRIO MAS DEIXAR POR ENQUANTO
-//          sumWeights += behaviour.getWeight();
 
         for (Behaviour behaviour : behaviours) {
             PVector vdd = behaviour.getDesiredVelocity(this);
-//          vdd.mult(behaviour.getWeight() / sumWeights);             O MESMO PARA ISTO
-//          vdd.mult(behaviour.getWeight());
             vd.add(vdd);
         }
 

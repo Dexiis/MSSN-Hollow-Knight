@@ -45,7 +45,7 @@ public class DNA {
         visionDistance = random(500f, 800f);
         visionAngle = (float) Math.PI * 2f;
 
-        visionAttack = 0.30f * visionDistance;
+        visionAttack = 0.40f * visionDistance;
         visionAttackAngle = (float) Math.PI * 2f;
 
         deltaTWander = 2f;
@@ -54,13 +54,13 @@ public class DNA {
     }
 
     public DNA(FalseKnight me) { //TODO Modificar atributos corretamente
-        maxSpeed = random(100f, 200f);
-        maxForce = random(150f, 250f);
+        maxSpeed = 180f;
+        maxForce = 180f;
 
-        visionDistance = random(500f, 800f);
+        visionDistance = 2000f;
         visionAngle = (float) Math.PI * 2f;
 
-        visionAttack = 0.60f * visionDistance;
+        visionAttack = 0.20f * visionDistance;
         visionAttackAngle = (float) Math.PI * 2f;
 
         deltaTWander = 2f;
@@ -68,11 +68,11 @@ public class DNA {
         deltaPhiWander = (float) Math.PI / 8;
     }
 
-    public DNA(Flock me) { //TODO MUDAR!!!!!!
-        maxSpeed = random(1f, 2f);
+    public DNA(Flock me) {
+        maxSpeed = random(0.5f, 1f);
         maxForce = random(1f, 2f);
 
-        visionDistance = random(10f, 20f);
+        visionDistance = random(1f, 3f);
         visionAngle = (float) Math.PI * 2f;
 
         visionAttack = 0.30f * visionDistance;

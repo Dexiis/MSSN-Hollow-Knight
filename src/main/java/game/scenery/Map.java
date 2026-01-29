@@ -11,6 +11,7 @@ import game.scenery.characters.types.enemies.attributes.Eye;
 import game.scenery.components.Terrain;
 import game.scenery.components.hitbox.LinePainter;
 import game.scenery.components.terraintypes.DeathFloor;
+import game.scenery.components.terraintypes.Platform;
 import game.scenery.components.terraintypes.TrapDoor;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -47,28 +48,28 @@ public class Map {
         this.painter = painter;
 
         // Secção 1
-        terrains.add(new Terrain(new PVector(-150, 400), 200, 1200));
-        terrains.add(new Terrain(new PVector(450, -100), 1000, 200));
-        terrains.add(new Terrain(new PVector(200, 600), 150, 800));
+        terrains.add(new Terrain(new PVector(-150, 400), 200, 1200, p));
+        terrains.add(new Terrain(new PVector(450, -100), 1000, 200, p));
+        terrains.add(new Terrain(new PVector(200, 600), 150, 800, p));
 
         // Plataformas
-        terrains.add(new Terrain(new PVector(700, 200), 400, 75));
-        terrains.add(new Terrain(new PVector(1300, 350), 400, 75));
-        terrains.add(new Terrain(new PVector(1800, 600), 400, 75));
+        terrains.add(new Platform(new PVector(765, 200), 270, 65, p));
+        terrains.add(new Platform(new PVector(1365, 350), 270, 65, p));
+        terrains.add(new Platform(new PVector(1865, 600), 270, 65, p));
 
         // Secção 2
-        terrains.add(new Terrain(new PVector(2700, 300), 1000, 1000));
+        terrains.add(new Terrain(new PVector(2700, 300), 1000, 1000, p));
 
         // Plataformas
-        terrains.add(new Terrain(new PVector(3500, 1000), 400, 75));
-        terrains.add(new Terrain(new PVector(4100, 1200), 400, 75));
-        terrains.add(new Terrain(new PVector(4750, 1325), 600, 75));
-        terrains.add(new TrapDoor(new PVector(5275, 1325), 150, 75, this));
+        terrains.add(new Platform(new PVector(3565, 1000), 270, 65, p));
+        terrains.add(new Platform(new PVector(4165, 1200), 270, 65, p));
+        terrains.add(new Platform(new PVector(4790, 1325), 520, 65, p));
+        terrains.add(new TrapDoor(new PVector(5275, 1325), 150, 65, this, p));
 
         // Boss Room
-        terrains.add(new Terrain(new PVector(6000, -800), 2500, 200));
-        terrains.add(new Terrain(new PVector(4650, -500), 200, 800));
-        terrains.add(new Terrain(new PVector(7350, -500), 200, 800));
+        terrains.add(new Terrain(new PVector(6000, -800), 2500, 200, p));
+        terrains.add(new Terrain(new PVector(4650, -500), 200, 800, p));
+        terrains.add(new Terrain(new PVector(7350, -500), 200, 800, p));
 
         // Death Platform
         terrains.add(new DeathFloor(new PVector(4000, -2000), 10000, 1000, this, p));

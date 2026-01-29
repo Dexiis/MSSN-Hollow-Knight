@@ -87,7 +87,7 @@ public class HuskHornhead extends Enemy implements IVisualizable {
 
     @Override
     protected void attacking() {
-        this.getDNA().setMaxSpeed(ATTACK_SPEED);
+        this.getDna().setMaxSpeed(ATTACK_SPEED);
         if (p.millis() - spriteTime > 120) {
             this.sprite = spriteArray[spriteIndex][3];
             spriteTime = p.millis();
@@ -128,7 +128,7 @@ public class HuskHornhead extends Enemy implements IVisualizable {
         seekBehaviour.setEnabled(true);
 
         setAttacking(state == STATE.ATTACK);
-        this.getDNA().setMaxSpeed(IDLE_SPEED);
+        this.getDna().setMaxSpeed(IDLE_SPEED);
 
         directionChange();
 

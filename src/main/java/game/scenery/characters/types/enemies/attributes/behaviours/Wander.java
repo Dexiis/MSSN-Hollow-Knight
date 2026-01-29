@@ -37,19 +37,19 @@ public class Wander extends Behaviour {
     public PVector getDesiredVelocity(Enemy me) {
         if (checkBehaviour(me)) {
             float newPhiWander = me.getPhiWander();
-            newPhiWander += (float) (2 * (Math.random() - 0.5) * me.getDNA().getDeltaPhiWander());
+            newPhiWander += (float) (2 * (Math.random() - 0.5) * me.getDna().getDeltaPhiWander());
             me.setPhiWander(newPhiWander);
 
             PVector center = me.getVelocity().copy();
-            center.normalize().mult(me.getDNA().getDeltaTWander());
+            center.normalize().mult(me.getDna().getDeltaTWander());
             center.add(me.getPosition());
 
-            PVector targetDisplacement = new PVector(me.getDNA().getRadiusWander() * (float) Math.cos(newPhiWander), me.getDNA().getRadiusWander() * (float) Math.sin(newPhiWander));
+            PVector targetDisplacement = new PVector(me.getDna().getRadiusWander() * (float) Math.cos(newPhiWander), me.getDna().getRadiusWander() * (float) Math.sin(newPhiWander));
             PVector targetPosition = PVector.add(center, targetDisplacement);
 
             PVector desiredVelocity = PVector.sub(targetPosition, me.getPosition());
 
-            desiredVelocity.setMag(me.getDNA().getMaxSpeed());
+            desiredVelocity.setMag(me.getDna().getMaxSpeed());
 
             return desiredVelocity;
         }

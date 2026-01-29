@@ -54,6 +54,7 @@ public class Game extends PApplet {
         public void paintLine(float x1, float y1, float x2, float y2, SubPlot plt) {
             float[] p1 = plt.getPixelCoord(x1, y1);
             float[] p2 = plt.getPixelCoord(x2, y2);
+            stroke(255);
             line(p1[0], p1[1], p2[0], p2[1]);
         }
     };
@@ -132,9 +133,8 @@ public class Game extends PApplet {
     }
 
     private void moveFlock(ArrayList<Flock> flock, float dt) {
-        for (Flock f : flock) {
-            f.applyBehaviours(dt);
-        }
+        for (int i = flock.size() - 1; i >= 0; i--)
+            flock.get(i).applyBehaviours(dt);
     }
 
     /**
@@ -207,7 +207,8 @@ public class Game extends PApplet {
                 Enemy enemy = map.getEnemies().get(i);
                 if (player.getAttack().intersected(enemy.getHitbox())) {
                     // Pequeno salto ao bater para baixo no ar
-                    if (!player.isGrounded()) player.setVelocity(new PVector(player.getVelocity().x, 400f));
+                    if (!player.isGrounded() && player.getFacingDirection() == Direction.DOWN)
+                        player.setVelocity(new PVector(player.getVelocity().x, 400f));
                     enemy.damage(this, player.getPosition());
                 }
             }
@@ -250,10 +251,11 @@ public class Game extends PApplet {
      */
     private void checkCollisions() {
         player.setGrounded(false);
-        for (Entity entity : map.getEntities()) {
+        for (int i = map.getEntities().size() - 1; i >= 0; i--) {
+            Entity entity = map.getEntities().get(i);
             entity.setColliding(false);
-            for (int i = map.getTerrains().size() - 1; i >= 0; i--) {
-                Terrain terrain = map.getTerrains().get(i);
+            for (int j = map.getTerrains().size() - 1; j >= 0; j--) {
+                Terrain terrain = map.getTerrains().get(j);
                 terrain.elaborateIntersects(entity);
             }
         }

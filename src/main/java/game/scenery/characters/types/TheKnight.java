@@ -30,17 +30,20 @@ public class TheKnight extends Entity implements IVisualizable {
     public static final float SPEED = 275f;
 
     public static final float ATTACK_DURATION = 100f;
-    public static final float ATTACK_COOLDOWN = 500f;
+    public static final float ATTACK_COOLDOWN = 700f;
 
     private MovementState movement;
     private MovementState lastMovement;
 
     private final Map<Direction, Boolean> directions;
     private Direction lastFacingDirection; // LEFT or RIGHT
+    Direction facingDirection;
 
     private HurtBox attack = null;
 
     private boolean grounded = false;
+
+    private PImage auraSprite;
 
     /**
      * Construtor do Cavaleiro.
@@ -77,6 +80,7 @@ public class TheKnight extends Entity implements IVisualizable {
             for (int x = 0; x < SPRITE_COUNT; x++)
                 spriteArray[x][y] = sprites.get(x * SPRITE_SIZE, y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
 
+        auraSprite = p.loadImage("images/aura.png");
         this.sprite = spriteArray[0][0];
         movement = MovementState.IDLE;
         lastMovement = movement;
@@ -234,6 +238,14 @@ public class TheKnight extends Entity implements IVisualizable {
         this.movement = movement;
     }
 
+    public Direction getFacingDirection() {
+        return facingDirection;
+    }
+
+    public void setFacingDirection(Direction facingDirection) {
+        this.facingDirection = facingDirection;
+    }
+
     /**
      * Aplica dano à entidade.
      * <p>
@@ -327,7 +339,6 @@ public class TheKnight extends Entity implements IVisualizable {
      */
     private HurtBox attack() {
         HurtBox.Builder builder = new HurtBox.Builder();
-        Direction facingDirection;
         if (directions.get(Direction.DOWN)) facingDirection = Direction.DOWN;
         else if ((directions.get(Direction.RIGHT) && directions.get(Direction.LEFT))) facingDirection = Direction.UP;
         else if (directions.get(Direction.LEFT)) facingDirection = Direction.LEFT;

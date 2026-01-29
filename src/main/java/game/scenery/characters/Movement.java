@@ -13,7 +13,7 @@ public abstract class Movement {
     protected PVector position;
     protected PVector velocity = new PVector(0, 0);
     protected PVector acceleration = new PVector();
-    protected float mass;
+    protected float mass = 1;
 
     /**
      * Construtor da classe de movimento.

@@ -123,7 +123,7 @@ public class Eye {
      * @return {@code true} se estiver visível, {@code false} caso contrário.
      */
     private boolean farSight(PVector t) {
-        return inSight(t, me.getDNA().visionDistance, me.getDNA().visionAngle);
+        return inSight(t, me.getDna().visionDistance, me.getDna().visionAngle);
     }
 
     /**
@@ -134,7 +134,7 @@ public class Eye {
      * @return {@code true} se estiver ao alcance, {@code false} caso contrário.
      */
     private boolean nearSight(PVector t) {
-        return inSight(t, me.getDNA().visionAttack, me.getDNA().visionAttackAngle);
+        return inSight(t, me.getDna().visionAttack, me.getDna().visionAttackAngle);
     }
 
     /**
@@ -176,25 +176,25 @@ public class Eye {
         p.stroke(255, 0, 0);
         p.strokeWeight(3);
 
-        float[] dd1 = plt.getDimInPixel(me.getDNA().visionDistance, me.getDNA().visionDistance);
-        p.rotate(me.getDNA().visionAngle);
+        float[] dd1 = plt.getDimInPixel(me.getDna().visionDistance, me.getDna().visionDistance);
+        p.rotate(me.getDna().visionAngle);
         p.line(0, 0, dd1[0], 0);
-        p.rotate(-2 * me.getDNA().visionAngle);
+        p.rotate(-2 * me.getDna().visionAngle);
         p.line(0, 0, dd1[0], 0);
-        p.rotate(me.getDNA().visionAngle);
-        p.arc(0, 0, 2 * dd1[0], 2 * dd1[0], -me.getDNA().visionAngle, me.getDNA().visionAngle);
+        p.rotate(me.getDna().visionAngle);
+        p.arc(0, 0, 2 * dd1[0], 2 * dd1[0], -me.getDna().visionAngle, me.getDna().visionAngle);
 
-        float[] dd2 = plt.getDimInPixel(me.getDNA().visionAttack, me.getDNA().visionAttack);
+        float[] dd2 = plt.getDimInPixel(me.getDna().visionAttack, me.getDna().visionAttack);
         p.stroke(255, 0, 255);
-        if (me.getDNA().visionAttackAngle >= Math.PI) {
+        if (me.getDna().visionAttackAngle >= Math.PI) {
             p.circle(0, 0, 2 * dd2[0]);
         } else {
-            p.rotate(me.getDNA().visionAttackAngle);
+            p.rotate(me.getDna().visionAttackAngle);
             p.line(0, 0, dd2[0], 0);
-            p.rotate(-2 * me.getDNA().visionAttackAngle);
+            p.rotate(-2 * me.getDna().visionAttackAngle);
             p.line(0, 0, dd2[0], 0);
-            p.rotate(me.getDNA().visionAttackAngle);
-            p.arc(0, 0, 2 * dd2[0], 2 * dd2[0], -me.getDNA().visionAttackAngle, me.getDNA().visionAttackAngle);
+            p.rotate(me.getDna().visionAttackAngle);
+            p.arc(0, 0, 2 * dd2[0], 2 * dd2[0], -me.getDna().visionAttackAngle, me.getDna().visionAttackAngle);
         }
         p.popMatrix();
         p.popStyle();

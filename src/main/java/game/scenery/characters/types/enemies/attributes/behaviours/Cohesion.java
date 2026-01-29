@@ -12,11 +12,11 @@ public class Cohesion extends Behaviour {
 
     public PVector getDesiredVelocity(Flock me) {
         PVector target = me.getPosition().copy();
-        for (Flock character : me.getEye().getFarSight())
-            target.add(character.getPosition());
+        for (Flock f : me.getEye().getFarSight())
+            target.add(f.getPosition());
         target.div(me.getEye().getFarSight().size() + 1);
 
-        return PVector.sub(target, me.getPosition());
+        return me.getToroidalDistanceVector(target);
     }
 
     public PVector getDesiredVelocity(Enemy me) {

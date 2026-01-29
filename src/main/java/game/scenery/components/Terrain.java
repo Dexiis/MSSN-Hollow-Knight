@@ -18,6 +18,8 @@ import processing.core.PVector;
  */
 public class Terrain extends Hitbox implements IVisualizable {
 
+    protected PApplet p;
+
     /**
      * Constrói um objeto de terreno retangular.
      *
@@ -25,8 +27,9 @@ public class Terrain extends Hitbox implements IVisualizable {
      * @param width  A largura total.
      * @param height A altura total.
      */
-    public Terrain(PVector center, float width, float height) {
+    public Terrain(PVector center, float width, float height, PApplet p) {
         super(new Point(center.x, center.y), width, height);
+        this.p = p;
     }
 
     /**

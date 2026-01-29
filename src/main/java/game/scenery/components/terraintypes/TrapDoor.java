@@ -4,6 +4,7 @@ import game.scenery.Map;
 import game.scenery.characters.Entity;
 import game.scenery.characters.types.TheKnight;
 import game.scenery.components.Terrain;
+import processing.core.PApplet;
 import processing.core.PVector;
 
 public class TrapDoor extends Terrain {
@@ -16,8 +17,8 @@ public class TrapDoor extends Terrain {
      * @param width  A largura total.
      * @param height A altura total.
      */
-    public TrapDoor(PVector center, float width, float height, Map map) {
-        super(center, width, height);
+    public TrapDoor(PVector center, float width, float height, Map map, PApplet p) {
+        super(center, width, height, p);
         this.map = map;
     }
 
