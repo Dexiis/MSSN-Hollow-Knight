@@ -22,22 +22,20 @@ import java.util.Map;
  * </p>
  */
 public class TheKnight extends Entity implements IVisualizable {
+    public static final float ATTACK_COOLDOWN = 750f;
     public static final float JUMP_STRENGTH = 1000f;
     public static final float SPEED = 275f;
 
-    public static final float ATTACK_DURATION = 100f;
-    public static final float ATTACK_COOLDOWN = 750f;
-
-    private State movement;
-    private State lastMovement;
-
-    private final Map<KnightMovement, Boolean> directions;
-    private KnightMovement lastFacingDirection; // LEFT or RIGHT
-    KnightMovement facingDirection;
-
     private HurtBox attack = null;
-
+    private final Map<KnightMovement, Boolean> directions;
+    private KnightMovement facingDirection;
     private boolean grounded = false;
+    private KnightMovement lastFacingDirection;
+    private State lastMovement;
+    private State movement;
+
+    protected boolean stunned = false;
+    protected float stunnedTime = 0f;
 
     /**
      * Constrói uma nova instância do Cavaleiro na posição especificada.
@@ -63,6 +61,7 @@ public class TheKnight extends Entity implements IVisualizable {
         this.directions.put(KnightMovement.UPRELEASED, false);
 
         I_FRAMES = 2000;
+        ATTACK_DURATION = 100f;
 
         PIXEL_CORRECTION = 2;
         SPRITE_SIZE = 80;
@@ -81,6 +80,42 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     /**
+     * Obtém a caixa de dano (HurtBox) ativa no momento.
+     *
+     * @return a {@code HurtBox} atual ou {@code null} se não houver ataque ativo
+     */
+    public HurtBox getAttack() {
+        return attack;
+    }
+
+    /**
+     * Obtém o momento em que o último ataque foi iniciado.
+     *
+     * @return o tempo em milissegundos
+     */
+    public float getAttackTime() {
+        return attackTime;
+    }
+
+    /**
+     * Obtém o mapa de entradas de direção.
+     *
+     * @return um mapa que associa cada direção a um valor booleano (ativo/inativo)
+     */
+    public Map<KnightMovement, Boolean> getDirections() {
+        return directions;
+    }
+
+    /**
+     * Obtém a direção para a qual o jogador está virado atualmente.
+     *
+     * @return a direção {@code KnightMovement} atual
+     */
+    public KnightMovement getFacingDirection() {
+        return facingDirection;
+    }
+
+    /**
      * Obtém a última direção horizontal para a qual o jogador olhou.
      * <p>
      * Retorna a direção LEFT ou RIGHT.
@@ -90,6 +125,78 @@ public class TheKnight extends Entity implements IVisualizable {
      */
     public KnightMovement getLastFacingDirection() {
         return lastFacingDirection;
+    }
+
+    /**
+     * Obtém o estado de movimento registado no quadro anterior.
+     *
+     * @return o estado {@code State} anterior
+     */
+    public State getLastMovement() {
+        return this.lastMovement;
+    }
+
+    /**
+     * Obtém o estado atual de movimento da personagem.
+     *
+     * @return o estado {@code State} atual (ex: IDLE, RUNNING)
+     */
+    public State getMovement() {
+        return this.movement;
+    }
+
+    /**
+     * Verifica se o jogador está apoiado numa superfície física.
+     *
+     * @return {@code true} se estiver no chão, {@code false} caso contrário
+     */
+    public boolean isGrounded() {
+        return grounded;
+    }
+
+    /**
+     * Verifica se o jogador está atordoado.
+     *
+     * @return {@code true} se estiver atordoado, {@code false} caso contrário
+     */
+    public boolean isStunned() {
+        return stunned;
+    }
+
+    /**
+     * Define a caixa de dano (HurtBox) atual.
+     *
+     * @param attack a nova {@code HurtBox} ou {@code null} para cancelar o ataque
+     */
+    public void setAttack(HurtBox attack) {
+        this.attack = attack;
+    }
+
+    /**
+     * Regista o momento do último ataque.
+     *
+     * @param attackTime o tempo em milissegundos
+     */
+    public void setAttackTime(float attackTime) {
+        this.attackTime = attackTime;
+    }
+
+    /**
+     * Define a direção para a qual o jogador está virado.
+     *
+     * @param facingDirection a nova direção
+     */
+    public void setFacingDirection(KnightMovement facingDirection) {
+        this.facingDirection = facingDirection;
+    }
+
+    /**
+     * Define o estado de contacto com o chão.
+     *
+     * @param grounded o novo estado de contacto
+     */
+    public void setGrounded(boolean grounded) {
+        this.grounded = grounded;
     }
 
     /**
@@ -105,53 +212,21 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     /**
-     * Verifica se o jogador está apoiado numa superfície física.
+     * Define manualmente o registo do estado anterior.
      *
-     * @return {@code true} se estiver no chão, {@code false} caso contrário
+     * @param lastMovement o estado a registar como anterior
      */
-    public boolean isGrounded() {
-        return grounded;
+    public void setLastMovement(State lastMovement) {
+        this.lastMovement = lastMovement;
     }
 
     /**
-     * Define o estado de contacto com o chão.
+     * Define o estado atual de movimento da personagem.
      *
-     * @param grounded o novo estado de contacto
+     * @param movement o novo estado a definir
      */
-    public void setGrounded(boolean grounded) {
-        this.grounded = grounded;
-    }
-
-    /**
-     * Verifica se o jogador está atordoado.
-     *
-     * @return {@code true} se estiver atordoado, {@code false} caso contrário
-     */
-    public boolean isStunned() {
-        return stunned;
-    }
-
-    /**
-     * Define o estado de atordoamento do jogador.
-     * <p>
-     * Se o estado for verdadeiro, inicia também o temporizador de atordoamento.
-     * </p>
-     *
-     * @param stunned o novo estado de atordoamento
-     * @param p       o contexto gráfico para obter o tempo atual
-     */
-    public void setStunned(boolean stunned, PApplet p) {
-        this.stunned = stunned;
-        if (stunned) this.stunnedTimer = p.millis();
-    }
-
-    /**
-     * Obtém o mapa de entradas de direção.
-     *
-     * @return um mapa que associa cada direção a um valor booleano (ativo/inativo)
-     */
-    public Map<KnightMovement, Boolean> getDirections() {
-        return directions;
+    public void setMovement(State movement) {
+        this.movement = movement;
     }
 
     /**
@@ -165,93 +240,16 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     /**
-     * Obtém a caixa de dano (HurtBox) ativa no momento.
+     * Define o estado de atordoamento do jogador.
+     * <p>
+     * Se o estado for verdadeiro, inicia também o temporizador de atordoamento.
+     * </p>
      *
-     * @return a {@code HurtBox} atual ou {@code null} se não houver ataque ativo
+     * @param stunned o novo estado de atordoamento
      */
-    public HurtBox getAttack() {
-        return attack;
-    }
-
-    /**
-     * Define a caixa de dano (HurtBox) atual.
-     *
-     * @param attack a nova {@code HurtBox} ou {@code null} para cancelar o ataque
-     */
-    public void setAttack(HurtBox attack) {
-        this.attack = attack;
-    }
-
-    /**
-     * Obtém o momento em que o último ataque foi iniciado.
-     *
-     * @return o tempo em milissegundos
-     */
-    public float getAttackTime() {
-        return attackTime;
-    }
-
-    /**
-     * Regista o momento do último ataque.
-     *
-     * @param attackTime o tempo em milissegundos
-     */
-    public void setAttackTime(float attackTime) {
-        this.attackTime = attackTime;
-    }
-
-    /**
-     * Obtém o estado atual de movimento da personagem.
-     *
-     * @return o estado {@code State} atual (ex: IDLE, RUNNING)
-     */
-    public State getMovement() {
-        return this.movement;
-    }
-
-    /**
-     * Define manualmente o registo do estado anterior.
-     *
-     * @param lastMovement o estado a registar como anterior
-     */
-    public void setLastMovement(State lastMovement) {
-        this.lastMovement = lastMovement;
-    }
-
-    /**
-     * Obtém o estado de movimento registado no quadro anterior.
-     *
-     * @return o estado {@code State} anterior
-     */
-    public State getLastMovement() {
-        return this.lastMovement;
-    }
-
-    /**
-     * Define o estado atual de movimento da personagem.
-     *
-     * @param movement o novo estado a definir
-     */
-    public void setMovement(State movement) {
-        this.movement = movement;
-    }
-
-    /**
-     * Obtém a direção para a qual o jogador está virado atualmente.
-     *
-     * @return a direção {@code KnightMovement} atual
-     */
-    public KnightMovement getFacingDirection() {
-        return facingDirection;
-    }
-
-    /**
-     * Define a direção para a qual o jogador está virado.
-     *
-     * @param facingDirection a nova direção
-     */
-    public void setFacingDirection(KnightMovement facingDirection) {
-        this.facingDirection = facingDirection;
+    public void setStunned(boolean stunned) {
+        this.stunned = stunned;
+        if (stunned) this.stunnedTime = now;
     }
 
     /**
@@ -261,12 +259,10 @@ public class TheKnight extends Entity implements IVisualizable {
      * repulsão (knockback) na direção oposta ao dano e coloca a entidade em estado de atordoamento.
      * </p>
      *
-     * @param p     o contexto gráfico para verificar o tempo atual
      * @param other o vetor de posição da origem do dano
      */
-    @Override
-    public void damage(PApplet p, PVector other) {
-        if (p.millis() - lastTimeHit > I_FRAMES) {
+    public void damage(PVector other) {
+        if (now - hitTime > I_FRAMES) {
             int direction;
             if (other.x > this.position.x) direction = -1;
             else direction = 1;
@@ -274,25 +270,11 @@ public class TheKnight extends Entity implements IVisualizable {
             this.setVelocity(new PVector(500 * direction, 300));
 
             this.stunned = true;
-            this.stunnedTimer = p.millis();
+            this.stunnedTime = now;
 
             health--;
-            lastTimeHit = p.millis();
+            hitTime = now;
         }
-    }
-
-    /**
-     * Reinicia os contadores de animação.
-     * <p>
-     * Esta rotina deve ser chamada ao mudar de estado para garantir que a nova
-     * animação começa do primeiro quadro.
-     * </p>
-     *
-     * @param now o tempo atual em milissegundos
-     */
-    public void resetAnimation(int now) {
-        this.spriteIndex = 0;
-        this.spriteTime = now;
     }
 
     /**
@@ -306,16 +288,6 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     /**
-     * Move a personagem para a direita.
-     * <p>
-     * Incrementa a velocidade horizontal até atingir o limite máximo definido.
-     * </p>
-     */
-    public void moveRight() {
-        setVelocity(new PVector(Math.min(SPEED, getVelocity().x + SPEED), getVelocity().y));
-    }
-
-    /**
      * Move a personagem para a esquerda.
      * <p>
      * Decrementa a velocidade horizontal até atingir o limite máximo definido.
@@ -326,14 +298,13 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     /**
-     * Interrompe o movimento horizontal da personagem.
+     * Move a personagem para a direita.
      * <p>
-     * Aplica uma força de atrito reduzindo a velocidade pela metade a cada chamada,
-     * até que a personagem pare.
+     * Incrementa a velocidade horizontal até atingir o limite máximo definido.
      * </p>
      */
-    public void stopMovement() {
-        setVelocity(new PVector(0.5f * getVelocity().x, getVelocity().y));
+    public void moveRight() {
+        setVelocity(new PVector(Math.min(SPEED, getVelocity().x + SPEED), getVelocity().y));
     }
 
     /**
@@ -342,13 +313,24 @@ public class TheKnight extends Entity implements IVisualizable {
      * Verifica se o tempo de recarga já expirou antes de gerar uma nova caixa de ataque.
      * </p>
      *
-     * @param now o tempo atual em milissegundos
      */
-    public void playerAttack(int now) {
+    public void playerAttack() {
         if (now - attackTime > TheKnight.ATTACK_COOLDOWN) {
             this.attack = attack();
             attackTime = now;
         }
+    }
+
+
+    /**
+     * Interrompe o movimento horizontal da personagem.
+     * <p>
+     * Aplica uma força de atrito reduzindo a velocidade pela metade a cada chamada,
+     * até que a personagem pare.
+     * </p>
+     */
+    public void stopMovement() {
+        setVelocity(new PVector(0.5f * getVelocity().x, getVelocity().y));
     }
 
     /**
@@ -407,9 +389,9 @@ public class TheKnight extends Entity implements IVisualizable {
                 this.sprite = spriteArray[0][0];
                 break;
             case State.RUNNING:
-                if (p.millis() - spriteTime > 40) {
+                if (now - spriteTime > 40) {
                     this.sprite = spriteArray[spriteIndex][0];
-                    spriteTime = p.millis();
+                    spriteTime = now;
                     spriteIndex++;
                     if (spriteIndex > 7) spriteIndex = 0;
                 }
@@ -417,16 +399,16 @@ public class TheKnight extends Entity implements IVisualizable {
             case State.JUMPING:
                 break;
             case State.FALLING:
-                if (p.millis() - spriteTime > 40) {
+                if (now - spriteTime > 40) {
                     this.sprite = spriteArray[spriteIndex][9];
-                    spriteTime = p.millis();
+                    spriteTime = now;
                     spriteIndex++;
                     if (spriteIndex > 7) spriteIndex = 5;
                 }
                 break;
         }
 
-        if (stunned && p.millis() - stunnedTimer >= 500 && grounded) this.stunned = false;
+        if (stunned && now - stunnedTime >= 500 && grounded) this.stunned = false;
 
         int multValue = 1;
         if (lastFacingDirection == KnightMovement.LEFT) multValue = -1;

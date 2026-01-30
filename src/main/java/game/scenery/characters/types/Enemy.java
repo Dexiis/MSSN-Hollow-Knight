@@ -1,15 +1,13 @@
 package game.scenery.characters.types;
 
 import game.scenery.characters.Entity;
+import game.scenery.characters.types.enemies.FalseKnight;
 import game.scenery.characters.types.enemies.attributes.Behaviour;
 import game.scenery.characters.types.enemies.attributes.DNA;
 import game.scenery.characters.types.enemies.attributes.Eye;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Classe abstrata que define a estrutura base para todos os inimigos do jogo.
@@ -22,19 +20,17 @@ public abstract class Enemy extends Entity {
     protected State latestState;
     protected State state;
 
-    protected ArrayList<Behaviour> behaviours = new ArrayList<>();
+    protected KnightMovement currentDirection;
+    protected KnightMovement latestDirection;
 
     protected DNA dna;
     private Eye eye;
 
-    protected KnightMovement currentDirection;
-    protected KnightMovement latestDirection;
+    protected final PApplet p;
+
     protected int multValue = 1;
 
-    public static float ATTACK_COOLDOWN;
-    public static float ATTACK_SPEED;
-
-    protected final PApplet p;
+    public float ATTACK_COOLDOWN;
 
     /**
      * Constrói um novo inimigo na posição especificada.
@@ -49,8 +45,22 @@ public abstract class Enemy extends Entity {
     protected Enemy(PVector position, PApplet p) {
         super(position);
         this.p = p;
+        now = p.millis();
 
         this.state = State.IDLE;
+    }
+
+    /**
+     * Obtém os atributos genéticos (DNA) do inimigo.
+     * <p>
+     * O DNA contém os limites físicos da entidade, tais como a velocidade máxima
+     * e a força máxima aplicável.
+     * </p>
+     *
+     * @return o objeto DNA do inimigo
+     */
+    public DNA getDna() {
+        return dna;
     }
 
     /**
@@ -72,25 +82,41 @@ public abstract class Enemy extends Entity {
     }
 
     /**
-     * Obtém os atributos genéticos (DNA) do inimigo.
+     * Aplica um comportamento de direção específico ao inimigo.
      * <p>
-     * O DNA contém os limites físicos da entidade, tais como a velocidade máxima
-     * e a força máxima aplicável.
+     * Atualiza o sensor visual, calcula a velocidade desejada ditada pelo comportamento
+     * e executa o movimento correspondente.
      * </p>
      *
-     * @return o objeto DNA do inimigo
+     * @param behaviour o comportamento a aplicar
+     * @param dt        o intervalo de tempo para a atualização física
      */
-    public DNA getDna() {
-        return dna;
+    public void applyBehaviour(Behaviour behaviour, float dt) {
+        if (eye != null) eye.look();
+        PVector vd = behaviour.getDesiredVelocity(this);
+        move(dt, vd);
     }
 
     /**
-     * Devolve a lista de comportamentos atualmente atribuídos ao inimigo.
+     * Aplica dano à entidade de forma genérica.
+     * <p>
+     * Implementa um sistema de "invencibilidade temporária" (I-Frames). A vida só é reduzida
+     * se tiver passado tempo suficiente desde o último golpe recebido.
+     * </p>
      *
-     * @return uma lista contendo os objetos Behaviour ativos
      */
-    public ArrayList<Behaviour> getBehaviours() {
-        return this.behaviours;
+    public void damage(PVector other) {
+        if (this instanceof FalseKnight) super.damage();
+        else if (now - hitTime > I_FRAMES) {
+            health--;
+            hitTime = now;
+
+            int direction;
+            if (other.x > this.position.x) direction = -1;
+            else direction = 1;
+
+            this.setVelocity(new PVector(50 * direction, 100));
+        }
     }
 
     /**
@@ -111,41 +137,21 @@ public abstract class Enemy extends Entity {
     }
 
     /**
-     * Aplica um comportamento de direção específico ao inimigo.
+     * Verifica e atualiza a direção visual (esquerda/direita) baseada na velocidade horizontal atual.
      * <p>
-     * Atualiza o sensor visual, calcula a velocidade desejada ditada pelo comportamento
-     * e executa o movimento correspondente.
+     * Se a direção mudar, reinicia a animação e coloca o estado como {@code TURNING}.
      * </p>
-     *
-     * @param behaviour o comportamento a aplicar
-     * @param dt        o intervalo de tempo para a atualização física
      */
-    public void applyBehaviour(Behaviour behaviour, float dt) {
-        if (eye != null) eye.look();
-        PVector vd = behaviour.getDesiredVelocity(this);
-        move(dt, vd);
-    }
-
-    /**
-     * Aplica uma lista de comportamentos de direção ao inimigo.
-     * <p>
-     * Soma as velocidades desejadas de todos os comportamentos fornecidos na lista
-     * e executa o movimento resultante dessa combinação.
-     * </p>
-     *
-     * @param behaviours a lista de comportamentos a processar
-     * @param dt         o intervalo de tempo para a atualização física
-     */
-    public void applyBehaviours(List<Behaviour> behaviours, float dt) {
-        if (eye != null) eye.look();
-        PVector vd = new PVector();
-
-        for (Behaviour behaviour : behaviours) {
-            PVector vdd = behaviour.getDesiredVelocity(this);
-            vd.add(vdd);
+    protected void directionChange() {
+        if (state == State.IDLE) {
+            PVector vector = PVector.sub(getPosition(), this.getEye().getTarget().getPosition()).normalize();
+            currentDirection = vector.x < 0 ? KnightMovement.RIGHT : KnightMovement.LEFT;
+            if (currentDirection != latestDirection) {
+                resetAnimation();
+                state = State.TURNING;
+            }
+            latestDirection = currentDirection;
         }
-
-        move(dt, vd);
     }
 
     /**
@@ -167,36 +173,5 @@ public abstract class Enemy extends Entity {
                 spriteArray[x][y] = sprites.get(x * SPRITE_SIZE, y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
 
         this.sprite = spriteArray[0][0];
-    }
-
-    /**
-     * Aplica dano ao inimigo se o período de invencibilidade tiver passado.
-     * <p>
-     * Reduz a vida da entidade e atualiza o registo temporal do último golpe sofrido
-     * para gerir os "frames de invencibilidade" (I_FRAMES).
-     * </p>
-     *
-     * @param p     o contexto gráfico do Processing para acesso ao tempo
-     * @param other o vetor de posição da fonte do dano
-     */
-    public void damage(PApplet p, PVector other) {
-        if (p.millis() - lastTimeHit > I_FRAMES) {
-            health--;
-            lastTimeHit = p.millis();
-        }
-    }
-
-    /**
-     * Reinicia o ciclo de animação do sprite.
-     * <p>
-     * Coloca o índice do sprite a zero e define o tempo de referência da animação
-     * para o valor atual fornecido.
-     * </p>
-     *
-     * @param now o tempo atual em milissegundos
-     */
-    protected void resetAnimation(int now) {
-        this.spriteIndex = 0;
-        this.spriteTime = now;
     }
 }

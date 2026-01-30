@@ -9,11 +9,10 @@ import game.core.SubPlot;
  * </p>
  */
 public class LineSegment {
+    private final LineEquation equation;
+    private Point position;
     private final Point start;
     private final Point stop;
-    private final LineEquation equation;
-
-    private Point position;
 
     /**
      * Inicializa um novo segmento de reta.
@@ -33,6 +32,15 @@ public class LineSegment {
     }
 
     /**
+     * Recupera a posição global atual do segmento.
+     *
+     * @return o ponto de referência no mundo
+     */
+    public Point getPosition() {
+        return position;
+    }
+
+    /**
      * Obtém o ponto local onde o segmento começa.
      *
      * @return o objeto Point inicial
@@ -48,15 +56,6 @@ public class LineSegment {
      */
     public Point getStop() {
         return stop;
-    }
-
-    /**
-     * Recupera a posição global atual do segmento.
-     *
-     * @return o ponto de referência no mundo
-     */
-    public Point getPosition() {
-        return position;
     }
 
     /**

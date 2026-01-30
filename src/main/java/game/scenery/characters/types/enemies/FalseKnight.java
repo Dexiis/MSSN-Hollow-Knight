@@ -5,10 +5,11 @@ import game.scenery.characters.IVisualizable;
 import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.KnightMovement;
 import game.scenery.characters.types.State;
+import game.scenery.characters.types.enemies.attributes.Behaviour;
 import game.scenery.characters.types.enemies.attributes.DNA;
-import game.scenery.characters.types.enemies.attributes.bossBehaviours.BossAttack;
 import game.scenery.characters.types.enemies.attributes.bossBehaviours.JumpAttack;
 import game.scenery.characters.types.enemies.attributes.bossBehaviours.JumpFlee;
+import game.scenery.characters.types.enemies.attributes.bossBehaviours.NormalAttack;
 import game.scenery.components.hitbox.Hitbox;
 import game.scenery.components.hitbox.HurtBox;
 import game.scenery.components.hitbox.LinePainter;
@@ -16,6 +17,8 @@ import game.scenery.components.hitbox.Point;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
+
+import java.util.ArrayList;
 
 /**
  * Representa o chefe FalseKnight.
@@ -27,12 +30,16 @@ import processing.core.PVector;
  */
 public class FalseKnight extends Enemy implements IVisualizable {
     public static final float ATTACK_DURATION = 1000f;
+    public static final int JUMP_COOLDOWN = 2000;
 
-    private BossAttack bossAttack;
-    private JumpAttack jumpAttack;
-    private JumpFlee jumpFlee;
+    private float jumpTime = 0f;
 
     private HurtBox attack;
+
+    private NormalAttack normalAttack;
+    private JumpAttack jumpAttack;
+    private JumpFlee jumpFlee;
+    private ArrayList<Behaviour> behaviours = new ArrayList<>();
 
     private boolean grounded;
 
@@ -51,10 +58,15 @@ public class FalseKnight extends Enemy implements IVisualizable {
         this.hitbox = new Hitbox(new Point(position.x, position.y), 435, 280);
         this.mass = 1f;
         this.health = 30;
+        ATTACK_COOLDOWN = 2000;
 
-        this.bossAttack = new BossAttack(1);
+        this.normalAttack = new NormalAttack(1);
         this.jumpAttack = new JumpAttack(1);
         this.jumpFlee = new JumpFlee(1);
+
+        this.behaviours.add(normalAttack);
+        this.behaviours.add(jumpAttack);
+        this.behaviours.add(jumpFlee);
 
         PIXEL_CORRECTION = 200;
         SPRITE_SIZE = 800;
@@ -62,10 +74,6 @@ public class FalseKnight extends Enemy implements IVisualizable {
         super.spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
 
         this.dna = new DNA(this);
-
-        behaviours.add(bossAttack);
-        behaviours.add(jumpAttack);
-        behaviours.add(jumpFlee);
 
         //Enche o array de sprites iterativamente
         PImage sprites = p.loadImage("images/FalseKnightSprites.png");
@@ -78,13 +86,68 @@ public class FalseKnight extends Enemy implements IVisualizable {
     }
 
     /**
+     * Verifica se o chefe está no chão.
+     *
+     * @return {@code true} se estiver no chão, {@code false} caso contrário
+     */
+    public boolean isGrounded() {
+        return grounded;
+    }
+
+    /**
+     * Define se o chefe está no chão.
+     *
+     * @param grounded {@code true} se estiver no chão, {@code false} caso contrário
+     */
+    public void setGrounded(boolean grounded) {
+        this.grounded = grounded;
+    }
+
+    /**
+     * Aplica uma lista de comportamentos de direção ao inimigo.
+     * <p>
+     * Soma as velocidades desejadas de todos os comportamentos fornecidos na lista
+     * e executa o movimento resultante dessa combinação.
+     * </p>
+     *
+     * @param dt         o intervalo de tempo para a atualização física
+     */
+    /**
+     * Aplica uma lista de comportamentos de direção ao inimigo.
+     * <p>
+     * Soma as velocidades desejadas de todos os comportamentos fornecidos na lista
+     * e executa o movimento resultante dessa combinação.
+     * </p>
+     *
+     * @param dt o intervalo de tempo para a atualização física
+     */
+    public void applyBehaviours(float dt) {
+        if (getEye() != null) getEye().look();
+        PVector vd = new PVector();
+
+        for (Behaviour behaviour : behaviours) {
+            if (this.state == State.JUMPING && behaviour instanceof JumpFlee) {
+                PVector vdd = behaviour.getDesiredVelocity(this);
+                vd.add(vdd);
+            } else if (this.state == State.ATTACK && behaviour instanceof NormalAttack) {
+                PVector vdd = behaviour.getDesiredVelocity(this);
+                vd.add(vdd);
+            } else if (this.state == State.JUMP_ATTACK && behaviour instanceof JumpAttack) {
+                PVector vdd = behaviour.getDesiredVelocity(this);
+                vd.add(vdd);
+            }
+        }
+        move(dt, vd);
+    }
+
+    /**
      * Gere a máquina de estados finita (FSM) do chefe.
      * <p>
      * Verifica qual é o estado atual na variável {@code state} e invoca a função
      * correspondente. Atualiza também o registo do último estado conhecido.
      * </p>
      */
-    protected void stateMachine() {
+    private void stateMachine() { //TODO
         switch (state) {
             case State.IDLE:
                 idling();
@@ -125,17 +188,21 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * um salto ou um ataque aéreo. Atualiza a animação idle com base no tempo decorrido.
      * </p>
      */
-    protected void idling() {
-        if (!isAttacking() && bossAttack.checkBehaviour(this) && p.millis() - attackTime > ATTACK_COOLDOWN) {
+    private void idling() {
+        if (normalAttack.checkBehaviour(this) && now - attackTime > ATTACK_COOLDOWN) {
+            attackTime = now;
             state = State.ANTICIPATION;
-            resetAnimation(p.millis());
-        } else if (!isAttacking()) {
-            if (p.random(1) > 0.95f) state = State.JUMP;
-            if (p.random(1) < 0.10f) state = State.JUMP_ATTACK;
+            resetAnimation();
+        } else if (jumpAttack.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN) {
+            jumpTime = now;
+            if (p.random(1) > 0.80f) state = State.JUMP;
+            if (p.random(1) < 0.40f) state = State.JUMP_ATTACK;
+            resetAnimation();
         }
-        if (p.millis() - spriteTime > 120) { //TODO
+
+        if (now - spriteTime > 120) {
             this.sprite = spriteArray[spriteIndex][0];
-            spriteTime = p.millis();
+            spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 4) spriteIndex = 0;
         }
@@ -149,13 +216,13 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * ao estado idle.
      * </p>
      */
-    protected void turning() {
-        if (p.millis() - spriteTime > 120) { //TODO
+    private void turning() {
+        if (now - spriteTime > 120) {
             this.sprite = spriteArray[spriteIndex][1];
-            spriteTime = p.millis();
+            spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 1) {
-                multValue = currentDirection == KnightMovement.RIGHT ? -1 : 1;
+                multValue = currentDirection == KnightMovement.RIGHT ? 1 : -1;
                 spriteIndex = 0;
                 state = State.IDLE;
             }
@@ -170,15 +237,16 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * </p>
      */
     private void jumping() {
-        if (p.millis() - spriteTime > 120) { //TODO
+        if (now - spriteTime > 120) {
             this.sprite = spriteArray[spriteIndex][3];
-            spriteTime = p.millis();
+            spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 6) {
                 spriteIndex = 6;
                 if (isGrounded()) {
                     spriteIndex = 0;
                     state = State.LAND;
+                    jumpTime = now;
                 }
             }
         }
@@ -192,9 +260,9 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * </p>
      */
     private void landing() {
-        if (p.millis() - spriteTime > 120) { //TODO
+        if (now - spriteTime > 120) {
             this.sprite = spriteArray[spriteIndex][4];
-            spriteTime = p.millis();
+            spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 2) {
                 spriteIndex = 0;
@@ -210,10 +278,10 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * termina, transita para o estado de ataque.
      * </p>
      */
-    protected void anticipating() {
-        if (p.millis() - spriteTime > 80) { //TODO
+    private void anticipating() {
+        if (now - spriteTime > 80) {
             this.sprite = spriteArray[spriteIndex][5];
-            spriteTime = p.millis();
+            spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 5) {
                 spriteIndex = 0;
@@ -230,78 +298,15 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * o alvo sai do alcance.
      * </p>
      */
-    protected void attacking() { //TODO
+    private void attacking() {
         attack = attack(spriteIndex);
-        if (p.millis() - spriteTime > 120) {
+        if (now - spriteTime > 120) {
             this.sprite = spriteArray[spriteIndex][6];
-            spriteTime = p.millis();
+            spriteTime = now;
             spriteIndex++;
-            if (spriteIndex > 7) spriteIndex = 0;
-        }
-
-        if (!bossAttack.checkBehaviour(this)) {
-            state = State.IDLE;
-            attackTime = p.millis();
-        }
-    }
-
-    /**
-     * Gere o estado de ataque aéreo do chefe.
-     * <p>
-     * Gera a HurtBox de ataque durante o salto com base no frame atual.
-     * Executa a animação de ataque aéreo e retorna ao estado idle quando
-     * o alvo sai do alcance.
-     * </p>
-     */
-    private void jumpAttacking() {
-        attack = jumpAttack(spriteIndex);
-
-        if (p.millis() - spriteTime > 120) {
-            this.sprite = spriteArray[spriteIndex][7];
-            spriteTime = p.millis();
-            spriteIndex++;
-            if (spriteIndex > 9) spriteIndex = 0;
-        }
-
-        if (!bossAttack.checkBehaviour(this)) {
-            state = State.IDLE;
-            attackTime = p.millis();
-        }
-    }
-
-    /**
-     * Gere o estado de morte no chão do chefe.
-     * <p>
-     * Executa a animação de morte quando o chefe está no chão.
-     * Quando a animação termina, marca o chefe como morto.
-     * </p>
-     */
-    protected void landDeath() {
-        if (p.millis() - spriteTime > 120) {
-            this.sprite = spriteArray[spriteIndex][9];
-            spriteTime = p.millis();
-            spriteIndex++;
-            if (spriteIndex > 4) {
-                setDead(true);
-                spriteIndex = 0;
-            }
-        }
-    }
-
-    /**
-     * Gere o estado de morte em queda do chefe.
-     * <p>
-     * Executa a animação de morte quando o chefe está a cair.
-     * Quando a animação termina, marca o chefe como morto.
-     * </p>
-     */
-    protected void fallDeath() {
-        if (p.millis() - spriteTime > 120) {
-            this.sprite = spriteArray[spriteIndex][8];
-            spriteTime = p.millis();
-            spriteIndex++;
-            if (spriteIndex > 2) {
-                setDead(true);
+            if (spriteIndex > 7) {
+                state = State.IDLE;
+                attackTime = now;
                 spriteIndex = 0;
             }
         }
@@ -318,6 +323,30 @@ public class FalseKnight extends Enemy implements IVisualizable {
     }
 
     /**
+     * Gere o estado de ataque aéreo do chefe.
+     * <p>
+     * Gera a HurtBox de ataque durante o salto com base no frame atual.
+     * Executa a animação de ataque aéreo e retorna ao estado idle quando
+     * o alvo sai do alcance.
+     * </p>
+     */
+    private void jumpAttacking() {
+        attack = jumpAttack(spriteIndex);
+
+        if (now - spriteTime > 120) {
+            this.sprite = spriteArray[spriteIndex][7];
+            spriteTime = now;
+            spriteIndex++;
+            if (spriteIndex > 9) {
+                spriteIndex = 0;
+                state = State.IDLE;
+                jumpTime = now;
+            }
+        }
+
+    }
+
+    /**
      * Cria a HurtBox de ataque aéreo baseada no frame de animação atual.
      *
      * @param spriteIndex o índice do sprite atual
@@ -328,36 +357,41 @@ public class FalseKnight extends Enemy implements IVisualizable {
     }
 
     /**
-     * Define se o chefe está no chão.
-     *
-     * @param grounded {@code true} se estiver no chão, {@code false} caso contrário
-     */
-    public void setGrounded(boolean grounded) {
-        this.grounded = grounded;
-    }
-
-    /**
-     * Verifica se o chefe está no chão.
-     *
-     * @return {@code true} se estiver no chão, {@code false} caso contrário
-     */
-    public boolean isGrounded() {
-        return grounded;
-    }
-
-    /**
-     * Verifica e atualiza a direção visual (esquerda/direita) baseada na velocidade horizontal atual.
+     * Gere o estado de morte no chão do chefe.
      * <p>
-     * Se a direção mudar, reinicia a animação e coloca o estado como {@code TURNING}.
+     * Executa a animação de morte quando o chefe está no chão.
+     * Quando a animação termina, marca o chefe como morto.
      * </p>
      */
-    protected void directionChange() {
-        currentDirection = this.getVelocity().x < 0 ? KnightMovement.LEFT : KnightMovement.RIGHT;
-        if (currentDirection != latestDirection) {
-            resetAnimation(p.millis());
-            state = State.TURNING;
+    private void landDeath() {
+        if (now - spriteTime > 120) {
+            this.sprite = spriteArray[spriteIndex][9];
+            spriteTime = now;
+            spriteIndex++;
+            if (spriteIndex > 4) {
+                setDead(true);
+                spriteIndex = 0;
+            }
         }
-        latestDirection = currentDirection;
+    }
+
+    /**
+     * Gere o estado de morte em queda do chefe.
+     * <p>
+     * Executa a animação de morte quando o chefe está a cair.
+     * Quando a animação termina, marca o chefe como morto.
+     * </p>
+     */
+    private void fallDeath() {
+        if (now - spriteTime > 120) {
+            this.sprite = spriteArray[spriteIndex][8];
+            spriteTime = now;
+            spriteIndex++;
+            if (spriteIndex > 2) {
+                setDead(true);
+                spriteIndex = 0;
+            }
+        }
     }
 
     /**
@@ -375,16 +409,15 @@ public class FalseKnight extends Enemy implements IVisualizable {
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         this.hitbox.draw(painter, plt);
-        float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
+        float[] pp = plt.getPixelCoord(this.getPosition().x, this.getPosition().y);
 
         directionChange();
         stateMachine();
-        p.println(state);
 
         p.pushMatrix();
 
         p.translate(pp[0], pp[1]);
-        p.scale(0.7f);
+        p.scale(multValue * 0.7f, 0.7f);
         p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f - PIXEL_CORRECTION);
 
         p.popMatrix();

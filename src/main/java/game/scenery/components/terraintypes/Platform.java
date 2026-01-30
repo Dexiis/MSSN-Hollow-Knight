@@ -17,11 +17,10 @@ import processing.core.PVector;
  */
 public class Platform extends Terrain {
 
-    private static PImage sprite;
-    private static final int SPRITE_WIDTH = 270;
-
     private static final int PIXEL_CORRECTION_X = 2;
     private static final int PIXEL_CORRECTION_Y = 10;
+    private static final int SPRITE_WIDTH = 270;
+    private static PImage sprite;
 
     /**
      * Constrói uma nova plataforma com as dimensões especificadas.

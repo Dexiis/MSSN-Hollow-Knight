@@ -2,12 +2,10 @@ package game.scenery.characters.types.enemies.mobs;
 
 import game.core.SubPlot;
 import game.scenery.characters.IVisualizable;
-import game.scenery.characters.types.State;
 import game.scenery.characters.types.KnightMovement;
+import game.scenery.characters.types.State;
 import game.scenery.characters.types.enemies.Mob;
 import game.scenery.characters.types.enemies.attributes.DNA;
-import game.scenery.characters.types.enemies.attributes.enemyBehaviours.Seek;
-import game.scenery.characters.types.enemies.attributes.enemyBehaviours.Wander;
 import game.scenery.components.hitbox.Hitbox;
 import game.scenery.components.hitbox.LinePainter;
 import game.scenery.components.hitbox.Point;
@@ -26,6 +24,8 @@ import processing.core.PVector;
 public class Squit extends Mob implements IVisualizable {
     private float attackAngle;
 
+    protected boolean colliding = false;
+
     /**
      * Constrói um novo Squit na posição especificada.
      * <p>
@@ -42,40 +42,92 @@ public class Squit extends Mob implements IVisualizable {
         this.mass = 1f;
         this.health = 3;
 
-        IDLE_SPEED = 150f;
-        ATTACK_SPEED = 275f;
         ATTACK_COOLDOWN = 2000f;
+        ATTACK_DURATION = 3000f;
 
         PIXEL_CORRECTION = 0;
         SPRITE_SIZE = 150;
         super.spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
 
         this.dna = new DNA(this);
-        this.dna.setMaxSpeed(IDLE_SPEED);
-
-        this.behaviours.add(new Seek(1));
-        this.behaviours.add(new Wander(1));
-        this.behaviours.add(this.attackBehaviour);
+        IDLE_SPEED = this.dna.getMaxSpeed();
+        ATTACK_SPEED_BOOST = 2;
 
         loadSpriteSheet("images/SquitSprites.png", p, spriteArray);
     }
 
+    public void setColliding(boolean colliding) {
+        this.colliding = colliding;
+    }
+
     /**
-     * Gere o estado de viragem (turning) do inimigo.
+     * Gere o estado de antecipação antes do ataque.
      * <p>
-     * Executa a animação de mudança de direção. Quando a animação termina,
-     * atualiza o multiplicador de escala para inverter o sprite e retorna
+     * Executa a animação de preparação para o ataque. No final da animação,
+     * calcula o ângulo de ataque em direção ao alvo e transita para o estado
+     * de ataque.
+     * </p>
+     */
+    @Override
+    protected void anticipating() {
+        if (now - spriteTime > 80) {
+            this.sprite = spriteArray[spriteIndex][2];
+            spriteTime = now;
+            spriteIndex++;
+            if (spriteIndex > 5) {
+                spriteIndex = 0;
+                state = State.ATTACK;
+
+                PVector targetVector = PVector.sub(this.getEye().getTarget().getPosition(), this.getPosition()).normalize();
+                attackAngle = targetVector.heading();
+
+                this.getDna().setMaxSpeed(IDLE_SPEED * ATTACK_SPEED_BOOST);
+                this.getDna().setMaxForce(IDLE_SPEED * ATTACK_SPEED_BOOST);
+                applyBehaviour(attackBehaviour, dt);
+                attackTime = now;
+            }
+        }
+    }
+
+    /**
+     * Gere o estado de ataque do inimigo.
+     * <p>
+     * Define a velocidade máxima para a velocidade de ataque e executa a
+     * animação de ataque. Quando o alvo sai do alcance de ataque, retorna
      * ao estado idle.
      * </p>
      */
     @Override
-    protected void turning() {
-        if (p.millis() - spriteTime > 120) {
-            this.sprite = spriteArray[spriteIndex][5];
-            spriteTime = p.millis();
+    protected void attacking() {
+        if (now - spriteTime > 120) {
+            this.sprite = spriteArray[spriteIndex][3];
+            spriteTime = now;
             spriteIndex++;
-            if (spriteIndex > 1) {
-                multValue = currentDirection == KnightMovement.RIGHT ? -1 : 1;
+            if (spriteIndex > 2) spriteIndex = 0;
+        }
+
+        if (now - attackTime > ATTACK_DURATION) {
+            state = State.IDLE;
+            this.getDna().setMaxSpeed(IDLE_SPEED);
+            this.getDna().setMaxForce(IDLE_SPEED);
+        }
+    }
+
+    /**
+     * Gere o estado de morte do inimigo.
+     * <p>
+     * Executa a animação de morte. Quando a animação termina, marca o
+     * inimigo como morto e retorna ao estado idle.
+     * </p>
+     */
+    @Override
+    protected void death() {
+        if (now - spriteTime > 120) {
+            this.sprite = spriteArray[spriteIndex][4];
+            spriteTime = now;
+            spriteIndex++;
+            if (spriteIndex > 2) {
+                setDead(true);
                 spriteIndex = 0;
                 state = State.IDLE;
             }
@@ -92,41 +144,20 @@ public class Squit extends Mob implements IVisualizable {
      */
     @Override
     protected void idling() {
-        if (!isAttacking() && attackBehaviour.checkBehaviour(this) && p.millis() - attackTime > ATTACK_COOLDOWN) {
+        if (attackBehaviour.checkBehaviour(this) && now - attackTime > ATTACK_COOLDOWN) {
             state = State.STARTLED;
-            resetAnimation(p.millis());
+            resetAnimation();
         }
-        if (p.millis() - spriteTime > 120) {
+
+        if (now - spriteTime > 120) {
             this.sprite = spriteArray[spriteIndex][0];
-            spriteTime = p.millis();
+            spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 2) spriteIndex = 0;
         }
-    }
 
-    /**
-     * Gere o estado de ataque do inimigo.
-     * <p>
-     * Define a velocidade máxima para a velocidade de ataque e executa a
-     * animação de ataque. Quando o alvo sai do alcance de ataque, retorna
-     * ao estado idle.
-     * </p>
-     */
-    @Override
-    protected void attacking() {
-        this.getDna().setMaxSpeed(ATTACK_SPEED);
-        if (p.millis() - spriteTime > 120) {
-            this.sprite = spriteArray[spriteIndex][3];
-            spriteTime = p.millis();
-            spriteIndex++;
-            if (spriteIndex > 2) {
-                spriteIndex = 0;
-            }
-        }
-        if (!attackBehaviour.checkBehaviour(this)) {
-            state = State.IDLE;
-            attackTime = p.millis();
-        }
+        applyBehaviour(seekBehaviour, dt);
+        applyBehaviour(wanderBehaviour, dt);
     }
 
     /**
@@ -138,9 +169,9 @@ public class Squit extends Mob implements IVisualizable {
      */
     @Override
     protected void startled() {
-        if (p.millis() - spriteTime > 120) {
+        if (now - spriteTime > 120) {
             this.sprite = spriteArray[spriteIndex][1];
-            spriteTime = p.millis();
+            spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 3) {
                 spriteIndex = 0;
@@ -150,44 +181,21 @@ public class Squit extends Mob implements IVisualizable {
     }
 
     /**
-     * Gere o estado de antecipação antes do ataque.
+     * Gere o estado de viragem (turning) do inimigo.
      * <p>
-     * Executa a animação de preparação para o ataque. No final da animação,
-     * calcula o ângulo de ataque em direção ao alvo e transita para o estado
-     * de ataque.
+     * Executa a animação de mudança de direção. Quando a animação termina,
+     * atualiza o multiplicador de escala para inverter o sprite e retorna
+     * ao estado idle.
      * </p>
      */
     @Override
-    protected void anticipating() {
-        if (p.millis() - spriteTime > 80) {
-            this.sprite = spriteArray[spriteIndex][2];
-            spriteTime = p.millis();
+    protected void turning() {
+        if (now - spriteTime > 120) {
+            this.sprite = spriteArray[spriteIndex][5];
+            spriteTime = now;
             spriteIndex++;
-            if (spriteIndex > 5) {
-                spriteIndex = 0;
-                state = State.ATTACK;
-
-                PVector targetVector = PVector.sub(this.getEye().getTarget().getPosition(), this.getPosition()).normalize();
-                attackAngle = targetVector.heading();
-            }
-        }
-    }
-
-    /**
-     * Gere o estado de morte do inimigo.
-     * <p>
-     * Executa a animação de morte. Quando a animação termina, marca o
-     * inimigo como morto e retorna ao estado idle.
-     * </p>
-     */
-    @Override
-    protected void death() {
-        if (p.millis() - spriteTime > 120) {
-            this.sprite = spriteArray[spriteIndex][4];
-            spriteTime = p.millis();
-            spriteIndex++;
-            if (spriteIndex > 2) {
-                setDead(true);
+            if (spriteIndex > 1) {
+                multValue = currentDirection == KnightMovement.RIGHT ? -1 : 1;
                 spriteIndex = 0;
                 state = State.IDLE;
             }
@@ -210,16 +218,14 @@ public class Squit extends Mob implements IVisualizable {
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         this.hitbox.draw(painter, plt);
-        float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
+        float[] pp = plt.getPixelCoord(this.getPosition().x, this.getPosition().y);
 
-        setAttacking(state == State.ATTACK);
-        this.getDna().setMaxSpeed(IDLE_SPEED);
-        if (isColliding()) state = State.IDLE;
+        if (colliding) state = State.IDLE;
 
         directionChange();
 
         if (isDying()) state = State.DEATH;
-        if (state != latestState) resetAnimation(p.millis());
+        if (state != latestState) resetAnimation();
 
         stateMachine();
 

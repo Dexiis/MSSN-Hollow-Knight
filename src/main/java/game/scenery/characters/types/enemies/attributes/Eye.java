@@ -21,8 +21,8 @@ import java.util.List;
 public class Eye {
     private List<Entity> allTrackingBodies = new ArrayList<>();
     private List<Entity> farSight = new ArrayList<>();
-    private List<Entity> nearSight = new ArrayList<>();
     private final Enemy me;
+    private List<Entity> nearSight = new ArrayList<>();
     protected Entity target;
 
     /**
@@ -41,35 +41,6 @@ public class Eye {
         addTarget(target);
     }
 
-
-
-    /**
-     * Define o alvo principal que a entidade deve tentar localizar ou perseguir.
-     *
-     * @param target a entidade alvo
-     */
-    public void setTarget(Entity target) {
-        this.target = target;
-    }
-
-    /**
-     * Obtém a referência para o alvo atual.
-     *
-     * @return a entidade alvo
-     */
-    public Entity getTarget() {
-        return target;
-    }
-
-    /**
-     * Define a lista completa de todas as entidades que este olho deve monitorizar.
-     *
-     * @param allTrackingBodies lista de entidades rastreáveis
-     */
-    public void setAllTrackingBodies(List<Entity> allTrackingBodies) {
-        this.allTrackingBodies = allTrackingBodies;
-    }
-
     /**
      * Obtém a lista de todas as entidades que estão configuradas para serem rastreadas.
      *
@@ -77,15 +48,6 @@ public class Eye {
      */
     public List<Entity> getAllTrackingBodies() {
         return allTrackingBodies;
-    }
-
-    /**
-     * Adiciona uma nova entidade específica à lista de corpos a rastrear.
-     *
-     * @param target a entidade a adicionar
-     */
-    public void addTarget(Entity target) {
-        this.allTrackingBodies.add(target);
     }
 
     /**
@@ -113,67 +75,39 @@ public class Eye {
     }
 
     /**
-     * Executa o processo de perceção visual.
-     * <p>
-     * Limpa as memórias visuais anteriores e itera sobre todas as entidades rastreáveis.
-     * Para cada uma, verifica se se encontra dentro dos limites de visão (longe ou perto)
-     * definidos no DNA e atualiza as listas correspondentes.
-     * </p>
+     * Obtém a referência para o alvo atual.
+     *
+     * @return a entidade alvo
      */
-    public void look() {
-        farSight = new ArrayList<Entity>();
-        nearSight = new ArrayList<Entity>();
-        for (Entity character : allTrackingBodies) {
-            if (farSight(character.getPosition())) farSight.add(character);
-            if (nearSight(character.getPosition())) nearSight.add(character);
-        }
+    public Entity getTarget() {
+        return target;
     }
 
     /**
-     * Verifica se uma posição específica está dentro do alcance de visão distante.
-     * <p>
-     * Utiliza a distância e ângulo de visão definidos no DNA da entidade.
-     * </p>
+     * Define a lista completa de todas as entidades que este olho deve monitorizar.
      *
-     * @param t o vetor de posição a verificar
-     * @return {@code true} se estiver visível, {@code false} caso contrário
+     * @param allTrackingBodies lista de entidades rastreáveis
      */
-    private boolean farSight(PVector t) {
-        return inSight(t, me.getDna().visionDistance, me.getDna().visionAngle);
+    public void setAllTrackingBodies(List<Entity> allTrackingBodies) {
+        this.allTrackingBodies = allTrackingBodies;
     }
 
     /**
-     * Verifica se uma posição específica está dentro do alcance de visão curta.
-     * <p>
-     * Representa a zona de ataque. Utiliza a distância e ângulo de ataque
-     * definidos no DNA da entidade.
-     * </p>
+     * Define o alvo principal que a entidade deve tentar localizar ou perseguir.
      *
-     * @param t o vetor de posição a verificar
-     * @return {@code true} se estiver ao alcance, {@code false} caso contrário
+     * @param target a entidade alvo
      */
-    private boolean nearSight(PVector t) {
-        return inSight(t, me.getDna().visionAttack, me.getDna().visionAttackAngle);
+    public void setTarget(Entity target) {
+        this.target = target;
     }
 
     /**
-     * Cálculo matemático auxiliar para determinar a visibilidade.
-     * <p>
-     * Calcula o vetor relativo ao alvo, a magnitude da distância e o ângulo em relação
-     * ao vetor de velocidade atual da entidade para validar se o ponto está dentro
-     * do cone cónico definido.
-     * </p>
+     * Adiciona uma nova entidade específica à lista de corpos a rastrear.
      *
-     * @param t           a posição do alvo
-     * @param maxDistance a distância máxima de perceção
-     * @param maxAngle    o ângulo máximo de abertura da visão (metade do cone)
-     * @return {@code true} se o ponto cumprir os critérios geométricos
+     * @param target a entidade a adicionar
      */
-    private boolean inSight(PVector t, float maxDistance, float maxAngle) {
-        PVector r = PVector.sub(t, me.getPosition());
-        float d = r.mag();
-        float angle = PVector.angleBetween(r, me.getVelocity());
-        return ((d > 0) && (d < maxDistance) && (angle < maxAngle));
+    public void addTarget(Entity target) {
+        this.allTrackingBodies.add(target);
     }
 
     /**
@@ -221,5 +155,69 @@ public class Eye {
         }
         p.popMatrix();
         p.popStyle();
+    }
+
+    /**
+     * Executa o processo de perceção visual.
+     * <p>
+     * Limpa as memórias visuais anteriores e itera sobre todas as entidades rastreáveis.
+     * Para cada uma, verifica se se encontra dentro dos limites de visão (longe ou perto)
+     * definidos no DNA e atualiza as listas correspondentes.
+     * </p>
+     */
+    public void look() {
+        farSight = new ArrayList<Entity>();
+        nearSight = new ArrayList<Entity>();
+        for (Entity character : allTrackingBodies) {
+            if (farSight(character.getPosition())) farSight.add(character);
+            if (nearSight(character.getPosition())) nearSight.add(character);
+        }
+    }
+
+    /**
+     * Verifica se uma posição específica está dentro do alcance de visão distante.
+     * <p>
+     * Utiliza a distância e ângulo de visão definidos no DNA da entidade.
+     * </p>
+     *
+     * @param t o vetor de posição a verificar
+     * @return {@code true} se estiver visível, {@code false} caso contrário
+     */
+    private boolean farSight(PVector t) {
+        return inSight(t, me.getDna().visionDistance, me.getDna().visionAngle);
+    }
+
+    /**
+     * Cálculo matemático auxiliar para determinar a visibilidade.
+     * <p>
+     * Calcula o vetor relativo ao alvo, a magnitude da distância e o ângulo em relação
+     * ao vetor de velocidade atual da entidade para validar se o ponto está dentro
+     * do cone cónico definido.
+     * </p>
+     *
+     * @param t           a posição do alvo
+     * @param maxDistance a distância máxima de perceção
+     * @param maxAngle    o ângulo máximo de abertura da visão (metade do cone)
+     * @return {@code true} se o ponto cumprir os critérios geométricos
+     */
+    private boolean inSight(PVector t, float maxDistance, float maxAngle) {
+        PVector r = PVector.sub(t, me.getPosition());
+        float d = r.mag();
+        float angle = PVector.angleBetween(r, me.getVelocity());
+        return ((d > 0) && (d < maxDistance) && (angle < maxAngle));
+    }
+
+    /**
+     * Verifica se uma posição específica está dentro do alcance de visão curta.
+     * <p>
+     * Representa a zona de ataque. Utiliza a distância e ângulo de ataque
+     * definidos no DNA da entidade.
+     * </p>
+     *
+     * @param t o vetor de posição a verificar
+     * @return {@code true} se estiver ao alcance, {@code false} caso contrário
+     */
+    private boolean nearSight(PVector t) {
+        return inSight(t, me.getDna().visionAttack, me.getDna().visionAttackAngle);
     }
 }

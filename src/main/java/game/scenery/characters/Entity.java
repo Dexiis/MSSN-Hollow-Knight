@@ -1,7 +1,6 @@
 package game.scenery.characters;
 
 import game.scenery.components.hitbox.Hitbox;
-import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 
@@ -14,7 +13,6 @@ import processing.core.PVector;
  * </p>
  */
 public abstract class Entity extends Movement implements IVisualizable {
-
     protected PImage[][] spriteArray;
     protected int PIXEL_CORRECTION;
     protected int spriteIndex = 0;
@@ -25,15 +23,15 @@ public abstract class Entity extends Movement implements IVisualizable {
 
     protected int I_FRAMES;
     protected float attackTime = 0f;
-    protected float lastTimeHit;
+    protected float hitTime;
     protected int health;
 
-    private boolean attacking = false;
-    private boolean colliding = false;
-    private boolean dead = false;
+    protected boolean dead = false;
 
-    protected boolean stunned = false;
-    protected float stunnedTimer = 0f;
+    public float ATTACK_DURATION;
+
+    protected int now;
+    protected float dt = 1;
 
     protected Hitbox hitbox;
 
@@ -68,24 +66,6 @@ public abstract class Entity extends Movement implements IVisualizable {
     }
 
     /**
-     * Verifica se a entidade está atualmente a executar um ataque.
-     *
-     * @return {@code true} se estiver num estado ofensivo, {@code false} caso contrário
-     */
-    public boolean isAttacking() {
-        return attacking;
-    }
-
-    /**
-     * Verifica se a entidade está num estado de colisão com outro objeto.
-     *
-     * @return {@code true} se estiver a colidir, {@code false} caso contrário
-     */
-    public boolean isColliding() {
-        return colliding;
-    }
-
-    /**
      * Verifica se a entidade está marcada como morta.
      * <p>
      * Este estado indica tipicamente que a animação de morte já terminou e a entidade
@@ -112,24 +92,6 @@ public abstract class Entity extends Movement implements IVisualizable {
     }
 
     /**
-     * Define o estado ofensivo da entidade.
-     *
-     * @param attacking {@code true} para iniciar o ataque, {@code false} para terminar
-     */
-    public void setAttacking(boolean attacking) {
-        this.attacking = attacking;
-    }
-
-    /**
-     * Define o estado de colisão da entidade.
-     *
-     * @param colliding o novo estado de colisão
-     */
-    public void setColliding(boolean colliding) {
-        this.colliding = colliding;
-    }
-
-    /**
      * Marca a entidade como morta.
      *
      * @param dead o novo estado de morte
@@ -153,33 +115,24 @@ public abstract class Entity extends Movement implements IVisualizable {
         this.hitbox.setPosition(position);
     }
 
+    public void updateTime(float dt, int now) {
+        this.dt = dt;
+        this.now = now;
+    }
+
     /**
      * Aplica dano à entidade de forma genérica.
      * <p>
      * Implementa um sistema de "invencibilidade temporária" (I-Frames). A vida só é reduzida
      * se tiver passado tempo suficiente desde o último golpe recebido.
      * </p>
-     *
-     * @param p o contexto gráfico para verificar o tempo atual
      */
-    public void damage(PApplet p) {
-        if (p.millis() - lastTimeHit > I_FRAMES) {
+    public void damage() {
+        if (now - hitTime > I_FRAMES) {
             health--;
-            lastTimeHit = p.millis();
+            hitTime = now;
         }
     }
-
-    /**
-     * Aplica dano à entidade considerando a origem do ataque.
-     * <p>
-     * Deve ser implementado pelas subclasses para gerir reações específicas,
-     * como a direção do recuo (knockback).
-     * </p>
-     *
-     * @param p     o contexto gráfico para verificar o tempo atual
-     * @param other o vetor de posição da origem do dano
-     */
-    public abstract void damage(PApplet p, PVector other);
 
     /**
      * Atualiza a posição física da entidade baseada no intervalo de tempo.
@@ -194,5 +147,18 @@ public abstract class Entity extends Movement implements IVisualizable {
     public void move(float dt) {
         super.move(dt);
         if (hitbox != null) hitbox.setPosition(position);
+    }
+
+    /**
+     * Reinicia o ciclo de animação do sprite.
+     * <p>
+     * Coloca o índice do sprite a zero e define o tempo de referência da animação
+     * para o valor atual fornecido.
+     * </p>
+     *
+     */
+    public void resetAnimation() {
+        this.spriteIndex = 0;
+        this.spriteTime = now;
     }
 }

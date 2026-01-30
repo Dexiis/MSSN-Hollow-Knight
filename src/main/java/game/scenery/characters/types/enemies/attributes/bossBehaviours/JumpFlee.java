@@ -18,7 +18,9 @@ public class JumpFlee extends Behaviour {
         super(weight);
     }
 
-    public PVector getDesiredVelocity(Enemy me) { //TODO Fazer lógica
+    public PVector getDesiredVelocity(Enemy me) {
+        if (checkBehaviour(me))
+            return new PVector((me.getEye().getTarget().getPosition().x - me.getPosition().x) * 2 / 3, 300);
         return new PVector(0, 0);
     }
 

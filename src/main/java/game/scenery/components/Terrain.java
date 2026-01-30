@@ -5,6 +5,7 @@ import game.scenery.characters.Entity;
 import game.scenery.characters.IVisualizable;
 import game.scenery.characters.types.TheKnight;
 import game.scenery.characters.types.enemies.FalseKnight;
+import game.scenery.characters.types.enemies.mobs.Squit;
 import game.scenery.components.hitbox.Hitbox;
 import game.scenery.components.hitbox.LinePainter;
 import game.scenery.components.hitbox.Point;
@@ -35,6 +36,22 @@ public class Terrain extends Hitbox implements IVisualizable {
     }
 
     /**
+     * Desenha o terreno no ecrã.
+     * <p>
+     * Delega a renderização para a classe pai Hitbox.
+     * </p>
+     *
+     * @param p       o contexto gráfico do Processing
+     * @param painter o objeto responsável pelo desenho das linhas
+     * @param plt     o objeto SubPlot para conversão de coordenadas
+     */
+    @Override
+    public void display(PApplet p, LinePainter painter, SubPlot plt) {
+        //TODO SPRITES???
+        draw(painter, plt);
+    }
+
+    /**
      * Calcula e resolve a resposta física à colisão com uma entidade.
      * <p>
      * Reposiciona a entidade fora do terreno e anula a velocidade no eixo da colisão.
@@ -58,7 +75,8 @@ public class Terrain extends Hitbox implements IVisualizable {
         float overlapY = combinedHalfH - Math.abs(dy);
 
         if (overlapX > 0 && overlapY > 0) {
-            entity.setColliding(true);
+
+            if (entity instanceof Squit) ((Squit) entity).setColliding(true);
             if (overlapX < overlapY) {
                 entity.setVelocity(new PVector(0, entity.getVelocity().y));
 
@@ -81,21 +99,5 @@ public class Terrain extends Hitbox implements IVisualizable {
                 entity.setPosition(new PVector(entity.getPosition().x, newY));
             }
         }
-    }
-
-    /**
-     * Desenha o terreno no ecrã.
-     * <p>
-     * Delega a renderização para a classe pai Hitbox.
-     * </p>
-     *
-     * @param p       o contexto gráfico do Processing
-     * @param painter o objeto responsável pelo desenho das linhas
-     * @param plt     o objeto SubPlot para conversão de coordenadas
-     */
-    @Override
-    public void display(PApplet p, LinePainter painter, SubPlot plt) {
-        //TODO SPRITES???
-        draw(painter, plt);
     }
 }

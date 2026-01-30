@@ -14,8 +14,6 @@ import processing.core.PVector;
  */
 public class Attack extends Behaviour {
 
-    private PVector targetPosition;
-
     /**
      * Constrói um novo comportamento de ataque com o peso especificado.
      *
@@ -37,14 +35,9 @@ public class Attack extends Behaviour {
      * @return o vetor de velocidade de ataque ou (0,0) se o ataque terminar
      */
     public PVector getDesiredVelocity(Enemy me) {
-        if (checkBehaviour(me)) {
-            if (me.isAttacking())
-                return PVector.mult(PVector.sub(targetPosition, me.getPosition()), Enemy.ATTACK_SPEED);
-            else targetPosition = me.getEye().getTarget().getPosition();
-        }
+        if (checkBehaviour(me)) return PVector.sub(me.getEye().getTarget().getPosition(), me.getPosition());
 
-        me.setAttacking(false);
-        return new PVector(0, 0);
+        return new PVector();
     }
 
     /**

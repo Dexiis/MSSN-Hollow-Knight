@@ -8,16 +8,13 @@ package game.scenery.components.hitbox;
  */
 public class LineEquation {
 
+    private Point position;
     private final Point start;
     private final Point stop;
-
-    private Point position;
-
-    private float k;
     private float a;
-
-    private boolean isVertical;
+    private float k;
     private float verticalX;
+    private boolean isVertical;
 
     /**
      * Inicializa a estrutura da equação linear com base num segmento de reta.
@@ -34,12 +31,13 @@ public class LineEquation {
     }
 
     /**
-     * Atualiza o ponto de referência global da equação.
+     * Determina o valor da coordenada Y para um dado X.
      *
-     * @param position o novo ponto de posição no mundo
+     * @param x a coordenada horizontal de entrada
+     * @return o valor resultante de Y
      */
-    public void setPosition(Point position) {
-        this.position = position;
+    public float calculate(float x) {
+        return k * x + a;
     }
 
     /**
@@ -64,6 +62,15 @@ public class LineEquation {
             k = (y2 - y1) / (x2 - x1);
             a = y1 - (k * x1);
         }
+    }
+
+    /**
+     * Atualiza o ponto de referência global da equação.
+     *
+     * @param position o novo ponto de posição no mundo
+     */
+    public void setPosition(Point position) {
+        this.position = position;
     }
 
     /**
@@ -97,15 +104,5 @@ public class LineEquation {
         }
 
         return new Point(intersectX, intersectY);
-    }
-
-    /**
-     * Determina o valor da coordenada Y para um dado X.
-     *
-     * @param x a coordenada horizontal de entrada
-     * @return o valor resultante de Y
-     */
-    public float calculate(float x) {
-        return k * x + a;
     }
 }

@@ -36,7 +36,6 @@ public class DeathPlatform extends Terrain {
         super.elaborateIntersects(entity);
     }
 
-
     /**
      * Gere a interseção específica com o terreno letal.
      * <p>
@@ -48,7 +47,7 @@ public class DeathPlatform extends Terrain {
     public void intersected(Entity entity) {
         if (super.intersected(entity.getHitbox())) {
             if (entity instanceof TheKnight) {
-                entity.damage(p);
+                entity.damage();
                 entity.setPosition(new PVector(50, 800));
                 entity.setVelocity(new PVector(0, 0));
                 entity.setAcceleration(new PVector(0, 0));

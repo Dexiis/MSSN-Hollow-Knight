@@ -11,10 +11,9 @@ import java.util.ArrayList;
 
 public class Background {
 
+    private final ArrayList<Flock> flock = new ArrayList<>();
     private final PApplet p;
     private final SubPlot plt;
-
-    private final ArrayList<Flock> flock = new ArrayList<>();
 
     /**
      * Gere o fundo dinâmico do jogo.
@@ -34,6 +33,15 @@ public class Background {
     }
 
     /**
+     * Devolve a lista do bando.
+     *
+     * @return a lista de entidades do bando
+     */
+    public ArrayList<Flock> getFlock() {
+        return flock;
+    }
+
+    /**
      * Exibe o fundo baseado na posição.
      *
      * @param position a posição para calcular o fractal
@@ -44,12 +52,12 @@ public class Background {
     }
 
     /**
-     * Devolve a lista do bando.
-     *
-     * @return a lista de entidades do bando
+     * Desenha todas as entidades do bando.
      */
-    public ArrayList<Flock> getFlock() {
-        return flock;
+    private void drawFlock() {
+        for (Flock f : flock) {
+            f.display(p, plt);
+        }
     }
 
     /**
@@ -92,15 +100,6 @@ public class Background {
             }
         
         p.updatePixels();
-    }
-
-    /**
-     * Desenha todas as entidades do bando.
-     */
-    private void drawFlock() {
-        for (Flock f : flock) {
-            f.display(p, plt);
-        }
     }
 
     /**

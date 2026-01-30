@@ -23,15 +23,12 @@ import java.util.ArrayList;
  * </p>
  */
 public class Flock extends Movement {
-    private final int SPRITE_SIZE = 150;
-    private final PImage sprite;
-
+    private final ArrayList<Behaviour> behaviours = new ArrayList<>();
     private final DNA dna;
     private FlockEye eye;
-
+    private final PImage sprite;
     private final double[] window;
-
-    private final ArrayList<Behaviour> behaviours = new ArrayList<>();
+    private final int SPRITE_SIZE = 150;
 
     /**
      * Constrói um novo Flock na posição especificada.
@@ -61,6 +58,43 @@ public class Flock extends Movement {
     }
 
     /**
+     * Devolve o DNA do bando.
+     *
+     * @return o DNA associado ao bando
+     */
+    public DNA getDna() {
+        return dna;
+    }
+
+    /**
+     * Devolve o olho do bando.
+     *
+     * @return o olho associado ao bando
+     */
+    public FlockEye getEye() {
+        return eye;
+    }
+
+    /**
+     * Define o olho do bando.
+     *
+     * @param eye o olho a definir
+     */
+    public void setEye(FlockEye eye) {
+        this.eye = eye;
+    }
+
+    /**
+     * Define manualmente a posição do bando.
+     *
+     * @param position o novo vetor de posição
+     */
+    @Override
+    public void setPosition(PVector position) {
+        this.position = position;
+    }
+
+    /**
      * Aplica os comportamentos coletivos ao bando.
      * <p>
      * Calcula a velocidade desejada baseada nos comportamentos ativos,
@@ -85,62 +119,28 @@ public class Flock extends Movement {
     }
 
     /**
-     * Devolve o olho do bando.
-     *
-     * @return o olho associado ao bando
-     */
-    public FlockEye getEye() {
-        return eye;
-    }
-
-    /**
-     * Define o olho do bando.
-     *
-     * @param eye o olho a definir
-     */
-    public void setEye(FlockEye eye) {
-        this.eye = eye;
-    }
-
-    /**
-     * Devolve o DNA do bando.
-     *
-     * @return o DNA associado ao bando
-     */
-    public DNA getDna() {
-        return dna;
-    }
-
-    /**
-     * Move o bando com a velocidade desejada.
+     * Exibe o bando no ecrã.
      * <p>
-     * Normaliza a velocidade desejada, aplica forças e gere o movimento toroidal.
+     * Desenha o sprite do bando com transparência e escala reduzida.
      * </p>
      *
-     * @param dt o intervalo de tempo decorrido
-     * @param vd a velocidade desejada
+     * @param p   o contexto gráfico do Processing
+     * @param plt o subplot onde desenhar
      */
-    public void move(float dt, PVector vd) {
-        vd.normalize().mult(dna.getMaxSpeed());
-        PVector fs = PVector.sub(vd, velocity);
-        applyForce(fs.limit(dna.getMaxForce()));
+    public void display(PApplet p, SubPlot plt) {
+        float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
 
-        super.move(dt);
+        p.pushMatrix();
+        p.pushStyle();
 
-        if (position.x < window[0]) position.x += (float) (window[1] - window[0]);
-        if (position.y < window[2]) position.y += (float) (window[3] - window[2]);
-        if (position.x >= window[1]) position.x -= (float) (window[1] - window[0]);
-        if (position.y >= window[3]) position.y -= (float) (window[3] - window[2]);
-    }
+        p.translate(pp[0], pp[1]);
+        p.scale(0.2f, 0.2f);
 
-    /**
-     * Define manualmente a posição do bando.
-     *
-     * @param position o novo vetor de posição
-     */
-    @Override
-    public void setPosition(PVector position) {
-        this.position = position;
+        p.tint(255, 100);
+        p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f);
+
+        p.popStyle();
+        p.popMatrix();
     }
 
     /**
@@ -172,6 +172,28 @@ public class Flock extends Movement {
     }
 
     /**
+     * Move o bando com a velocidade desejada.
+     * <p>
+     * Normaliza a velocidade desejada, aplica forças e gere o movimento toroidal.
+     * </p>
+     *
+     * @param dt o intervalo de tempo decorrido
+     * @param vd a velocidade desejada
+     */
+    public void move(float dt, PVector vd) {
+        vd.normalize().mult(dna.getMaxSpeed());
+        PVector fs = PVector.sub(vd, velocity);
+        applyForce(fs.limit(dna.getMaxForce()));
+
+        super.move(dt);
+
+        if (position.x < window[0]) position.x += (float) (window[1] - window[0]);
+        if (position.y < window[2]) position.y += (float) (window[3] - window[2]);
+        if (position.x >= window[1]) position.x -= (float) (window[1] - window[0]);
+        if (position.y >= window[3]) position.y -= (float) (window[3] - window[2]);
+    }
+
+    /**
      * Atualiza a posição física do bando baseada no tempo delta.
      *
      * @param dt o intervalo de tempo decorrido
@@ -179,30 +201,5 @@ public class Flock extends Movement {
     @Override
     public void move(float dt) {
         super.move(dt);
-    }
-
-    /**
-     * Exibe o bando no ecrã.
-     * <p>
-     * Desenha o sprite do bando com transparência e escala reduzida.
-     * </p>
-     *
-     * @param p   o contexto gráfico do Processing
-     * @param plt o subplot onde desenhar
-     */
-    public void display(PApplet p, SubPlot plt) {
-        float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
-
-        p.pushMatrix();
-        p.pushStyle();
-
-        p.translate(pp[0], pp[1]);
-        p.scale(0.2f, 0.2f);
-
-        p.tint(255, 100);
-        p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f);
-
-        p.popStyle();
-        p.popMatrix();
     }
 }

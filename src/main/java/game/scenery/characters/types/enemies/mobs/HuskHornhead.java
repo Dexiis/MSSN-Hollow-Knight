@@ -2,12 +2,10 @@ package game.scenery.characters.types.enemies.mobs;
 
 import game.core.SubPlot;
 import game.scenery.characters.IVisualizable;
-import game.scenery.characters.types.State;
 import game.scenery.characters.types.KnightMovement;
+import game.scenery.characters.types.State;
 import game.scenery.characters.types.enemies.Mob;
 import game.scenery.characters.types.enemies.attributes.DNA;
-import game.scenery.characters.types.enemies.attributes.enemyBehaviours.Seek;
-import game.scenery.characters.types.enemies.attributes.enemyBehaviours.Wander;
 import game.scenery.components.hitbox.Hitbox;
 import game.scenery.components.hitbox.LinePainter;
 import game.scenery.components.hitbox.Point;
@@ -41,66 +39,18 @@ public class HuskHornhead extends Mob implements IVisualizable {
         this.mass = 1f;
         this.health = 5;
 
-        IDLE_SPEED = 75f;
-        ATTACK_SPEED = 300f;
         ATTACK_COOLDOWN = 2000f;
+        ATTACK_DURATION = 3000f;
 
         SPRITE_SIZE = 150;
         PIXEL_CORRECTION = 7;
         super.spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
 
         this.dna = new DNA(this);
-        this.dna.setMaxSpeed(IDLE_SPEED);
-
-        this.behaviours.add(new Seek(1));
-        this.behaviours.add(new Wander(1));
-        this.behaviours.add(this.attackBehaviour);
+        IDLE_SPEED = this.dna.getMaxSpeed();
+        ATTACK_SPEED_BOOST = 2;
 
         loadSpriteSheet("images/HuskSprites.png", p, spriteArray);
-    }
-
-    /**
-     * Gere o estado de inatividade (idle) do inimigo.
-     * <p>
-     * Verifica se as condições para iniciar um ataque estão reunidas e,
-     * caso positivo, transita para o estado de antecipação. Atualiza a
-     * animação idle com base no tempo decorrido.
-     * </p>
-     */
-    @Override
-    protected void idling() {
-        if (!isAttacking() && attackBehaviour.checkBehaviour(this) && p.millis() - attackTime > ATTACK_COOLDOWN) {
-            state = State.ANTICIPATION;
-            resetAnimation(p.millis());
-        }
-        if (p.millis() - spriteTime > 120) {
-            this.sprite = spriteArray[spriteIndex][0];
-            spriteTime = p.millis();
-            spriteIndex++;
-            if (spriteIndex > 5) spriteIndex = 0;
-        }
-    }
-
-    /**
-     * Gere o estado de viragem (turning) do inimigo.
-     * <p>
-     * Executa a animação de mudança de direção. Quando a animação termina,
-     * atualiza o multiplicador de escala para inverter o sprite e retorna
-     * ao estado idle.
-     * </p>
-     */
-    @Override
-    protected void turning() {
-        if (p.millis() - spriteTime > 120) {
-            this.sprite = spriteArray[spriteIndex][1];
-            spriteTime = p.millis();
-            spriteIndex++;
-            if (spriteIndex > 1) {
-                multValue = currentDirection == KnightMovement.RIGHT ? -1 : 1;
-                spriteIndex = 0;
-                state = State.IDLE;
-            }
-        }
     }
 
     /**
@@ -113,16 +63,22 @@ public class HuskHornhead extends Mob implements IVisualizable {
      */
     @Override
     protected void anticipating() {
-        if (p.millis() - spriteTime > 80) {
+        if (now - spriteTime > 80) {
             this.sprite = spriteArray[spriteIndex][2];
-            spriteTime = p.millis();
+            spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 4) {
                 spriteIndex = 0;
+
                 this.hitbox = new Hitbox(new Point(position.x, position.y), 95, 65);
                 this.position = new PVector(position.x, position.y - 22);
                 PIXEL_CORRECTION = -31;
+
                 state = State.ATTACK;
+                this.getDna().setMaxSpeed(IDLE_SPEED * ATTACK_SPEED_BOOST);
+                this.getDna().setMaxForce(IDLE_SPEED * ATTACK_SPEED_BOOST);
+                applyBehaviour(attackBehaviour, dt);
+                attackTime = now;
             }
         }
     }
@@ -137,21 +93,19 @@ public class HuskHornhead extends Mob implements IVisualizable {
      */
     @Override
     protected void attacking() {
-        this.getDna().setMaxSpeed(ATTACK_SPEED);
-        if (p.millis() - spriteTime > 120) {
+        if (now - spriteTime > 120) {
             this.sprite = spriteArray[spriteIndex][3];
-            spriteTime = p.millis();
+            spriteTime = now;
             spriteIndex++;
-            if (spriteIndex > 3) {
-                spriteIndex = 0;
-            }
+            if (spriteIndex > 3) spriteIndex = 0;
         }
-        if (!attackBehaviour.checkBehaviour(this)) {
-            this.hitbox = new Hitbox(new Point(position.x, position.y), 85, 110);
-            this.position = new PVector(position.x, position.y + 22);
-            PIXEL_CORRECTION = 7;
+
+        if (now - attackTime > ATTACK_DURATION) {
             state = State.IDLE;
-            attackTime = p.millis();
+            this.getDna().setMaxSpeed(IDLE_SPEED);
+            this.getDna().setMaxForce(IDLE_SPEED);
+            this.hitbox = new Hitbox(new Point(position.x, position.y), 85, 110);
+            PIXEL_CORRECTION = 7;
         }
     }
 
@@ -164,12 +118,59 @@ public class HuskHornhead extends Mob implements IVisualizable {
      */
     @Override
     protected void death() {
-        if (p.millis() - spriteTime > 120) {
+        if (now - spriteTime > 120) {
             this.sprite = spriteArray[spriteIndex][4];
-            spriteTime = p.millis();
+            spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 7) {
                 setDead(true);
+                spriteIndex = 0;
+                state = State.IDLE;
+            }
+        }
+    }
+
+    /**
+     * Gere o estado de inatividade (idle) do inimigo.
+     * <p>
+     * Verifica se as condições para iniciar um ataque estão reunidas e,
+     * caso positivo, transita para o estado de antecipação. Atualiza a
+     * animação idle com base no tempo decorrido.
+     * </p>
+     */
+    @Override
+    protected void idling() {
+        if (attackBehaviour.checkBehaviour(this) && now - attackTime > ATTACK_COOLDOWN) {
+            state = State.ANTICIPATION;
+            resetAnimation();
+        }
+        if (now - spriteTime > 120) {
+            this.sprite = spriteArray[spriteIndex][0];
+            spriteTime = now;
+            spriteIndex++;
+            if (spriteIndex > 5) spriteIndex = 0;
+        }
+
+        applyBehaviour(seekBehaviour, dt);
+        applyBehaviour(wanderBehaviour, dt);
+    }
+
+    /**
+     * Gere o estado de viragem (turning) do inimigo.
+     * <p>
+     * Executa a animação de mudança de direção. Quando a animação termina,
+     * atualiza o multiplicador de escala para inverter o sprite e retorna
+     * ao estado idle.
+     * </p>
+     */
+    @Override
+    protected void turning() {
+        if (now - spriteTime > 120) {
+            this.sprite = spriteArray[spriteIndex][1];
+            spriteTime = now;
+            spriteIndex++;
+            if (spriteIndex > 1) {
+                multValue = currentDirection == KnightMovement.RIGHT ? -1 : 1;
                 spriteIndex = 0;
                 state = State.IDLE;
             }
@@ -190,17 +191,12 @@ public class HuskHornhead extends Mob implements IVisualizable {
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
-        float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
-
         this.hitbox.draw(painter, plt);
 
-        setAttacking(state == State.ATTACK);
-        this.getDna().setMaxSpeed(IDLE_SPEED);
-
-        directionChange();
+        float[] pp = plt.getPixelCoord(this.getPosition().x, this.getPosition().y);
 
         if (isDying()) state = State.DEATH;
-        if (state != latestState) resetAnimation(p.millis());
+        if (state != latestState) resetAnimation();
 
         // Diminuir o tamanho da sprite
         float spriteScale = 0.7f;
@@ -212,6 +208,8 @@ public class HuskHornhead extends Mob implements IVisualizable {
         p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f + PIXEL_CORRECTION);
 
         stateMachine();
+
+        directionChange();
 
         p.popMatrix();
     }

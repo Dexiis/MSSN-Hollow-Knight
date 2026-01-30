@@ -15,8 +15,8 @@ import processing.core.PVector;
  */
 public class Wall extends Terrain {
 
-    private static PImage sprite;
     private static final int SPRITE_HEIGHT = 353;
+    private static PImage sprite;
 
     /**
      * Constrói uma nova parede com as dimensões especificadas.

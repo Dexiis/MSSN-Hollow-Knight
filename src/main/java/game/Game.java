@@ -4,12 +4,13 @@ import game.core.SubPlot;
 import game.scenery.Background;
 import game.scenery.GUI;
 import game.scenery.Map;
-import game.scenery.characters.types.Enemy;
 import game.scenery.characters.Entity;
+import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.KnightMovement;
-import game.scenery.characters.types.enemies.Mob;
 import game.scenery.characters.types.State;
 import game.scenery.characters.types.TheKnight;
+import game.scenery.characters.types.enemies.FalseKnight;
+import game.scenery.characters.types.enemies.Mob;
 import game.scenery.characters.types.enemies.mobs.Squit;
 import game.scenery.components.Terrain;
 import game.scenery.components.flock.Flock;
@@ -29,18 +30,10 @@ public class Game extends PApplet {
     private final float[] viewport = {0f, 0f, 1f, 1f};
     private final double[] window = {-800, 800, -450, 450};
 
-    private SubPlot plt;
     private Background background;
-    private Map map;
     private GUI gui;
-
-    private TheKnight player;
-
-    private float lastUpdateTime;
-    private int now = millis();
-    boolean firstLoop = true;
-
-    LinePainter painter = new LinePainter() {
+    private Map map;
+    private LinePainter painter = new LinePainter() {
         /**
          * Desenha uma linha convertendo coordenadas do mundo para pixels.
          *
@@ -58,6 +51,12 @@ public class Game extends PApplet {
             line(p1[0], p1[1], p2[0], p2[1]);
         }
     };
+    private SubPlot plt;
+    private TheKnight player;
+
+    private float lastUpdateTime;
+    public int now = millis();
+    private boolean firstLoop = true;
 
     /**
      * Define as configurações iniciais da janela.
@@ -122,10 +121,62 @@ public class Game extends PApplet {
 
         checkCollisions();
 
+        for (Enemy enemy : map.getEnemies()) {
+            enemy.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
+        }
+
         setWindow(player.getPosition());
         map.display(plt);
-
         gui.display(map.getPlayer());
+    }
+
+    /**
+     * Processa o pressionamento de teclas.
+     * <p>
+     * Atualiza as direções de movimento do jogador ou inicia ataques.
+     * </p>
+     */
+    @Override
+    public void keyPressed() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉT.ODO. A LÓGICA NÃO É FEITA AQUI
+        if (key == 'w' || key == 'W' || key == ' ') {
+            player.setMovingDirection(KnightMovement.UPRELEASED, false);
+            player.setMovingDirection(KnightMovement.UP, true);
+        }
+        if (key == 's' || key == 'S') player.setMovingDirection(KnightMovement.DOWN, true);
+        if (key == 'a' || key == 'A') player.setMovingDirection(KnightMovement.LEFT, true);
+        if (key == 'd' || key == 'D') player.setMovingDirection(KnightMovement.RIGHT, true);
+
+        if (key == ENTER || key == RETURN) player.playerAttack();
+    }
+
+    /**
+     * Processa a libertação de teclas.
+     * <p>
+     * Para as direções de movimento do jogador.
+     * </p>
+     */
+    @Override
+    public void keyReleased() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉT.ODO. A LÓGICA NÃO É FEITA AQUI
+        if (key == 'w' || key == 'W' || key == ' ') player.setMovingDirection(KnightMovement.UPRELEASED, true);
+        if (key == 's' || key == 'S') player.setMovingDirection(KnightMovement.DOWN, false);
+        if (key == 'a' || key == 'A') player.setMovingDirection(KnightMovement.LEFT, false);
+        if (key == 'd' || key == 'D') player.setMovingDirection(KnightMovement.RIGHT, false);
+        if (key == 'm' || key == 'M') player.setPosition(new PVector(0, 50)); // DEBUGGING - TODO RETIRAR MAIS TARDE
+    }
+
+    /**
+     * Processa cliques do mouse.
+     * <p>
+     * Teleporta o jogador para a posição clicada ou inicia ataque.
+     * </p>
+     */
+    @Override
+    public void mousePressed() {
+        if (mouseButton == RIGHT) {
+            double[] w = plt.getWorldCoord(mouseX, mouseY);
+            player.setPosition(new PVector((float) w[0], (float) w[1]));
+            player.setVelocity(new PVector(0, 0));
+        } else if (mouseButton == LEFT) player.playerAttack();
     }
 
     private void moveFlock(ArrayList<Flock> flock, float dt) {
@@ -177,7 +228,7 @@ public class Game extends PApplet {
 
         // Reinicia a animação
         if (player.getMovement() != player.getLastMovement()) {
-            player.resetAnimation(now);
+            player.resetAnimation();
             player.setLastMovement(player.getMovement());
         }
 
@@ -202,15 +253,16 @@ public class Game extends PApplet {
             if (map.getEnemies() != null) for (int i = map.getEnemies().size() - 1; i >= 0; i--) {
                 Enemy enemy = map.getEnemies().get(i);
                 if (player.getAttack().intersected(enemy.getHitbox())) {
+                    enemy.damage(player.getPosition());
+
                     // Pequeno salto ao bater para baixo no ar
                     if (!player.isGrounded() && player.getFacingDirection() == KnightMovement.DOWN)
                         player.setVelocity(new PVector(player.getVelocity().x, 400f));
-                    enemy.damage(this, player.getPosition());
                 }
             }
 
             player.getAttack().display(this, painter, plt);
-            if (now - player.getAttackTime() > TheKnight.ATTACK_DURATION) player.setAttack(null);
+            if (now - player.getAttackTime() > player.ATTACK_DURATION) player.setAttack(null);
         }
     }
 
@@ -223,19 +275,17 @@ public class Game extends PApplet {
     private void handleMonstersAttacks() {
         if (map.getEnemies() != null) for (Enemy enemy : map.getEnemies())
             if (enemy.getHitbox().intersected(player.getHitbox()) && !enemy.isDying())
-                player.damage(this, enemy.getPosition());
+                player.damage(enemy.getPosition());
     }
 
     private void handleNaturalMovements(float dt) {
         for (Entity entity : map.getEntities()) {
-            if (!(entity instanceof TheKnight)) {
-                Enemy enemy = ((Enemy) entity);
-                enemy.applyBehaviours(enemy.getBehaviours(), dt);
-                enemy.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
-            }
-            if ((entity instanceof Squit) && entity.isDying())
-                entity.applyForce(new PVector(0, -450 * entity.getMass())); // Queda na morte do Squit
-            if (!(entity instanceof Squit)) entity.applyForce(gravity(entity));
+            entity.updateTime(dt, now);
+
+            if (entity instanceof Squit) {
+                if (entity.isDying())
+                    entity.applyForce(new PVector(0, -450 * entity.getMass())); // Queda na morte do Squit
+            } else entity.applyForce(gravity(entity));
         }
     }
 
@@ -250,7 +300,7 @@ public class Game extends PApplet {
         map.getBoss().setGrounded(false);
         for (int i = map.getEntities().size() - 1; i >= 0; i--) {
             Entity entity = map.getEntities().get(i);
-            entity.setColliding(false);
+            if (entity instanceof Squit) ((Squit) entity).setColliding(true);
             for (int j = map.getTerrains().size() - 1; j >= 0; j--) {
                 Terrain terrain = map.getTerrains().get(j);
                 terrain.elaborateIntersects(entity);
@@ -270,54 +320,5 @@ public class Game extends PApplet {
         window[3] = playerPosition.y + 450; // Fundo (Maior valor)
 
         plt.setWindow(window);
-    }
-
-    /**
-     * Processa o pressionamento de teclas.
-     * <p>
-     * Atualiza as direções de movimento do jogador ou inicia ataques.
-     * </p>
-     */
-    @Override
-    public void keyPressed() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉT.ODO. A LÓGICA NÃO É FEITA AQUI
-        if (key == 'w' || key == 'W' || key == ' ') {
-            player.setMovingDirection(KnightMovement.UPRELEASED, false);
-            player.setMovingDirection(KnightMovement.UP, true);
-        }
-        if (key == 's' || key == 'S') player.setMovingDirection(KnightMovement.DOWN, true);
-        if (key == 'a' || key == 'A') player.setMovingDirection(KnightMovement.LEFT, true);
-        if (key == 'd' || key == 'D') player.setMovingDirection(KnightMovement.RIGHT, true);
-
-        if (key == ENTER || key == RETURN) player.playerAttack(now);
-    }
-
-    /**
-     * Processa a libertação de teclas.
-     * <p>
-     * Para as direções de movimento do jogador.
-     * </p>
-     */
-    @Override
-    public void keyReleased() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉT.ODO. A LÓGICA NÃO É FEITA AQUI
-        if (key == 'w' || key == 'W' || key == ' ') player.setMovingDirection(KnightMovement.UPRELEASED, true);
-        if (key == 's' || key == 'S') player.setMovingDirection(KnightMovement.DOWN, false);
-        if (key == 'a' || key == 'A') player.setMovingDirection(KnightMovement.LEFT, false);
-        if (key == 'd' || key == 'D') player.setMovingDirection(KnightMovement.RIGHT, false);
-        if (key == 'm' || key == 'M') player.setPosition(new PVector(0, 50)); // DEBUGGING - TODO RETIRAR MAIS TARDE
-    }
-
-    /**
-     * Processa cliques do mouse.
-     * <p>
-     * Teleporta o jogador para a posição clicada ou inicia ataque.
-     * </p>
-     */
-    @Override
-    public void mousePressed() {
-        if (mouseButton == RIGHT) {
-            double[] w = plt.getWorldCoord(mouseX, mouseY);
-            player.setPosition(new PVector((float) w[0], (float) w[1]));
-            player.setVelocity(new PVector(0, 0));
-        } else if (mouseButton == LEFT) player.playerAttack(now);
     }
 }

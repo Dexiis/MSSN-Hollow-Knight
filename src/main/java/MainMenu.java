@@ -64,6 +64,28 @@ public class MainMenu extends PApplet {
     }
 
     /**
+     * Inicia a aplicação.
+     * <p>
+     * Inicia o menu principal do jogo através do Processing.
+     * </p>
+     *
+     * @param args argumentos da linha de comandos
+     */
+    public static void main(String[] args) {
+        PApplet.main(Game.class.getName());
+    }
+
+    /**
+     * Verifica se o clique foi no botão.
+     * <p>
+     * Compara as coordenadas do mouse com os limites do botão.
+     * </p>
+     */
+    private boolean checkButton(float buttonY, float x, float w, float h) {
+        return mouseX > x - w / 2 && mouseX < x + w / 2 && mouseY > buttonY - h / 2 && mouseY < buttonY + h / 2;
+    }
+
+    /**
      * Processa cliques do mouse para iniciar o jogo.
      * <p>
      * Verifica se o clique foi no botão de jogar e inicia o jogo principal.
@@ -78,27 +100,5 @@ public class MainMenu extends PApplet {
             surface.setVisible(false);
             PApplet.main(Game.class);
         }
-    }
-
-    /**
-     * Verifica se o clique foi no botão.
-     * <p>
-     * Compara as coordenadas do mouse com os limites do botão.
-     * </p>
-     */
-    private boolean checkButton(float buttonY, float x, float w, float h) {
-        return mouseX > x - w / 2 && mouseX < x + w / 2 && mouseY > buttonY - h / 2 && mouseY < buttonY + h / 2;
-    }
-
-    /**
-     * Inicia a aplicação.
-     * <p>
-     * Inicia o menu principal do jogo através do Processing.
-     * </p>
-     *
-     * @param args argumentos da linha de comandos
-     */
-    public static void main(String[] args) {
-        PApplet.main(Game.class.getName());
     }
 }

@@ -15,10 +15,9 @@ import java.util.List;
  */
 public class Hitbox {
 
-    protected final RoughHitbox roughHitbox;
     protected final List<LineSegment> lines = new ArrayList<>();
-
     protected Point position = new Point(0.0f, 0.0f);
+    protected final RoughHitbox roughHitbox;
     protected float width, height;
 
     /**
@@ -81,33 +80,6 @@ public class Hitbox {
     }
 
     /**
-     * Recupera a estrutura de colisão aproximada.
-     *
-     * @return o objeto RoughHitbox associado
-     */
-    public RoughHitbox getRoughHitbox() {
-        return roughHitbox;
-    }
-
-    /**
-     * Obtém a coordenada atual da Hitbox.
-     *
-     * @return o ponto que representa a posição central
-     */
-    public Point getPosition() {
-        return position;
-    }
-
-    /**
-     * Devolve a largura total da área de colisão.
-     *
-     * @return a largura em unidades do mundo
-     */
-    public float getWidth() {
-        return width;
-    }
-
-    /**
      * Devolve a altura total da área de colisão.
      *
      * @return a altura em unidades do mundo
@@ -123,6 +95,33 @@ public class Hitbox {
      */
     public List<LineSegment> getLines() {
         return lines;
+    }
+
+    /**
+     * Obtém a coordenada atual da Hitbox.
+     *
+     * @return o ponto que representa a posição central
+     */
+    public Point getPosition() {
+        return position;
+    }
+
+    /**
+     * Recupera a estrutura de colisão aproximada.
+     *
+     * @return o objeto RoughHitbox associado
+     */
+    public RoughHitbox getRoughHitbox() {
+        return roughHitbox;
+    }
+
+    /**
+     * Devolve a largura total da área de colisão.
+     *
+     * @return a largura em unidades do mundo
+     */
+    public float getWidth() {
+        return width;
     }
 
     /**
@@ -167,6 +166,46 @@ public class Hitbox {
     }
 
     /**
+     * Calcula as dimensões baseando-se nos vértices fornecidos.
+     * <p>
+     * Define os valores internos de largura e altura.
+     * </p>
+     *
+     * @param points a lista de vértices da forma
+     */
+    private void calculateDimensions(List<Point> points) {
+        float minX = Float.MAX_VALUE, maxX = -Float.MAX_VALUE;
+        float minY = Float.MAX_VALUE, maxY = -Float.MAX_VALUE;
+
+        for (Point p : points) {
+            if (p.x < minX) minX = p.x;
+            if (p.x > maxX) maxX = p.x;
+            if (p.y < minY) minY = p.y;
+            if (p.y > maxY) maxY = p.y;
+        }
+        this.width = maxX - minX;
+        this.height = maxY - minY;
+    }
+
+    /**
+     * Gera os segmentos de reta ligando sequencialmente os vértices fornecidos.
+     * <p>
+     * Fecha a forma conectando o último ponto ao primeiro.
+     * </p>
+     *
+     * @param points a lista de vértices da forma
+     */
+    private void formLines(List<Point> points) {
+        lines.clear();
+        for (int i = 0; i < points.size(); ++i) {
+            Point p1 = points.get(i);
+            Point p2 = points.get((i + 1) % points.size());
+
+            lines.add(new LineSegment(position, p1, p2));
+        }
+    }
+
+    /**
      * Renderiza a representação visual da Hitbox e da sua caixa delimitadora.
      * <p>
      * Útil para fins de depuração.
@@ -189,46 +228,6 @@ public class Hitbox {
      */
     public void draw(LinePainter painter, SubPlot plt) {
         for (LineSegment line : lines) line.draw(painter, plt);
-    }
-
-    /**
-     * Gera os segmentos de reta ligando sequencialmente os vértices fornecidos.
-     * <p>
-     * Fecha a forma conectando o último ponto ao primeiro.
-     * </p>
-     *
-     * @param points a lista de vértices da forma
-     */
-    private void formLines(List<Point> points) {
-        lines.clear();
-        for (int i = 0; i < points.size(); ++i) {
-            Point p1 = points.get(i);
-            Point p2 = points.get((i + 1) % points.size());
-
-            lines.add(new LineSegment(position, p1, p2));
-        }
-    }
-
-    /**
-     * Calcula as dimensões baseando-se nos vértices fornecidos.
-     * <p>
-     * Define os valores internos de largura e altura.
-     * </p>
-     *
-     * @param points a lista de vértices da forma
-     */
-    private void calculateDimensions(List<Point> points) {
-        float minX = Float.MAX_VALUE, maxX = -Float.MAX_VALUE;
-        float minY = Float.MAX_VALUE, maxY = -Float.MAX_VALUE;
-
-        for (Point p : points) {
-            if (p.x < minX) minX = p.x;
-            if (p.x > maxX) maxX = p.x;
-            if (p.y < minY) minY = p.y;
-            if (p.y > maxY) maxY = p.y;
-        }
-        this.width = maxX - minX;
-        this.height = maxY - minY;
     }
 
     /**

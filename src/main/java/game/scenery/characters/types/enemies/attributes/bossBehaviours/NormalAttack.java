@@ -7,14 +7,14 @@ import processing.core.PVector;
 /**
  * Comportamento de ataque do chefe.
  */
-public class BossAttack extends Behaviour {
+public class NormalAttack extends Behaviour {
 
     /**
      * Constrói um comportamento de ataque.
      *
      * @param weight o peso
      */
-    public BossAttack(float weight) {
+    public NormalAttack(float weight) {
         super(weight);
     }
 

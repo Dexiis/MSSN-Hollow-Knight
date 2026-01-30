@@ -16,8 +16,8 @@ import java.util.ArrayList;
 public class FlockEye {
     private ArrayList<Flock> allTrackingBodies = new ArrayList<>();
     private ArrayList<Flock> farSight = new ArrayList<>();
-    private ArrayList<Flock> nearSight = new ArrayList<>();
     private final Flock me;
+    private ArrayList<Flock> nearSight = new ArrayList<>();
     protected Flock target;
 
     /**
@@ -36,53 +36,12 @@ public class FlockEye {
     }
 
     /**
-     * Define o alvo específico que a entidade deve focar.
-     *
-     * @param target a entidade alvo
-     */
-    public void setTarget(Flock target) {
-        this.target = target;
-    }
-
-    /**
-     * Obtém a referência para o alvo atual da entidade.
-     *
-     * @return a entidade alvo
-     */
-    public Flock getTarget() {
-        return target;
-    }
-
-    /**
-     * Define a lista completa de todas as entidades que este olho deve monitorizar.
-     *
-     * @param allTrackingBodies a lista de entidades rastreáveis
-     */
-    public void setAllTrackingBodies(ArrayList<Flock> allTrackingBodies) {
-        this.allTrackingBodies = allTrackingBodies;
-    }
-
-    /**
      * Obtém a lista de todas as entidades que estão configuradas para serem rastreadas.
      *
      * @return a lista de entidades
      */
     public ArrayList<Flock> getAllTrackingBodies() {
         return allTrackingBodies;
-    }
-
-    /**
-     * Adiciona um conjunto de entidades à lista de corpos rastreáveis pelo sensor.
-     * <p>
-     * Filtra a lista para garantir que a própria entidade não é incluída.
-     * </p>
-     *
-     * @param targets a lista de novos potenciais vizinhos
-     */
-    public void addTarget(ArrayList<Flock> targets) {
-        for (Flock target : targets) {
-            if (target != me) allTrackingBodies.add(target);
-        }
     }
 
     /**
@@ -110,62 +69,44 @@ public class FlockEye {
     }
 
     /**
-     * Executa o processo de perceção sensorial.
-     * <p>
-     * Percorre todas as entidades rastreáveis e determina se estão visíveis,
-     * considerando a distância toroidal e os ângulos de visão.
-     * </p>
+     * Obtém a referência para o alvo atual da entidade.
+     *
+     * @return a entidade alvo
      */
-    public void look() {
-        farSight = new ArrayList<>();
-        nearSight = new ArrayList<>();
-        for (Flock character : allTrackingBodies) {
-            if (farSight(character.getPosition())) farSight.add(character);
-            if (nearSight(character.getPosition())) nearSight.add(character);
+    public Flock getTarget() {
+        return target;
+    }
+
+    /**
+     * Define a lista completa de todas as entidades que este olho deve monitorizar.
+     *
+     * @param allTrackingBodies a lista de entidades rastreáveis
+     */
+    public void setAllTrackingBodies(ArrayList<Flock> allTrackingBodies) {
+        this.allTrackingBodies = allTrackingBodies;
+    }
+
+    /**
+     * Define o alvo específico que a entidade deve focar.
+     *
+     * @param target a entidade alvo
+     */
+    public void setTarget(Flock target) {
+        this.target = target;
+    }
+
+    /**
+     * Adiciona um conjunto de entidades à lista de corpos rastreáveis pelo sensor.
+     * <p>
+     * Filtra a lista para garantir que a própria entidade não é incluída.
+     * </p>
+     *
+     * @param targets a lista de novos potenciais vizinhos
+     */
+    public void addTarget(ArrayList<Flock> targets) {
+        for (Flock target : targets) {
+            if (target != me) allTrackingBodies.add(target);
         }
-    }
-
-    /**
-     * Verifica se uma posição específica está dentro do alcance de visão distante.
-     * Utiliza a distância e ângulo de visão definidos no DNA da entidade.
-     *
-     * @param t O vetor de posição a verificar.
-     * @return {@code true} se estiver visível, {@code false} caso contrário.
-     */
-    private boolean farSight(PVector t) {
-        return inSight(t, me.getDna().getVisionDistance(), me.getDna().getVisionAngle());
-    }
-
-    /**
-     * Verifica se uma entidade específica está dentro do cone de visão geral.
-     * <p>
-     * Calcula o vetor de distância toroidal e verifica se a magnitude é inferior
-     * à distância de visão definida no DNA. Se estiver perto o suficiente, verifica
-     * se o ângulo entre a direção atual e o alvo está dentro do ângulo de visão permitido.
-     * </p>
-     *
-     * @param t a entidade a verificar
-     * @return {@code true} se a entidade estiver visível, {@code false} caso contrário
-     */
-    private boolean nearSight(PVector t) {
-        return inSight(t, me.getDna().getVisionAttack(), me.getDna().getVisionAttackAngle());
-    }
-
-    /**
-     * Verifica se uma entidade específica está na zona crítica de proximidade.
-     * <p>
-     * Semelhante à verificação de visão distante, mas utiliza o raio de "ataque"
-     * (separação) e o ângulo correspondente definidos no DNA.
-     * </p>
-     *
-     * @param t a entidade a verificar
-     * @return {@code true} se a entidade estiver na zona próxima, {@code false} caso contrário
-     */
-    private boolean inSight(PVector t, float maxDistance, float maxAngle) {
-        PVector r = PVector.sub(t, me.getPosition());
-        float d = r.mag();
-        float angle = PVector.angleBetween(r, me.getVelocity());
-        return ((d > 0) && (d < maxDistance) && (angle < maxAngle));
     }
 
     /**
@@ -212,5 +153,64 @@ public class FlockEye {
 
         p.popMatrix();
         p.popStyle();
+    }
+
+    /**
+     * Executa o processo de perceção sensorial.
+     * <p>
+     * Percorre todas as entidades rastreáveis e determina se estão visíveis,
+     * considerando a distância toroidal e os ângulos de visão.
+     * </p>
+     */
+    public void look() {
+        farSight = new ArrayList<>();
+        nearSight = new ArrayList<>();
+        for (Flock character : allTrackingBodies) {
+            if (farSight(character.getPosition())) farSight.add(character);
+            if (nearSight(character.getPosition())) nearSight.add(character);
+        }
+    }
+
+    /**
+     * Verifica se uma posição específica está dentro do alcance de visão distante.
+     * Utiliza a distância e ângulo de visão definidos no DNA da entidade.
+     *
+     * @param t O vetor de posição a verificar.
+     * @return {@code true} se estiver visível, {@code false} caso contrário.
+     */
+    private boolean farSight(PVector t) {
+        return inSight(t, me.getDna().getVisionDistance(), me.getDna().getVisionAngle());
+    }
+
+    /**
+     * Verifica se uma entidade específica está na zona crítica de proximidade.
+     * <p>
+     * Semelhante à verificação de visão distante, mas utiliza o raio de "ataque"
+     * (separação) e o ângulo correspondente definidos no DNA.
+     * </p>
+     *
+     * @param t a entidade a verificar
+     * @return {@code true} se a entidade estiver na zona próxima, {@code false} caso contrário
+     */
+    private boolean inSight(PVector t, float maxDistance, float maxAngle) {
+        PVector r = PVector.sub(t, me.getPosition());
+        float d = r.mag();
+        float angle = PVector.angleBetween(r, me.getVelocity());
+        return ((d > 0) && (d < maxDistance) && (angle < maxAngle));
+    }
+
+    /**
+     * Verifica se uma entidade específica está dentro do cone de visão geral.
+     * <p>
+     * Calcula o vetor de distância toroidal e verifica se a magnitude é inferior
+     * à distância de visão definida no DNA. Se estiver perto o suficiente, verifica
+     * se o ângulo entre a direção atual e o alvo está dentro do ângulo de visão permitido.
+     * </p>
+     *
+     * @param t a entidade a verificar
+     * @return {@code true} se a entidade estiver visível, {@code false} caso contrário
+     */
+    private boolean nearSight(PVector t) {
+        return inSight(t, me.getDna().getVisionAttack(), me.getDna().getVisionAttackAngle());
     }
 }

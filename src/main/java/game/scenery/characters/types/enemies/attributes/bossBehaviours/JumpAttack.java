@@ -18,7 +18,9 @@ public class JumpAttack extends Behaviour {
         super(weight);
     }
 
-    public PVector getDesiredVelocity(Enemy me) { //TODO Fazer lógica
+    public PVector getDesiredVelocity(Enemy me) {
+        if (checkBehaviour(me))
+            return new PVector((me.getPosition().x - me.getEye().getTarget().getPosition().x) / 2, 500);
         return new PVector(0, 0);
     }
 

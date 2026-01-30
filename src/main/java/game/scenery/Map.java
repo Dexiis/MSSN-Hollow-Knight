@@ -24,15 +24,13 @@ import java.util.ArrayList;
  * </p>
  */
 public class Map {
-    private final PApplet p;
-    private final LinePainter painter;
-
-    private final TheKnight player;
-    private final ArrayList<Terrain> terrains = new ArrayList<>();
+    private final FalseKnight boss;
     private final ArrayList<Enemy> enemies = new ArrayList<>();
     private final ArrayList<Entity> entities = new ArrayList<>();
-
-    private final FalseKnight boss;
+    private final PApplet p;
+    private final LinePainter painter;
+    private final TheKnight player;
+    private final ArrayList<Terrain> terrains = new ArrayList<>();
 
     /**
      * Constrói o mapa do jogo.
@@ -104,15 +102,6 @@ public class Map {
     }
 
     /**
-     * Obtém a lista de terrenos.
-     *
-     * @return a lista de objetos Terrain
-     */
-    public ArrayList<Terrain> getTerrains() {
-        return terrains;
-    }
-
-    /**
      * Obtém a lista de inimigos.
      *
      * @return a lista de objetos Enemy
@@ -140,6 +129,25 @@ public class Map {
     }
 
     /**
+     * Obtém a lista de terrenos.
+     *
+     * @return a lista de objetos Terrain
+     */
+    public ArrayList<Terrain> getTerrains() {
+        return terrains;
+    }
+
+    /**
+     * Renderiza todos os elementos do mapa.
+     *
+     * @param plt o objeto SubPlot para conversão de coordenadas
+     */
+    public void display(SubPlot plt) {
+        for (Entity entity : entities) entity.display(p, painter, plt);
+        for (Terrain terrain : terrains) terrain.display(p, painter, plt);
+    }
+
+    /**
      * Remove um inimigo do jogo.
      * <p>
      * Elimina o inimigo das listas de inimigos e entidades.
@@ -153,14 +161,6 @@ public class Map {
     }
 
     /**
-     * Adiciona o chefe às listas de inimigos e entidades.
-     */
-    public void spawnBoss() {
-        enemies.add(boss);
-        entities.add(boss);
-    }
-
-    /**
      * Remove um terreno do mapa.
      *
      * @param terrain o terreno a ser removido
@@ -170,12 +170,10 @@ public class Map {
     }
 
     /**
-     * Renderiza todos os elementos do mapa.
-     *
-     * @param plt o objeto SubPlot para conversão de coordenadas
+     * Adiciona o chefe às listas de inimigos e entidades.
      */
-    public void display(SubPlot plt) {
-        for (Entity entity : entities) entity.display(p, painter, plt);
-        for (Terrain terrain : terrains) terrain.display(p, painter, plt);
+    public void spawnBoss() {
+        enemies.add(boss);
+        entities.add(boss);
     }
 }
