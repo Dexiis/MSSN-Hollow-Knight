@@ -4,12 +4,13 @@ import game.core.SubPlot;
 import game.scenery.Background;
 import game.scenery.GUI;
 import game.scenery.Map;
-import game.scenery.characters.Entity;
-import game.scenery.characters.types.Direction;
 import game.scenery.characters.types.Enemy;
-import game.scenery.characters.types.MovementState;
+import game.scenery.characters.Entity;
+import game.scenery.characters.types.KnightMovement;
+import game.scenery.characters.types.enemies.Mob;
+import game.scenery.characters.types.State;
 import game.scenery.characters.types.TheKnight;
-import game.scenery.characters.types.enemies.Squit;
+import game.scenery.characters.types.enemies.mobs.Squit;
 import game.scenery.components.Terrain;
 import game.scenery.components.flock.Flock;
 import game.scenery.components.hitbox.LinePainter;
@@ -19,11 +20,10 @@ import processing.core.PVector;
 import java.util.ArrayList;
 
 /**
- * Classe principal do jogo que estende a {@link PApplet}.
+ * Classe principal do jogo.
  * <p>
- * Esta classe atua como o controlador central (Game Loop), gerindo a inicialização,
- * atualização da física, processamento de inputs, renderização gráfica e lógica global
- * do jogo (como a câmara e colisões).
+ * Controla o loop principal, inicialização, atualização e renderização do jogo.
+ * </p>
  */
 public class Game extends PApplet {
     private final float[] viewport = {0f, 0f, 1f, 1f};
@@ -42,13 +42,13 @@ public class Game extends PApplet {
 
     LinePainter painter = new LinePainter() {
         /**
-         * Desenha uma linha no ecrã convertendo coordenadas do mundo para pixels.
+         * Desenha uma linha convertendo coordenadas do mundo para pixels.
          *
-         * @param x1  Coordenada X inicial no mundo.
-         * @param y1  Coordenada Y inicial no mundo.
-         * @param x2  Coordenada X final no mundo.
-         * @param y2  Coordenada Y final no mundo.
-         * @param plt O objeto SubPlot para conversão de coordenadas.
+         * @param x1 coordenada X inicial no mundo
+         * @param y1 coordenada Y inicial no mundo
+         * @param x2 coordenada X final no mundo
+         * @param y2 coordenada Y final no mundo
+         * @param plt o objeto SubPlot para conversão de coordenadas
          */
         @Override
         public void paintLine(float x1, float y1, float x2, float y2, SubPlot plt) {
@@ -60,8 +60,10 @@ public class Game extends PApplet {
     };
 
     /**
-     * Define as configurações iniciais da janela da aplicação.
-     * Especifica a resolução do ecrã.
+     * Define as configurações iniciais da janela.
+     * <p>
+     * Define a resolução da janela para 1600x900 pixels.
+     * </p>
      */
     @Override
     public void settings() {
@@ -71,8 +73,8 @@ public class Game extends PApplet {
     /**
      * Executa a configuração inicial do jogo.
      * <p>
-     * Inicializa o sistema de coordenadas (SubPlot), carrega o mapa e obtém a referência
-     * para o jogador. É chamado uma única vez no início da execução.
+     * Inicializa o sistema de coordenadas, mapa, GUI e fundo.
+     * </p>
      */
     @Override
     public void setup() {
@@ -88,16 +90,10 @@ public class Game extends PApplet {
     }
 
     /**
-     * O ciclo principal de execução do jogo (Game Loop).
+     * Executa o ciclo principal do jogo.
      * <p>
-     * Este mét.odo é executado continuamente frame a frame. É responsável por:
-     * 1. Calcular o tempo delta (dt).
-     * 2. Limpar o ecrã.
-     * 3. Aplicar forças físicas (gravidade).
-     * 4. Processar a lógica de jogo (movimento, ataques, IA).
-     * 5. Resolver colisões.
-     * 6. Atualizar a câmara.
-     * 7. Desenhar o estado atual do mapa.
+     * Atualiza o tempo, fundo, movimentos, ataques, colisões e renderiza tudo.
+     * </p>
      */
     @Override
     public void draw() {
@@ -112,8 +108,6 @@ public class Game extends PApplet {
         background.display(player.getPosition());
         moveFlock(background.getFlock(), dt);
 
-        gui.display(map.getPlayer());
-
         handleNaturalMovements(dt);
         if (!player.isStunned()) handleInputMovements();
         handleKnightAttack();
@@ -123,13 +117,15 @@ public class Game extends PApplet {
             Entity entity = map.getEntities().get(i);
 
             entity.move(dt);
-            if (entity.isDead()) map.removeEnemy((Enemy) entity);
+            if (entity.isDead()) map.removeEnemy((Mob) entity);
         }
 
         checkCollisions();
 
         setWindow(player.getPosition());
         map.display(plt);
+
+        gui.display(map.getPlayer());
     }
 
     private void moveFlock(ArrayList<Flock> flock, float dt) {
@@ -155,28 +151,28 @@ public class Game extends PApplet {
      * e aplica as ações correspondentes como mover para os lados ou saltar.
      */
     private void handleInputMovements() {
-        if ((!(player.getDirections().get(Direction.RIGHT)) && !(player.getDirections().get(Direction.LEFT))) || (player.getDirections().get(Direction.RIGHT)) && (player.getDirections().get(Direction.LEFT))) {
+        if ((!(player.getDirections().get(KnightMovement.RIGHT)) && !(player.getDirections().get(KnightMovement.LEFT))) || (player.getDirections().get(KnightMovement.RIGHT)) && (player.getDirections().get(KnightMovement.LEFT))) {
             player.stopMovement();
-            player.setMovement(MovementState.IDLE);
+            player.setMovement(State.IDLE);
         } else {
-            if (player.getDirections().get(Direction.RIGHT)) {
-                player.setLastFacingDirection(Direction.RIGHT);
+            if (player.getDirections().get(KnightMovement.RIGHT)) {
+                player.setLastFacingDirection(KnightMovement.RIGHT);
                 player.moveRight();
             }
 
-            if (player.getDirections().get(Direction.LEFT)) {
-                player.setLastFacingDirection(Direction.LEFT);
+            if (player.getDirections().get(KnightMovement.LEFT)) {
+                player.setLastFacingDirection(KnightMovement.LEFT);
                 player.moveLeft();
             }
 
             // Este if é 'repetido' umas linhas a baixo, mas este tem uma condição "else" anterior necessária
             if (player.isGrounded())
-                player.setMovement((player.getDirections().get(Direction.RIGHT) || player.getDirections().get(Direction.LEFT)) ? MovementState.RUNNING : MovementState.IDLE);
+                player.setMovement((player.getDirections().get(KnightMovement.RIGHT) || player.getDirections().get(KnightMovement.LEFT)) ? State.RUNNING : State.IDLE);
         }
 
         if (player.isGrounded()) {
-            if (player.getDirections().get(Direction.UP)) player.jump();
-        } else player.setMovement(player.getVelocity().y < 0 ? MovementState.FALLING : MovementState.JUMPING);
+            if (player.getDirections().get(KnightMovement.UP)) player.jump();
+        } else player.setMovement(player.getVelocity().y < 0 ? State.FALLING : State.JUMPING);
 
 
         // Reinicia a animação
@@ -185,9 +181,9 @@ public class Game extends PApplet {
             player.setLastMovement(player.getMovement());
         }
 
-        if (player.getDirections().get(Direction.UPRELEASED) && player.getDirections().get(Direction.UP)) {
-            player.setMovingDirection(Direction.UPRELEASED, false);
-            player.setMovingDirection(Direction.UP, false);
+        if (player.getDirections().get(KnightMovement.UPRELEASED) && player.getDirections().get(KnightMovement.UP)) {
+            player.setMovingDirection(KnightMovement.UPRELEASED, false);
+            player.setMovingDirection(KnightMovement.UP, false);
             if (player.getVelocity().y > 0) player.setVelocity(new PVector(player.getVelocity().x, 0));
         }
 
@@ -207,7 +203,7 @@ public class Game extends PApplet {
                 Enemy enemy = map.getEnemies().get(i);
                 if (player.getAttack().intersected(enemy.getHitbox())) {
                     // Pequeno salto ao bater para baixo no ar
-                    if (!player.isGrounded() && player.getFacingDirection() == Direction.DOWN)
+                    if (!player.isGrounded() && player.getFacingDirection() == KnightMovement.DOWN)
                         player.setVelocity(new PVector(player.getVelocity().x, 400f));
                     enemy.damage(this, player.getPosition());
                 }
@@ -251,6 +247,7 @@ public class Game extends PApplet {
      */
     private void checkCollisions() {
         player.setGrounded(false);
+        map.getBoss().setGrounded(false);
         for (int i = map.getEntities().size() - 1; i >= 0; i--) {
             Entity entity = map.getEntities().get(i);
             entity.setColliding(false);
@@ -276,41 +273,44 @@ public class Game extends PApplet {
     }
 
     /**
-     * Captura o evento de tecla pressionada.
+     * Processa o pressionamento de teclas.
      * <p>
-     * Atualiza o mapa de direções do jogador ou inicia um ataque se a tecla correspondente for premida.
+     * Atualiza as direções de movimento do jogador ou inicia ataques.
+     * </p>
      */
     @Override
     public void keyPressed() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉT.ODO. A LÓGICA NÃO É FEITA AQUI
         if (key == 'w' || key == 'W' || key == ' ') {
-            player.setMovingDirection(Direction.UPRELEASED, false);
-            player.setMovingDirection(Direction.UP, true);
+            player.setMovingDirection(KnightMovement.UPRELEASED, false);
+            player.setMovingDirection(KnightMovement.UP, true);
         }
-        if (key == 's' || key == 'S') player.setMovingDirection(Direction.DOWN, true);
-        if (key == 'a' || key == 'A') player.setMovingDirection(Direction.LEFT, true);
-        if (key == 'd' || key == 'D') player.setMovingDirection(Direction.RIGHT, true);
+        if (key == 's' || key == 'S') player.setMovingDirection(KnightMovement.DOWN, true);
+        if (key == 'a' || key == 'A') player.setMovingDirection(KnightMovement.LEFT, true);
+        if (key == 'd' || key == 'D') player.setMovingDirection(KnightMovement.RIGHT, true);
 
         if (key == ENTER || key == RETURN) player.playerAttack(now);
     }
 
     /**
-     * Captura o evento de tecla libertada.
+     * Processa a libertação de teclas.
      * <p>
-     * Atualiza o mapa de direções do jogador, indicando que o movimento numa direção cessou.
+     * Para as direções de movimento do jogador.
+     * </p>
      */
     @Override
     public void keyReleased() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉT.ODO. A LÓGICA NÃO É FEITA AQUI
-        if (key == 'w' || key == 'W' || key == ' ') player.setMovingDirection(Direction.UPRELEASED, true);
-        if (key == 's' || key == 'S') player.setMovingDirection(Direction.DOWN, false);
-        if (key == 'a' || key == 'A') player.setMovingDirection(Direction.LEFT, false);
-        if (key == 'd' || key == 'D') player.setMovingDirection(Direction.RIGHT, false);
+        if (key == 'w' || key == 'W' || key == ' ') player.setMovingDirection(KnightMovement.UPRELEASED, true);
+        if (key == 's' || key == 'S') player.setMovingDirection(KnightMovement.DOWN, false);
+        if (key == 'a' || key == 'A') player.setMovingDirection(KnightMovement.LEFT, false);
+        if (key == 'd' || key == 'D') player.setMovingDirection(KnightMovement.RIGHT, false);
         if (key == 'm' || key == 'M') player.setPosition(new PVector(0, 50)); // DEBUGGING - TODO RETIRAR MAIS TARDE
     }
 
     /**
-     * Captura eventos do rato.
+     * Processa cliques do mouse.
      * <p>
-     * Botão Esquerdo: Inicia um ataque do jogador.
+     * Teleporta o jogador para a posição clicada ou inicia ataque.
+     * </p>
      */
     @Override
     public void mousePressed() {

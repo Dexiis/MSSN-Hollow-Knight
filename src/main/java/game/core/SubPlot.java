@@ -1,11 +1,12 @@
 package game.core;
 
 /**
- * Classe responsável pela gestão de sistemas de coordenadas e transformações gráficas.
+ * Responsável pela gestão de sistemas de coordenadas e transformações gráficas.
  * <p>
- * O SubPlot define uma "janela" (Window) no mundo virtual e mapeia-a para uma área específica
- * do ecrã (Viewport). Realiza a conversão matemática entre coordenadas do mundo (World Coordinates)
- * e coordenadas de pixel (Screen Coordinates).
+ * Define uma "janela" (Window) no mundo virtual e mapeia-a para uma área específica
+ * do ecrã (Viewport). Realiza a conversão matemática entre coordenadas do mundo
+ * (World Coordinates) e coordenadas de pixel (Screen Coordinates).
+ * </p>
  */
 public class SubPlot {
 
@@ -19,14 +20,16 @@ public class SubPlot {
     private double by;
 
     /**
-     * Construtor do SubPlot.
-     * Calcula os coeficientes de transformação linear (declive e deslocamento) para os eixos X e Y
-     * necessários para converter coordenadas entre o mundo e o ecrã.
+     * Constrói um novo SubPlot e calcula os coeficientes de transformação linear.
+     * <p>
+     * Calcula os valores de declive e deslocamento para os eixos X e Y,
+     * necessários para converter coordenadas entre o mundo virtual e o ecrã.
+     * </p>
      *
-     * @param window     Array de 4 doubles definindo os limites do mundo virtual: [minX, maxX, minY, maxY].
-     * @param viewport   Array de 4 floats definindo a área do ecrã (em percentagem 0.0-1.0): [x, y, largura, altura].
-     * @param fullWidth  A largura total da janela da aplicação em pixels.
-     * @param fullHeight A altura total da janela da aplicação em pixels.
+     * @param window     array de 4 doubles definindo os limites do mundo virtual: [minX, maxX, minY, maxY]
+     * @param viewport   array de 4 floats definindo a área do ecrã (em percentagem 0.0-1.0): [x, y, largura, altura]
+     * @param fullWidth  a largura total da janela da aplicação em pixels
+     * @param fullHeight a altura total da janela da aplicação em pixels
      */
     public SubPlot(double[] window, float[] viewport, float fullWidth, float fullHeight) {
         this.window = window;
@@ -41,17 +44,23 @@ public class SubPlot {
 
     /**
      * Obtém as definições atuais da janela do mundo (Window).
+     * <p>
+     * Retorna o array com os limites do mundo virtual.
+     * </p>
      *
-     * @return Array [minX, maxX, minY, maxY].
+     * @return array com os limites do mundo: [minX, maxX, minY, maxY]
      */
     public double[] getWindow() {
         return window;
     }
 
     /**
-     * Redefine a janela do mundo (zoom ou pan) e recalcula os coeficientes de transformação.
+     * Redefine a janela do mundo e recalcula os coeficientes de transformação.
+     * <p>
+     * Permite operações de zoom ou deslocamento (pan) no mundo virtual.
+     * </p>
      *
-     * @param window Novo array de definições de window.
+     * @param window novo array de definições da janela do mundo
      */
     public void setWindow(double[] window) {
         this.window = window;
@@ -62,9 +71,9 @@ public class SubPlot {
     }
 
     /**
-     * Obtém as definições atuais do viewport (Ecrã).
+     * Obtém as definições atuais do viewport (área do ecrã).
      *
-     * @return Array [x%, y%, w%, h%].
+     * @return array com as definições do viewport: [x%, y%, largura%, altura%]
      */
     public float[] getViewport() {
         return viewport;
@@ -73,7 +82,7 @@ public class SubPlot {
     /**
      * Redefine o viewport e recalcula todos os coeficientes de transformação.
      *
-     * @param viewport Novo array de definições de viewport.
+     * @param viewport novo array de definições do viewport
      */
     public void setViewport(float[] viewport) {
         this.viewport = viewport;
@@ -86,9 +95,9 @@ public class SubPlot {
     /**
      * Converte coordenadas do mundo virtual para coordenadas reais de pixel no ecrã.
      *
-     * @param x Coordenada X no mundo virtual.
-     * @param y Coordenada Y no mundo virtual.
-     * @return Array de 2 floats contendo [xPixel, yPixel].
+     * @param x coordenada X no mundo virtual
+     * @param y coordenada Y no mundo virtual
+     * @return array de 2 floats contendo [xPixel, yPixel]
      */
     public float[] getPixelCoord(double x, double y) {
         float[] coord = new float[2];
@@ -98,22 +107,27 @@ public class SubPlot {
     }
 
     /**
-     * Versão sobrecarregada de {@link #getPixelCoord(double, double)} que aceita um array.
+     * Converte coordenadas do mundo virtual para coordenadas de pixel.
+     * <p>
+     * Versão sobrecarregada que aceita um array como parâmetro.
+     * </p>
      *
-     * @param xy Array contendo [xMundo, yMundo].
-     * @return Array de 2 floats contendo [xPixel, yPixel].
+     * @param xy array contendo [xMundo, yMundo]
+     * @return array de 2 floats contendo [xPixel, yPixel]
      */
     public float[] getPixelCoord(double[] xy) {
         return getPixelCoord(xy[0], xy[1]);
     }
 
     /**
-     * Converte dimensões (largura e altura) do mundo para pixels, sem aplicar translação.
-     * Útil para calcular o tamanho de objetos sem se preocupar com a sua posição.
+     * Converte dimensões do mundo para pixels, sem aplicar translação.
+     * <p>
+     * Útil para calcular o tamanho de objetos sem considerar a sua posição.
+     * </p>
      *
-     * @param dimx Largura no mundo virtual.
-     * @param dimy Altura no mundo virtual.
-     * @return Array de 2 floats contendo [larguraPixel, alturaPixel].
+     * @param dimx largura no mundo virtual
+     * @param dimy altura no mundo virtual
+     * @return array de 2 floats contendo [larguraPixel, alturaPixel]
      */
     public float[] getDimInPixel(double dimx, double dimy) {
         float[] d = new float[2];
@@ -124,12 +138,15 @@ public class SubPlot {
     }
 
     /**
-     * Converte coordenadas de pixel (ex: posição do rato) para coordenadas do mundo virtual.
-     * Realiza a operação inversa de {@link #getPixelCoord(double, double)}.
+     * Converte coordenadas de pixel para coordenadas do mundo virtual.
+     * <p>
+     * Realiza a operação inversa da conversão de coordenadas mundo-para-pixel.
+     * Útil para converter posições do rato em coordenadas do mundo.
+     * </p>
      *
-     * @param xx Coordenada X em pixels.
-     * @param yy Coordenada Y em pixels.
-     * @return Array de 2 doubles contendo [xMundo, yMundo].
+     * @param xx coordenada X em pixels
+     * @param yy coordenada Y em pixels
+     * @return array de 2 doubles contendo [xMundo, yMundo]
      */
     public double[] getWorldCoord(double xx, double yy) {
         double[] coord = new double[2];
@@ -139,22 +156,28 @@ public class SubPlot {
     }
 
     /**
-     * Versão sobrecarregada que aceita um array de floats (coordenadas de pixel).
+     * Converte coordenadas de pixel para coordenadas do mundo virtual.
+     * <p>
+     * Versão sobrecarregada que aceita um array de floats.
+     * </p>
      *
-     * @param xy Array contendo [xPixel, yPixel].
-     * @return Array de floats convertido.
+     * @param xy array contendo [xPixel, yPixel]
+     * @return array de floats com as coordenadas convertidas
      */
     public float[] getWorldCoord(float[] xy) {
         return getPixelCoord(xy[0], xy[1]);
     }
 
     /**
-     * Converte um vetor (direção e magnitude) do mundo para pixels.
-     * Semelhante a converter dimensões, ignora a posição de origem.
+     * Converte um vetor do mundo para pixels.
+     * <p>
+     * Aplica apenas a escala (não considera translação), útil para converter
+     * direções e magnitudes sem depender da posição de origem.
+     * </p>
      *
-     * @param dx Componente X do vetor.
-     * @param dy Componente Y do vetor.
-     * @return Array de 2 floats representando o vetor em pixels.
+     * @param dx componente X do vetor no mundo
+     * @param dy componente Y do vetor no mundo
+     * @return array de 2 floats representando o vetor em pixels
      */
     public float[] getVectorCoord(double dx, double dy) {
         float[] v = new float[2];
@@ -164,10 +187,13 @@ public class SubPlot {
     }
 
     /**
-     * Versão sobrecarregada de {@link #getVectorCoord(double, double)}.
+     * Converte um vetor do mundo para pixels.
+     * <p>
+     * Versão sobrecarregada que aceita um array como parâmetro.
+     * </p>
      *
-     * @param dxdy Array contendo [dx, dy].
-     * @return Array de 2 floats.
+     * @param dxdy array contendo [dx, dy] no mundo
+     * @return array de 2 floats representando o vetor em pixels
      */
     public float[] getVectorCoord(double[] dxdy) {
         return getVectorCoord(dxdy[0], dxdy[1]);
@@ -176,11 +202,11 @@ public class SubPlot {
     /**
      * Converte uma caixa definida no mundo virtual para coordenadas de pixel.
      *
-     * @param cx   Centro ou canto X no mundo (depende da lógica do jogo).
-     * @param cy   Centro ou canto Y no mundo.
-     * @param dimx Largura no mundo.
-     * @param dimy Altura no mundo.
-     * @return Array de 4 floats: [xPixel, yPixel, larguraPixel, alturaPixel].
+     * @param cx   posição X no mundo (centro ou canto, dependente da implementação)
+     * @param cy   posição Y no mundo (centro ou canto, dependente da implementação)
+     * @param dimx largura da caixa no mundo
+     * @param dimy altura da caixa no mundo
+     * @return array de 4 floats: [xPixel, yPixel, larguraPixel, alturaPixel]
      */
     public float[] getBox(double cx, double cy, double dimx, double dimy) {
         float[] c1 = getPixelCoord(cx, cy);
@@ -189,19 +215,26 @@ public class SubPlot {
     }
 
     /**
-     * Versão sobrecarregada de {@link #getBox(double, double, double, double)} que aceita um array.
+     * Converte uma caixa do mundo virtual para coordenadas de pixel.
+     * <p>
+     * Versão sobrecarregada que aceita um array como parâmetro.
+     * </p>
      *
-     * @param b Array contendo [x, y, largura, altura] no mundo.
-     * @return Array de 4 floats em pixels.
+     * @param b array contendo [x, y, largura, altura] no mundo
+     * @return array de 4 floats: [xPixel, yPixel, larguraPixel, alturaPixel]
      */
     public float[] getBox(double[] b) {
         return getBox(b[0], b[1], b[2], b[3]);
     }
 
     /**
-     * Obtém a caixa delimitadora (bounding box) de todo o viewport em pixels.
+     * Obtém a caixa delimitadora de todo o viewport em pixels.
+     * <p>
+     * Calcula as coordenadas de pixel que correspondem aos limites completos
+     * da janela do mundo definida.
+     * </p>
      *
-     * @return Array de 4 floats: [xPixel, yPixel, larguraPixel, alturaPixel].
+     * @return array de 4 floats: [xPixel, yPixel, larguraPixel, alturaPixel]
      */
     public float[] getBoundingBox() {
         float[] c1 = getPixelCoord(window[0], window[2]);
@@ -211,11 +244,13 @@ public class SubPlot {
 
     /**
      * Verifica se uma coordenada de pixel está dentro da área definida por este SubPlot.
+     * <p>
      * Útil para detetar cliques do rato dentro de uma vista específica.
+     * </p>
      *
-     * @param xx Coordenada X em pixels.
-     * @param yy Coordenada Y em pixels.
-     * @return {@code true} se o ponto estiver dentro do viewport, {@code false} caso contrário.
+     * @param xx coordenada X em pixels
+     * @param yy coordenada Y em pixels
+     * @return {@code true} se o ponto estiver dentro do viewport, {@code false} caso contrário
      */
     public boolean isInside(float xx, float yy) {
         double[] c = getWorldCoord(xx, yy);
@@ -223,10 +258,13 @@ public class SubPlot {
     }
 
     /**
-     * Versão sobrecarregada de {@link #isInside(float, float)} que aceita um array.
+     * Verifica se uma coordenada de pixel está dentro da área definida por este SubPlot.
+     * <p>
+     * Versão sobrecarregada que aceita um array como parâmetro.
+     * </p>
      *
-     * @param xy Array contendo [xPixel, yPixel].
-     * @return {@code true} se estiver dentro.
+     * @param xy array contendo [xPixel, yPixel]
+     * @return {@code true} se o ponto estiver dentro do viewport, {@code false} caso contrário
      */
     public boolean isInside(float[] xy) {
         return isInside(xy[0], xy[1]);

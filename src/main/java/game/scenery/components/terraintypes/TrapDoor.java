@@ -11,17 +11,31 @@ public class TrapDoor extends Terrain {
     private final Map map;
 
     /**
-     * Constrói um objeto de terreno retangular.
+     * Representa uma armadilha que remove-se ao ser tocada pelo cavaleiro.
+     * <p>
+     * Permite passagem para inimigos, mas desaparece para o cavaleiro, atuando como
+     * um mecanismo de progressão no jogo.
+     * </p>
      *
-     * @param center A posição central do terreno.
-     * @param width  A largura total.
-     * @param height A altura total.
+     * @param center a posição central
+     * @param width a largura
+     * @param height a altura
+     * @param map o mapa
+     * @param p o contexto gráfico
      */
     public TrapDoor(PVector center, float width, float height, Map map, PApplet p) {
         super(center, width, height, p);
         this.map = map;
     }
 
+    /**
+     * Processa a interseção com uma entidade.
+     * <p>
+     * Remove a armadilha se for o cavaleiro, caso contrário processa normalmente.
+     * </p>
+     *
+     * @param entity a entidade que interseta
+     */
     @Override
     public void elaborateIntersects(Entity entity) {
         if (entity instanceof TheKnight) {

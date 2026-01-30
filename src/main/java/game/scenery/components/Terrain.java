@@ -4,6 +4,7 @@ import game.core.SubPlot;
 import game.scenery.characters.Entity;
 import game.scenery.characters.IVisualizable;
 import game.scenery.characters.types.TheKnight;
+import game.scenery.characters.types.enemies.FalseKnight;
 import game.scenery.components.hitbox.Hitbox;
 import game.scenery.components.hitbox.LinePainter;
 import game.scenery.components.hitbox.Point;
@@ -11,10 +12,10 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 /**
- * Representa um elemento físico estático do ambiente de jogo (como chão, paredes ou plataformas).
+ * Representa um elemento físico estático do ambiente.
  * <p>
- * Estende a funcionalidade da classe {@link Hitbox} para incluir lógica específica de resolução
- * de colisões físicas, impedindo que entidades atravessem o terreno.
+ * Estende Hitbox para incluir lógica de resolução de colisões físicas.
+ * </p>
  */
 public class Terrain extends Hitbox implements IVisualizable {
 
@@ -23,9 +24,10 @@ public class Terrain extends Hitbox implements IVisualizable {
     /**
      * Constrói um objeto de terreno retangular.
      *
-     * @param center A posição central do terreno.
-     * @param width  A largura total.
-     * @param height A altura total.
+     * @param center a posição central do terreno
+     * @param width  a largura total
+     * @param height a altura total
+     * @param p      o contexto gráfico do Processing
      */
     public Terrain(PVector center, float width, float height, PApplet p) {
         super(new Point(center.x, center.y), width, height);
@@ -33,15 +35,13 @@ public class Terrain extends Hitbox implements IVisualizable {
     }
 
     /**
-     * Calcula e resolve a resposta física à colisão entre este terreno e uma entidade.
+     * Calcula e resolve a resposta física à colisão com uma entidade.
      * <p>
-     * Utiliza a lógica AABB (Axis-Aligned Bounding Box) para determinar a profundidade da sobreposição
-     * entre as caixas de colisão. Baseado na sobreposição (overlap), reposiciona a entidade
-     * imediatamente fora do terreno e anula a velocidade no eixo da colisão.
-     * <p>
-     * Também é responsável por detetar se uma entidade do tipo {@link TheKnight} aterrou no chão.
+     * Reposiciona a entidade fora do terreno e anula a velocidade no eixo da colisão.
+     * Deteta se o cavaleiro ou chefe aterrou.
+     * </p>
      *
-     * @param entity A entidade que será verificada e ajustada fisicamente.
+     * @param entity a entidade que será verificada e ajustada fisicamente
      */
     public void elaborateIntersects(Entity entity) {
         Hitbox otherHitbox = entity.getHitbox();
@@ -75,6 +75,7 @@ public class Terrain extends Hitbox implements IVisualizable {
                 if (dy > 0) {
                     newY = this.getPosition().y + this.height / 2 + otherHitbox.getHeight() / 2;
                     if (entity instanceof TheKnight) ((TheKnight) entity).setGrounded(true);
+                    if (entity instanceof FalseKnight) ((FalseKnight) entity).setGrounded(true);
                 } else newY = this.getPosition().y - this.height / 2 - otherHitbox.getHeight() / 2;
 
                 entity.setPosition(new PVector(entity.getPosition().x, newY));
@@ -84,11 +85,13 @@ public class Terrain extends Hitbox implements IVisualizable {
 
     /**
      * Desenha o terreno no ecrã.
-     * Delega a renderização para a classe pai {@link Hitbox}.
+     * <p>
+     * Delega a renderização para a classe pai Hitbox.
+     * </p>
      *
-     * @param p       O contexto gráfico do Processing.
-     * @param painter O objeto responsável pelo desenho das linhas.
-     * @param plt     O objeto SubPlot para conversão de coordenadas.
+     * @param p       o contexto gráfico do Processing
+     * @param painter o objeto responsável pelo desenho das linhas
+     * @param plt     o objeto SubPlot para conversão de coordenadas
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {

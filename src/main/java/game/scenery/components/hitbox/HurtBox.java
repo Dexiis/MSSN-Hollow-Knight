@@ -1,41 +1,40 @@
 package game.scenery.components.hitbox;
 
-import game.scenery.characters.IVisualizable;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Representa uma área de vulnerabilidade (HurtBox) associada a uma entidade.
+ * Define uma zona de vulnerabilidade associada a uma entidade.
  * <p>
- * Uma HurtBox define a região onde a entidade pode receber dano ou interagir negativamente
- * com outros elementos (como Hitboxes de ataque). Implementa {@link IVisualizable} para
- * permitir a sua renderização no sistema de jogo.
+ * Estende a classe Hitbox para representar áreas onde a entidade é suscetível a receber dano.
+ * </p>
  */
-public class HurtBox extends Hitbox implements IVisualizable {
+public class HurtBox extends Hitbox {
 
     /**
-     * Construtor da HurtBox.
-     * Inicializa a forma de colisão baseada numa lista de pontos.
+     * Instancia uma nova HurtBox a partir de uma lista de vértices.
+     * <p>
+     * Encaminha a geometria para a classe pai para inicialização.
+     * </p>
      *
-     * @param points Lista de pontos que definem o polígono da HurtBox.
+     * @param points lista de objetos Point que delimitam o polígono da área
      */
     public HurtBox(List<Point> points) {
         super(points);
     }
 
     /**
-     * Classe utilitária (Builder Pattern) para facilitar a construção progressiva de HurtBoxes.
+     * Disponibiliza um mecanismo fluente para a construção de instâncias HurtBox.
      */
     public static class Builder {
         private final List<Point> points = new ArrayList<>();
 
         /**
-         * Adiciona um novo vértice ao polígono da HurtBox.
+         * Regista um novo vértice na geometria em construção.
          *
-         * @param x Coordenada X do ponto.
-         * @param y Coordenada Y do ponto.
-         * @return O próprio Builder para encadeamento de chamadas.
+         * @param x coordenada horizontal do vértice
+         * @param y coordenada vertical do vértice
+         * @return a própria instância do Builder para encadeamento
          */
         public Builder addPoint(float x, float y) {
             points.add(new Point(x, y));
@@ -43,9 +42,9 @@ public class HurtBox extends Hitbox implements IVisualizable {
         }
 
         /**
-         * Finaliza a construção e retorna uma nova instância de HurtBox.
+         * Finaliza o processo de construção e gera a instância HurtBox.
          *
-         * @return O objeto HurtBox configurado com os pontos adicionados.
+         * @return um novo objeto HurtBox configurado com a geometria definida
          */
         public HurtBox build() {
             return new HurtBox(points);

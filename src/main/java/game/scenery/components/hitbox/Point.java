@@ -1,9 +1,10 @@
 package game.scenery.components.hitbox;
 
 /**
- * Representa um ponto geométrico no espaço 2D.
+ * Representa uma coordenada espacial bidimensional.
  * <p>
- * Esta classe serve como uma estrutura fundamental para coordenadas no sistema.
+ * Atua como estrutura fundamental para posições e vértices na geometria de colisão.
+ * </p>
  */
 public class Point {
 
@@ -11,10 +12,13 @@ public class Point {
     public float y;
 
     /**
-     * Construtor que inicializa o ponto com coordenadas específicas.
+     * Instancia um novo ponto com coordenadas específicas.
+     * <p>
+     * Atribui os valores às componentes horizontal e vertical.
+     * </p>
      *
-     * @param x A coordenada horizontal.
-     * @param y A coordenada vertical.
+     * @param x a coordenada no eixo horizontal
+     * @param y a coordenada no eixo vertical
      */
     public Point(float x, float y) {
         this.x = x;

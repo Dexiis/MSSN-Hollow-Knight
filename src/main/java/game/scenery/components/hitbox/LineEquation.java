@@ -1,10 +1,10 @@
 package game.scenery.components.hitbox;
 
 /**
- * Representa e resolve a equação linear na forma y = kx + a.
+ * Define a representação matemática de uma reta no formato y = kx + a.
  * <p>
- * Esta classe é responsável pela matemática analítica das linhas, lidando
- * especificamente com o caso de linhas verticais (paredes) onde o declive é indefinido.
+ * Gere a lógica algébrica para cálculos de declives e interseções, tratando retas verticais.
+ * </p>
  */
 public class LineEquation {
 
@@ -20,10 +20,12 @@ public class LineEquation {
     private float verticalX;
 
     /**
-     * Construtor da equação de reta.
-     * Inicializa os pontos de referência com base num segmento de reta existente.
+     * Inicializa a estrutura da equação linear com base num segmento de reta.
+     * <p>
+     * Armazena as referências para os pontos de início e fim, e a posição global.
+     * </p>
      *
-     * @param segment O segmento de reta que servirá de base para a equação.
+     * @param segment o segmento de reta que fornece os dados geométricos
      */
     public LineEquation(LineSegment segment) {
         this.position = segment.getPosition();
@@ -32,20 +34,19 @@ public class LineEquation {
     }
 
     /**
-     * Define a posição global de referência para a equação.
-     * Útil quando o objeto se move e a equação precisa de ser recalculada com base no novo offset.
+     * Atualiza o ponto de referência global da equação.
      *
-     * @param position O novo ponto de posição global.
+     * @param position o novo ponto de posição no mundo
      */
     public void setPosition(Point position) {
         this.position = position;
     }
 
     /**
-     * Calcula os coeficientes da equação da reta com base nos pontos atuais.
+     * Computa os coeficientes da equação da reta.
      * <p>
-     * Determina automaticamente se a linha é vertical (diferença em X muito pequena)
-     * para evitar erros de divisão por zero e define a flag interna apropriada.
+     * Analisa as coordenadas atuais para determinar a inclinação e deteta retas verticais.
+     * </p>
      */
     public void formEquation() {
         float x1 = start.x + position.x;
@@ -66,16 +67,13 @@ public class LineEquation {
     }
 
     /**
-     * Calcula o ponto de interseção entre esta reta e outra, considerando-as infinitas.
+     * Calcula as coordenadas de interseção entre esta reta e uma outra equação.
      * <p>
-     * Este mét.odo gere quatro cenários de interseção:
-     * 1. Ambas verticais (retorna null).
-     * 2. Apenas esta reta é vertical.
-     * 3. Apenas a outra reta é vertical.
-     * 4. Nenhuma é vertical (cálculo algébrico padrão).
+     * Resolve o sistema de equações lineares considerando cenários geométricos.
+     * </p>
      *
-     * @param other A outra equação de reta para verificar a interseção.
-     * @return Um objeto {@link Point} com as coordenadas da interseção, ou {@code null} se forem paralelas.
+     * @param other a outra equação linear para verificar a convergência
+     * @return o ponto exato da interseção, ou {@code null} se as retas forem paralelas
      */
     public Point solveIntersectionPoint(LineEquation other) {
         this.formEquation();
@@ -102,10 +100,10 @@ public class LineEquation {
     }
 
     /**
-     * Calcula o valor de Y para uma dada coordenada X utilizando a equação linear.
+     * Determina o valor da coordenada Y para um dado X.
      *
-     * @param x A coordenada X de entrada.
-     * @return O valor correspondente de Y (y = kx + a).
+     * @param x a coordenada horizontal de entrada
+     * @return o valor resultante de Y
      */
     public float calculate(float x) {
         return k * x + a;

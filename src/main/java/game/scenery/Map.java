@@ -1,19 +1,17 @@
 package game.scenery;
 
 import game.core.SubPlot;
-import game.scenery.characters.Entity;
 import game.scenery.characters.types.Enemy;
+import game.scenery.characters.Entity;
 import game.scenery.characters.types.TheKnight;
 import game.scenery.characters.types.enemies.FalseKnight;
-import game.scenery.characters.types.enemies.HuskHornhead;
-import game.scenery.characters.types.enemies.Squit;
+import game.scenery.characters.types.enemies.Mob;
 import game.scenery.characters.types.enemies.attributes.Eye;
+import game.scenery.characters.types.enemies.mobs.HuskHornhead;
+import game.scenery.characters.types.enemies.mobs.Squit;
 import game.scenery.components.Terrain;
 import game.scenery.components.hitbox.LinePainter;
-import game.scenery.components.terraintypes.DeathFloor;
-import game.scenery.components.terraintypes.Platform;
-import game.scenery.components.terraintypes.TrapDoor;
-import game.scenery.components.terraintypes.Wall;
+import game.scenery.components.terraintypes.*;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -22,9 +20,8 @@ import java.util.ArrayList;
 /**
  * Representa o mapa ou nível do jogo.
  * <p>
- * Esta classe atua como um contentor para todos os elementos do cenário, incluindo o terreno,
- * o jogador e os inimigos. É responsável por inicializar a disposição do nível e gerir
- * as listas de entidades ativas.
+ * Atua como contentor para terrenos, jogador e inimigos.
+ * </p>
  */
 public class Map {
     private final PApplet p;
@@ -35,14 +32,16 @@ public class Map {
     private final ArrayList<Enemy> enemies = new ArrayList<>();
     private final ArrayList<Entity> entities = new ArrayList<>();
 
+    private final FalseKnight boss;
+
     /**
-     * Construtor da classe Map.
+     * Constrói o mapa do jogo.
      * <p>
-     * Inicializa o ambiente de jogo, criando instâncias de terreno (paredes e chão),
-     * posicionando o jogador e gerando os inimigos iniciais com os seus respetivos sensores de visão.
+     * Inicializa terrenos, jogador e inimigos.
+     * </p>
      *
-     * @param p       O contexto gráfico do Processing.
-     * @param painter O objeto auxiliar para desenho de linhas (debug ou visualização).
+     * @param p       o contexto gráfico do Processing
+     * @param painter o objeto auxiliar para desenho de linhas
      */
     public Map(PApplet p, LinePainter painter) {//TODO ATUALMENTE RAWCODED - TESTE
         this.p = p;
@@ -73,9 +72,13 @@ public class Map {
         terrains.add(new Terrain(new PVector(7350, -500), 200, 800, p));
 
         // Death Platform
-        terrains.add(new DeathFloor(new PVector(4000, -6500), 10000, 10000, this, p));
+        terrains.add(new DeathPlatform(new PVector(4000, -6500), 10000, 10000, this, p));
 
-        this.player = new TheKnight(new PVector(50, 800), p);
+        // Spawn Platform
+        terrains.add(new SpawnPlatform(new PVector(5500, -400), 100, 500, this, p));
+
+        //this.player = new TheKnight(new PVector(50, 800), p);
+        this.player = new TheKnight(new PVector(5700, -100), p);
         entities.add(player);
 
         enemies.add(new Squit(new PVector(500, 500), p));
@@ -84,76 +87,95 @@ public class Map {
         enemies.add(new HuskHornhead(new PVector(300, 200), p));
         entities.add(enemies.getLast());
 
-        enemies.add(new FalseKnight(new PVector(6100, 300), p));
-        entities.add(enemies.getLast());
+        boss = new FalseKnight(new PVector(6100, 300), p);
+        boss.setEye(new Eye(boss, player));
 
         for (Enemy enemy : enemies)
             enemy.setEye(new Eye(enemy, player));
     }
 
     /**
-     * Obtém a lista de todos os obstáculos e superfícies (terrenos) presentes no mapa.
+     * Devolve o chefe.
      *
-     * @return Uma lista de objetos {@link Terrain}.
+     * @return o FalseKnight chefe
+     */
+    public FalseKnight getBoss() {
+        return boss;
+    }
+
+    /**
+     * Obtém a lista de terrenos.
+     *
+     * @return a lista de objetos Terrain
      */
     public ArrayList<Terrain> getTerrains() {
         return terrains;
     }
 
     /**
-     * Obtém a lista de inimigos ativos no mapa.
+     * Obtém a lista de inimigos.
      *
-     * @return Uma lista de objetos {@link Enemy}.
+     * @return a lista de objetos Enemy
      */
     public ArrayList<Enemy> getEnemies() {
         return enemies;
     }
 
     /**
-     * Obtém a lista completa de todas as entidades (jogador e inimigos) presentes no mapa.
+     * Obtém a lista de todas as entidades.
      *
-     * @return Uma lista de objetos {@link Entity}.
+     * @return a lista de objetos Entity
      */
     public ArrayList<Entity> getEntities() {
         return entities;
     }
 
     /**
-     * Obtém a referência para o jogador principal (The Knight).
+     * Obtém a referência para o jogador.
      *
-     * @return A instância de {@link TheKnight}.
+     * @return a instância de TheKnight
      */
     public TheKnight getPlayer() {
         return player;
     }
 
     /**
-     * Remove um inimigo específico do jogo.
+     * Remove um inimigo do jogo.
      * <p>
-     * Elimina o inimigo tanto da lista de inimigos como da lista geral de entidades,
-     * cessando a sua atualização e renderização.
+     * Elimina o inimigo das listas de inimigos e entidades.
+     * </p>
      *
-     * @param enemy O inimigo a ser removido.
+     * @param enemy o inimigo a ser removido
      */
-    public void removeEnemy(Enemy enemy) {
+    public void removeEnemy(Mob enemy) {
         enemies.remove(enemy);
         entities.remove(enemy);
     }
 
+    /**
+     * Adiciona o chefe às listas de inimigos e entidades.
+     */
+    public void spawnBoss() {
+        enemies.add(boss);
+        entities.add(boss);
+    }
+
+    /**
+     * Remove um terreno do mapa.
+     *
+     * @param terrain o terreno a ser removido
+     */
     public void removeTerrain(Terrain terrain) {
         terrains.remove(terrain);
     }
 
     /**
-     * Renderiza todos os elementos do mapa no ecrã.
-     * <p>
-     * Itera sobre as listas de terrenos e entidades para invocar os seus respetivos métodos de desenho,
-     * utilizando o sistema de coordenadas fornecido pelo SubPlot.
+     * Renderiza todos os elementos do mapa.
      *
-     * @param plt O objeto SubPlot para conversão de coordenadas (Mundo para Pixel).
+     * @param plt o objeto SubPlot para conversão de coordenadas
      */
     public void display(SubPlot plt) {
-        for (Terrain terrain : terrains) terrain.display(p, painter, plt);
         for (Entity entity : entities) entity.display(p, painter, plt);
+        for (Terrain terrain : terrains) terrain.display(p, painter, plt);
     }
 }

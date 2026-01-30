@@ -1,19 +1,21 @@
 package game.core;
 
 /**
- * Representa um número complexo na forma $z = a + bi$.
+ * Representa um número complexo na forma z = a + bi.
  * <p>
  * Esta classe fornece operações matemáticas fundamentais para números complexos,
- * úteis para cálculos físicos, rotações ou algoritmos de fractais (ex: Julia Sets).
+ * incluindo adição, multiplicação e cálculo da norma. É útil para cálculos físicos,
+ * rotações ou algoritmos de fractais (ex: Conjuntos de Julia).
+ * </p>
  */
 public class Complex {
     private double a, b;
 
     /**
-     * Construtor de um número complexo.
+     * Constrói um novo número complexo com a parte real e imaginária especificadas.
      *
-     * @param a A parte real.
-     * @param b A parte imaginária.
+     * @param a a parte real do número complexo
+     * @param b a parte imaginária do número complexo
      */
     public Complex(double a, double b) {
         this.a = a;
@@ -23,7 +25,7 @@ public class Complex {
     /**
      * Obtém a parte real do número complexo.
      *
-     * @return O valor de a.
+     * @return a parte real (a) deste número complexo
      */
     public double getA() {
         return a;
@@ -32,19 +34,24 @@ public class Complex {
     /**
      * Obtém a parte imaginária do número complexo.
      *
-     * @return O valor de b.
+     * @return a parte imaginária (b) deste número complexo
      */
     public double getB() {
         return b;
     }
 
     /**
-     * Adiciona outro número complexo a este ($z1 + z2$).
+     * Adiciona outro número complexo a este número complexo.
      * <p>
-     * Soma as partes reais e as partes imaginárias independentemente.
+     * A operação realizada é: (a + bi) + (c + di) = (a+c) + (b+d)i
+     * </p>
+     * <p>
+     * Modifica o estado do objeto atual, somando as partes reais
+     * e as partes imaginárias independentemente.
+     * </p>
      *
-     * @param x O outro número complexo a somar.
-     * @return A própria instância atualizada (permite encadeamento).
+     * @param x o número complexo a adicionar a este número complexo
+     * @return a própria instância atualizada, permitindo encadeamento de operações
      */
     public Complex add(Complex x) {
         this.a += x.a;
@@ -53,12 +60,15 @@ public class Complex {
     }
 
     /**
-     * Realiza a multiplicação deste número complexo por outro ($z1 * z2$).
+     * Multiplica este número complexo por outro número complexo.
      * <p>
-     * A fórmula utilizada é: $(a + bi)(c + di) = (ac - bd) + (ad + bc)i$.
-     * O estado deste objeto é atualizado com o resultado.
+     * A operação realizada é: (a + bi) × (c + di) = (ac - bd) + (ad + bc)i
+     * </p>
+     * <p>
+     * Modifica o estado do objeto atual com o resultado da multiplicação.
+     * </p>
      *
-     * @param x O outro número complexo a multiplicar.
+     * @param x o número complexo pelo qual multiplicar este número complexo
      */
     public void mult(Complex x) {
         double real = this.a * x.a - this.b * x.b;
@@ -68,11 +78,13 @@ public class Complex {
     }
 
     /**
-     * Calcula a norma (ou módulo) do número complexo.
+     * Calcula a norma (módulo) deste número complexo.
      * <p>
-     * Representa a distância do ponto (a,b) à origem no plano complexo: $\sqrt{a^2 + b^2}$.
+     * A norma representa a distância do ponto (a, b) à origem no plano complexo
+     * e é calculada como: √(a² + b²)
+     * </p>
      *
-     * @return O valor da norma.
+     * @return a norma deste número complexo
      */
     public double norm() {
         return Math.sqrt(a * a + b * b);

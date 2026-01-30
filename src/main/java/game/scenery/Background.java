@@ -16,30 +16,47 @@ public class Background {
 
     private final ArrayList<Flock> flock = new ArrayList<>();
 
+    /**
+     * Gere o fundo dinâmico do jogo.
+     *
+     * @param p o contexto gráfico do Processing
+     */
     public Background(PApplet p) {
         this.p = p;
         float[] VIEWPORT = {0f, 0f, 1f, 1f};
         double[] WINDOW = {-3.55, 3.55, -2.0, 2.0};
         this.plt = new SubPlot(WINDOW, VIEWPORT, p.width, p.height);
 
-        for (int i = 0; i < 30; i++) {
-            flock.add(new Flock(randomPVector(), plt, p));
-        }
-
-        for (Flock f : flock) {
-            f.setEye(new FlockEye(f, flock));
-        }
+        for (int i = 0; i < 30; i++) flock.add(new Flock(randomPVector(), plt, p));
+        
+        for (Flock f : flock) f.setEye(new FlockEye(f, flock));
+        
     }
 
+    /**
+     * Exibe o fundo baseado na posição.
+     *
+     * @param position a posição para calcular o fractal
+     */
     public void display(PVector position) {
         drawMandelbrotAndJulia(position);
         drawFlock();
     }
 
+    /**
+     * Devolve a lista do bando.
+     *
+     * @return a lista de entidades do bando
+     */
     public ArrayList<Flock> getFlock() {
         return flock;
     }
 
+    /**
+     * Desenha o fractal de Mandelbrot/Julia baseado na posição.
+     *
+     * @param position a posição para calcular o parâmetro C
+     */
     private void drawMandelbrotAndJulia(PVector position) {
         p.loadPixels();
 
@@ -47,7 +64,7 @@ public class Background {
         double cIm = PApplet.map(position.y / 5, 0, p.height, -1.0f, 1.0f);
         Complex C = new Complex(cRe, cIm);
 
-        for (int x = 0; x < p.width; x++) {
+        for (int x = 0; x < p.width; x++)
             for (int y = 0; y < p.height; y++) {
 
                 double[] zrzi = plt.getWorldCoord(x, y);
@@ -64,9 +81,8 @@ public class Background {
                 }
 
                 int col;
-                if (iter == MAX_ITER) {
-                    col = p.color(0); // Interior preto
-                } else {
+                if (iter == MAX_ITER) col = p.color(0); // Interior preto
+                else {
                     int val = (iter % 16) * 16;
                     col = p.color(val, 0, 0); // Tons de vermelho sobre preto
                 }
@@ -74,16 +90,24 @@ public class Background {
 
                 p.pixels[x + y * p.width] = col;
             }
-        }
+        
         p.updatePixels();
     }
 
+    /**
+     * Desenha todas as entidades do bando.
+     */
     private void drawFlock() {
         for (Flock f : flock) {
             f.display(p, plt);
         }
     }
 
+    /**
+     * Gera um vetor aleatório dentro da janela.
+     *
+     * @return um PVector aleatório
+     */
     private PVector randomPVector() {
         double[] window = plt.getWindow();
 

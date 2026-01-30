@@ -8,6 +8,13 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 
+/**
+ * Representa uma plataforma sólida no ambiente.
+ * <p>
+ * Permite que entidades se apoiem ou interajam com ela, fornecendo uma superfície
+ * para movimento e colisão no jogo.
+ * </p>
+ */
 public class Platform extends Terrain {
 
     private static PImage sprite;
@@ -17,11 +24,16 @@ public class Platform extends Terrain {
     private static final int PIXEL_CORRECTION_Y = 10;
 
     /**
-     * Constrói um objeto de terreno retangular.
+     * Constrói uma nova plataforma com as dimensões especificadas.
+     * <p>
+     * Inicializa a posição central, largura, altura e carrega o sprite da plataforma
+     * a partir do arquivo de imagem "images/plat02.png".
+     * </p>
      *
-     * @param center A posição central do terreno.
-     * @param width  A largura total.
-     * @param height A altura total.
+     * @param center o centro da plataforma no mundo
+     * @param width a largura da plataforma
+     * @param height a altura da plataforma
+     * @param p o contexto gráfico do Processing
      */
     public Platform(PVector center, float width, float height, PApplet p) {
         super(center, width, height, p);
@@ -30,12 +42,14 @@ public class Platform extends Terrain {
     }
 
     /**
-     * Desenha o terreno no ecrã.
-     * Delega a renderização para a classe pai {@link Hitbox}.
+     * Desenha a plataforma no ecrã.
+     * <p>
+     * Renderiza o sprite e delega o desenho da hitbox.
+     * </p>
      *
-     * @param p       O contexto gráfico do Processing.
-     * @param painter O objeto responsável pelo desenho das linhas.
-     * @param plt     O objeto SubPlot para conversão de coordenadas.
+     * @param p       o contexto gráfico do Processing
+     * @param painter o objeto responsável pelo desenho das linhas
+     * @param plt     o objeto SubPlot para conversão de coordenadas
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {

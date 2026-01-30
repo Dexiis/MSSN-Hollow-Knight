@@ -8,9 +8,10 @@ import processing.core.PVector;
 /**
  * Classe abstrata que representa uma entidade viva ou interativa no jogo.
  * <p>
- * Estende a classe {@link Movement} para herdar capacidades físicas e implementa {@link IVisualizable}
- * para permitir renderização. Serve como base para o Jogador e para os Inimigos, gerindo propriedades
- * comuns como vida, colisão (Hitbox), visão (Eye) e atributos físicos (DNA).
+ * Estende a classe de movimento para herdar capacidades físicas e implementa a interface
+ * de visualização. Serve como base para o Jogador e para os Inimigos, gerindo propriedades
+ * comuns como vida, colisão (Hitbox), visão e atributos físicos.
+ * </p>
  */
 public abstract class Entity extends Movement implements IVisualizable {
 
@@ -37,28 +38,30 @@ public abstract class Entity extends Movement implements IVisualizable {
     protected Hitbox hitbox;
 
     /**
-     * Construtor da entidade.
-     * Inicializa a posição base através da superclasse {@link Movement}.
+     * Constrói uma nova entidade na posição especificada.
+     * <p>
+     * Inicializa a posição base invocando o construtor da superclasse.
+     * </p>
      *
-     * @param position O vetor de posição inicial da entidade.
+     * @param position o vetor de posição inicial da entidade
      */
     protected Entity(PVector position) {
         super(position);
     }
 
     /**
-     * Obtém a vida atual da entidade.
+     * Obtém o valor atual da vida da entidade.
      *
-     * @return O valor da saúde.
+     * @return a quantidade de vida restante
      */
     public int getHealth() {
         return health;
     }
 
     /**
-     * Obtém a área de colisão (Hitbox) da entidade.
+     * Obtém a área de colisão (Hitbox) associada a esta entidade.
      *
-     * @return O objeto Hitbox.
+     * @return o objeto Hitbox atual
      */
     public Hitbox getHitbox() {
         return hitbox;
@@ -67,46 +70,51 @@ public abstract class Entity extends Movement implements IVisualizable {
     /**
      * Verifica se a entidade está atualmente a executar um ataque.
      *
-     * @return {@code true} se estiver a atacar.
+     * @return {@code true} se estiver num estado ofensivo, {@code false} caso contrário
      */
     public boolean isAttacking() {
         return attacking;
     }
 
     /**
-     * Verifica se a entidade está num estado de colisão.
+     * Verifica se a entidade está num estado de colisão com outro objeto.
      *
-     * @return {@code true} se estiver a colidir.
+     * @return {@code true} se estiver a colidir, {@code false} caso contrário
      */
     public boolean isColliding() {
         return colliding;
     }
 
     /**
-     * Verifica se a entidade está marcada como morta (estado final).
+     * Verifica se a entidade está marcada como morta.
+     * <p>
+     * Este estado indica tipicamente que a animação de morte já terminou e a entidade
+     * pode ser removida ou desativada.
+     * </p>
      *
-     * @return {@code true} se a entidade estiver morta, {@code false} caso contrário.
+     * @return {@code true} se a entidade estiver morta, {@code false} caso contrário
      */
     public boolean isDead() {
         return this.dead;
     }
 
     /**
-     * Verifica se a entidade está a morrer (vida esgotada).
+     * Verifica se a entidade perdeu toda a sua vida.
      * <p>
-     * Difere de {@code isDead()} pois indica apenas que a vida chegou a zero,
-     * enquanto {@code isDead()} pode indicar que a animação de morte já terminou.
+     * Difere da verificação de morte final, pois indica apenas que a saúde chegou a zero,
+     * o que normalmente despoleta a animação de morte.
+     * </p>
      *
-     * @return {@code true} se a saúde for menor ou igual a zero.
+     * @return {@code true} se a saúde for menor ou igual a zero
      */
     public boolean isDying() {
         return health <= 0;
     }
 
     /**
-     * Define o estado de ataque da entidade.
+     * Define o estado ofensivo da entidade.
      *
-     * @param attacking {@code true} para iniciar o estado de ataque, {@code false} para terminar.
+     * @param attacking {@code true} para iniciar o ataque, {@code false} para terminar
      */
     public void setAttacking(boolean attacking) {
         this.attacking = attacking;
@@ -115,28 +123,29 @@ public abstract class Entity extends Movement implements IVisualizable {
     /**
      * Define o estado de colisão da entidade.
      *
-     * @param colliding {@code true} se houver colisão.
+     * @param colliding o novo estado de colisão
      */
     public void setColliding(boolean colliding) {
         this.colliding = colliding;
     }
 
     /**
-     * Define o estado de morte da entidade.
+     * Marca a entidade como morta.
      *
-     * @param dead {@code true} para marcar a entidade como morta.
+     * @param dead o novo estado de morte
      */
     public void setDead(boolean dead) {
         this.dead = dead;
     }
 
     /**
-     * Define manualmente a posição da entidade.
+     * Define manualmente a posição da entidade no mundo.
      * <p>
-     * Sobrescreve o mét.odo da superclasse para sincronizar imediatamente a {@link Hitbox}
-     * para o mesmo local.
+     * Sobrescreve a rotina da superclasse para garantir que a caixa de colisão (Hitbox)
+     * é sincronizada imediatamente para a nova localização.
+     * </p>
      *
-     * @param position O novo vetor de posição.
+     * @param position o novo vetor de posição
      */
     @Override
     public void setPosition(PVector position) {
@@ -145,12 +154,13 @@ public abstract class Entity extends Movement implements IVisualizable {
     }
 
     /**
-     * Aplica dano à entidade.
+     * Aplica dano à entidade de forma genérica.
      * <p>
-     * Implementa um sistema de "invencibilidade temporária" (I-Frames). A entidade só perde vida
-     * se tiver passado tempo suficiente (definido por {@code I_FRAMES}) desde o último golpe recebido.
+     * Implementa um sistema de "invencibilidade temporária" (I-Frames). A vida só é reduzida
+     * se tiver passado tempo suficiente desde o último golpe recebido.
+     * </p>
      *
-     * @param p O contexto da PApplet, usado para verificar o tempo atual (millis).
+     * @param p o contexto gráfico para verificar o tempo atual
      */
     public void damage(PApplet p) {
         if (p.millis() - lastTimeHit > I_FRAMES) {
@@ -159,15 +169,26 @@ public abstract class Entity extends Movement implements IVisualizable {
         }
     }
 
+    /**
+     * Aplica dano à entidade considerando a origem do ataque.
+     * <p>
+     * Deve ser implementado pelas subclasses para gerir reações específicas,
+     * como a direção do recuo (knockback).
+     * </p>
+     *
+     * @param p     o contexto gráfico para verificar o tempo atual
+     * @param other o vetor de posição da origem do dano
+     */
     public abstract void damage(PApplet p, PVector other);
 
     /**
-     * Atualiza a posição física da entidade baseada no tempo delta.
+     * Atualiza a posição física da entidade baseada no intervalo de tempo.
      * <p>
-     * Sobrescreve o mét.odo da superclasse para garantir que a {@link Hitbox} acompanha
-     * sempre a nova posição da entidade.
+     * Sobrescreve a rotina da superclasse para garantir que a caixa de colisão (Hitbox)
+     * acompanha sempre a nova posição da entidade após o cálculo do movimento.
+     * </p>
      *
-     * @param dt O intervalo de tempo decorrido.
+     * @param dt o intervalo de tempo decorrido
      */
     @Override
     public void move(float dt) {

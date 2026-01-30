@@ -3,11 +3,10 @@ package game.scenery.components.hitbox;
 import game.core.SubPlot;
 
 /**
- * Representa um segmento de reta finito definido por um ponto inicial e um final,
- * relativos a uma posição global.
+ * Define um segmento de reta finito delimitado por um ponto inicial e um final.
  * <p>
- * Esta classe gere a representação espacial do segmento e delega os cálculos
- * geométricos analíticos (como interseções de retas infinitas) para a classe {@link LineEquation}.
+ * Gere a representação espacial do segmento e delega cálculos algébricos para LineEquation.
+ * </p>
  */
 public class LineSegment {
     private final Point start;
@@ -17,13 +16,14 @@ public class LineSegment {
     private Point position;
 
     /**
-     * Construtor do segmento de reta.
-     * Inicializa os pontos e cria a equação linear associada, passando a própria instância
-     * para que a equação possa aceder aos dados atualizados.
+     * Inicializa um novo segmento de reta.
+     * <p>
+     * Configura os pontos locais e a posição global, instanciando a equação linear associada.
+     * </p>
      *
-     * @param position A posição global (offset) do segmento.
-     * @param start    O ponto inicial (coordenada local relativa à posição).
-     * @param stop     O ponto final (coordenada local relativa à posição).
+     * @param position a coordenada global de referência
+     * @param start    o ponto de início relativo à posição
+     * @param stop     o ponto de fim relativo à posição
      */
     public LineSegment(Point position, Point start, Point stop) {
         this.position = position;
@@ -33,80 +33,69 @@ public class LineSegment {
     }
 
     /**
-     * Obtém o ponto inicial do segmento (coordenadas locais).
+     * Obtém o ponto local onde o segmento começa.
      *
-     * @return O ponto de início.
+     * @return o objeto Point inicial
      */
     public Point getStart() {
         return start;
     }
 
     /**
-     * Obtém o ponto final do segmento (coordenadas locais).
+     * Obtém o ponto local onde o segmento termina.
      *
-     * @return O ponto de fim.
+     * @return o objeto Point final
      */
     public Point getStop() {
         return stop;
     }
 
     /**
-     * Obtém a equação da reta associada a este segmento.
+     * Recupera a posição global atual do segmento.
      *
-     * @return O objeto {@link LineEquation}.
-     */
-    public LineEquation getEquation() {
-        return equation;
-    }
-
-    /**
-     * Obtém a posição global de referência do segmento.
-     *
-     * @return O ponto de posição.
+     * @return o ponto de referência no mundo
      */
     public Point getPosition() {
         return position;
     }
 
     /**
-     * Define a nova posição global de referência para o segmento.
-     * A atualização reflete-se automaticamente nos cálculos da equação linear associada
-     * na próxima vez que esta for invocada.
+     * Atualiza a posição global do segmento.
+     * <p>
+     * Propaga a alteração para a equação linear interna.
+     * </p>
      *
-     * @param position O novo ponto de posição global.
+     * @param position o novo ponto de posição
      */
     public void setPosition(Point position) {
         this.position = position;
-        this.equation.setPosition(position);  // FALTA ESTA LINHA!
+        this.equation.setPosition(position);
     }
 
     /**
-     * Verifica se este segmento de reta interseta outro segmento.
+     * Analisa se existe uma interseção física entre este segmento e outro.
      * <p>
-     * Utiliza a equação linear associada para calcular matematicamente se existe
-     * um ponto de interseção entre as duas retas.
+     * Calcula o ponto de cruzamento das retas e valida se está dentro dos limites de ambos os segmentos.
+     * </p>
      *
-     * @param other O outro segmento de reta a verificar.
-     * @return {@code true} se houver colisão (interseção), {@code false} caso contrário.
+     * @param other o outro segmento de reta a testar
+     * @return {@code true} se os segmentos se cruzarem, {@code false} caso contrário
      */
     public boolean intersects(LineSegment other) {
-        Point intersection = equation.solveIntersectionPoint(other.getEquation());
-
+        Point intersection = equation.solveIntersectionPoint(other.equation);
         if (intersection == null) return false;
 
         return this.isPointOnSegment(intersection) && other.isPointOnSegment(intersection);
     }
 
     /**
-     * Verifica se um ponto está contido neste segmento de reta finito.
+     * Verifica se um ponto está contido no segmento.
      * <p>
-     * Para o ponto estar no segmento, as suas coordenadas devem estar dentro dos
-     * limites definidos pelos pontos inicial e final (em coordenadas globais).
-     * Utiliza uma pequena tolerância (epsilon) para lidar com erros de arredondamento
-     * de ponto flutuante.
+     * Converte coordenadas para espaço global e aplica verificação de limites com tolerância.
+     * </p>
      *
-     * @param p O ponto a verificar (em coordenadas globais).
-     * @return {@code true} se o ponto está no segmento, {@code false} caso contrário.
+     * @param p o ponto a verificar
+     * @return {@code true} se o ponto estiver no segmento, {@code false} caso contrário
      */
     private boolean isPointOnSegment(Point p) {
         float epsilon = 0.001f;
@@ -128,11 +117,13 @@ public class LineSegment {
     }
 
     /**
-     * Desenha o segmento de reta no ecrã.
-     * Converte as coordenadas locais e globais para coordenadas de ecrã utilizando o SubPlot.
+     * Renderiza o segmento de reta no ecrã.
+     * <p>
+     * Utiliza o pintor de linhas para desenhar a conexão entre os pontos.
+     * </p>
      *
-     * @param painter O objeto responsável pela pintura da linha.
-     * @param plt     O objeto SubPlot usado para a conversão de coordenadas.
+     * @param painter objeto responsável pelo desenho vetorial
+     * @param plt     sistema de conversão de coordenadas do mundo para pixéis
      */
     public void draw(LinePainter painter, SubPlot plt) {
         painter.paintLine(start.x + position.x, start.y + position.y, stop.x + position.x, stop.y + position.y, plt);

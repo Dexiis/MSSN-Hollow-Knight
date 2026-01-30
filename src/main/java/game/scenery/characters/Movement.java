@@ -6,7 +6,8 @@ import processing.core.PVector;
  * Classe abstrata que define a base para a física de movimento das entidades.
  * <p>
  * Gere as grandezas cinemáticas fundamentais (posição, velocidade e aceleração)
- * e implementa a lógica de integração para simular o movimento e a resposta a forças (como a gravidade).
+ * e implementa a lógica de integração para simular o movimento e a resposta a forças.
+ * </p>
  */
 public abstract class Movement {
 
@@ -16,10 +17,12 @@ public abstract class Movement {
     protected float mass = 1;
 
     /**
-     * Construtor da classe de movimento.
-     * Inicializa a componente física da entidade com uma posição inicial.
+     * Constrói uma nova instância de movimento na posição especificada.
+     * <p>
+     * Cria uma cópia do vetor de posição para garantir a independência da referência.
+     * </p>
      *
-     * @param position O vetor de posição inicial.
+     * @param position o vetor de posição inicial
      */
     protected Movement(PVector position) {
         this.position = position.copy();
@@ -28,16 +31,16 @@ public abstract class Movement {
     /**
      * Obtém a posição atual da entidade.
      *
-     * @return O vetor de posição.
+     * @return o vetor de posição
      */
     public PVector getPosition() {
         return position;
     }
 
     /**
-     * Define manualmente a posição da entidade.
+     * Define manualmente a posição da entidade no mundo.
      *
-     * @param position O novo vetor de posição.
+     * @param position o novo vetor de posição
      */
     public void setPosition(PVector position) {
         this.position = position;
@@ -46,7 +49,7 @@ public abstract class Movement {
     /**
      * Obtém a velocidade atual da entidade.
      *
-     * @return O vetor de velocidade.
+     * @return o vetor de velocidade
      */
     public PVector getVelocity() {
         return velocity;
@@ -55,16 +58,16 @@ public abstract class Movement {
     /**
      * Define manualmente a velocidade da entidade.
      *
-     * @param velocity O novo vetor de velocidade.
+     * @param velocity o novo vetor de velocidade
      */
     public void setVelocity(PVector velocity) {
         this.velocity = velocity;
     }
 
     /**
-     * Obtém a aceleração atual acumulada neste frame.
+     * Obtém a aceleração atual da entidade.
      *
-     * @return O vetor de aceleração.
+     * @return o vetor de aceleração
      */
     public PVector getAcceleration() {
         return acceleration;
@@ -73,7 +76,7 @@ public abstract class Movement {
     /**
      * Define manualmente a aceleração da entidade.
      *
-     * @param acceleration O novo vetor de aceleração.
+     * @param acceleration o novo vetor de aceleração
      */
     public void setAcceleration(PVector acceleration) {
         this.acceleration = acceleration;
@@ -82,7 +85,7 @@ public abstract class Movement {
     /**
      * Obtém a massa da entidade.
      *
-     * @return O valor da massa.
+     * @return o valor da massa
      */
     public float getMass() {
         return mass;
@@ -91,25 +94,27 @@ public abstract class Movement {
     /**
      * Aplica uma força física à entidade.
      * <p>
-     * De acordo com a segunda lei de Newton (F = m * a), a força recebida é dividida pela massa
-     * para calcular a aceleração resultante, que é acumulada no vetor de aceleração atual.
+     * Divide a força aplicada pela massa da entidade (segunda lei de Newton) e adiciona
+     * o resultado ao vetor de aceleração acumulada.
+     * </p>
      *
-     * @param force O vetor da força a aplicar.
+     * @param force o vetor da força a aplicar
      */
     public void applyForce(PVector force) {
         acceleration.add(PVector.div(force, mass));
     }
 
     /**
-     * Atualiza o estado físico da entidade com base no tempo decorrido (integração de Euler).
+     * Atualiza o estado físico da entidade com base no intervalo de tempo fornecido.
      * <p>
-     * Atualiza a velocidade com base na aceleração e a posição com base na velocidade.
-     * No final, a aceleração é reiniciada a zero para o próximo frame.
+     * Atualiza a velocidade com base na aceleração acumulada e atualiza a posição
+     * com base na nova velocidade. No final, reinicia a aceleração a zero para o próximo ciclo.
+     * </p>
      *
-     * @param dt O intervalo de tempo (delta time) decorrido desde a última atualização.
+     * @param dt o intervalo de tempo decorrido
      */
     public void move(float dt) {
-        velocity.add(acceleration.mult(dt));
+        velocity.add(PVector.mult(acceleration, dt));
         position.add(PVector.mult(velocity, dt));
         acceleration.mult(0);
     }

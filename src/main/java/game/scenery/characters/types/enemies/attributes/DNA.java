@@ -1,15 +1,17 @@
 package game.scenery.characters.types.enemies.attributes;
 
 import game.scenery.characters.types.enemies.FalseKnight;
-import game.scenery.characters.types.enemies.HuskHornhead;
-import game.scenery.characters.types.enemies.Squit;
+import game.scenery.characters.types.enemies.mobs.HuskHornhead;
+import game.scenery.characters.types.enemies.mobs.Squit;
 import game.scenery.components.flock.Flock;
 
 /**
  * Define os atributos genéticos e físicos de uma entidade.
  * <p>
  * Esta classe armazena valores como velocidade máxima, força máxima e parâmetros de visão,
- * que influenciam o comportamento e movimento dos personagens no jogo.
+ * que influenciam o comportamento e movimento dos personagens no jogo. Cada tipo de entidade
+ * possui o seu próprio conjunto de valores, definidos através de construtores específicos.
+ * </p>
  */
 public class DNA {
 
@@ -23,6 +25,15 @@ public class DNA {
     protected float deltaPhiWander;
     protected float visionAttackAngle;
 
+    /**
+     * Constrói um DNA específico para a entidade Squit.
+     * <p>
+     * Inicializa os atributos com valores aleatórios dentro de intervalos
+     * pré-definidos adequados para este tipo de entidade.
+     * </p>
+     *
+     * @param me a instância de Squit para a qual criar o DNA
+     */
     public DNA(Squit me) { //TODO Modificar atributos corretamente
         maxSpeed = random(100f, 200f);
         maxForce = random(150f, 250f);
@@ -38,6 +49,15 @@ public class DNA {
         deltaPhiWander = (float) Math.PI / 8;
     }
 
+    /**
+     * Constrói um DNA específico para a entidade HuskHornhead.
+     * <p>
+     * Inicializa os atributos com valores aleatórios dentro de intervalos
+     * pré-definidos adequados para este tipo de entidade.
+     * </p>
+     *
+     * @param me a instância de HuskHornhead para a qual criar o DNA
+     */
     public DNA(HuskHornhead me) { //TODO Modificar atributos corretamente
         maxSpeed = random(100f, 200f);
         maxForce = random(150f, 250f);
@@ -53,6 +73,14 @@ public class DNA {
         deltaPhiWander = (float) Math.PI / 8;
     }
 
+    /**
+     * Constrói um DNA específico para a entidade FalseKnight.
+     * <p>
+     * Inicializa os atributos com valores fixos adequados para este chefe.
+     * </p>
+     *
+     * @param me a instância de FalseKnight para a qual criar o DNA
+     */
     public DNA(FalseKnight me) { //TODO Modificar atributos corretamente
         maxSpeed = 180f;
         maxForce = 180f;
@@ -68,11 +96,20 @@ public class DNA {
         deltaPhiWander = (float) Math.PI / 8;
     }
 
+    /**
+     * Constrói um DNA específico para entidades do tipo Flock (grupo).
+     * <p>
+     * Inicializa os atributos com valores aleatórios adequados para comportamentos
+     * de grupo, tipicamente com valores menores do que entidades individuais.
+     * </p>
+     *
+     * @param me a instância de Flock para a qual criar o DNA
+     */
     public DNA(Flock me) {
-        maxSpeed = random(0.5f, 1f);
-        maxForce = random(1f, 2f);
+        maxSpeed = random(1f, 2f);
+        maxForce = random(3f, 6f);
 
-        visionDistance = random(1f, 3f);
+        visionDistance = random(0.5f, 2f);
         visionAngle = (float) Math.PI * 2f;
 
         visionAttack = 0.30f * visionDistance;
@@ -82,7 +119,7 @@ public class DNA {
     /**
      * Obtém a velocidade máxima que a entidade pode atingir.
      *
-     * @return O valor da velocidade máxima.
+     * @return o valor da velocidade máxima
      */
     public float getMaxSpeed() {
         return maxSpeed;
@@ -91,7 +128,7 @@ public class DNA {
     /**
      * Define a velocidade máxima da entidade.
      *
-     * @param maxSpeed O novo valor da velocidade máxima.
+     * @param maxSpeed o novo valor da velocidade máxima
      */
     public void setMaxSpeed(float maxSpeed) {
         this.maxSpeed = maxSpeed;
@@ -100,7 +137,7 @@ public class DNA {
     /**
      * Obtém a força máxima que pode ser aplicada para mover a entidade.
      *
-     * @return O valor da força máxima.
+     * @return o valor da força máxima
      */
     public float getMaxForce() {
         return maxForce;
@@ -109,7 +146,7 @@ public class DNA {
     /**
      * Define a força máxima da entidade.
      *
-     * @param maxForce O novo valor da força máxima.
+     * @param maxForce o novo valor da força máxima
      */
     public void setMaxForce(float maxForce) {
         this.maxForce = maxForce;
@@ -118,7 +155,7 @@ public class DNA {
     /**
      * Obtém a distância máxima de visão da entidade.
      *
-     * @return O raio de visão.
+     * @return o raio de visão
      */
     public float getVisionDistance() {
         return visionDistance;
@@ -127,7 +164,7 @@ public class DNA {
     /**
      * Define a distância máxima de visão.
      *
-     * @param visionDistance O novo raio de visão.
+     * @param visionDistance o novo raio de visão
      */
     public void setVisionDistance(float visionDistance) {
         this.visionDistance = visionDistance;
@@ -136,7 +173,7 @@ public class DNA {
     /**
      * Obtém a distância de visão curta (zona de ataque ou interação próxima).
      *
-     * @return O raio de visão próxima.
+     * @return o raio de visão próxima
      */
     public float getVisionNearDistance() {
         return visionAttack;
@@ -145,7 +182,7 @@ public class DNA {
     /**
      * Define a distância de visão curta.
      *
-     * @param visionNearDistance O novo raio de visão próxima.
+     * @param visionNearDistance o novo raio de visão próxima
      */
     public void setVisionNearDistance(float visionNearDistance) {
         this.visionAttack = visionNearDistance;
@@ -154,7 +191,7 @@ public class DNA {
     /**
      * Obtém o ângulo do campo de visão (Field of View).
      *
-     * @return O ângulo em radianos.
+     * @return o ângulo em radianos
      */
     public float getVisionAngle() {
         return visionAngle;
@@ -163,7 +200,7 @@ public class DNA {
     /**
      * Define o ângulo do campo de visão.
      *
-     * @param visionAngle O novo ângulo em radianos.
+     * @param visionAngle o novo ângulo em radianos
      */
     public void setVisionAngle(float visionAngle) {
         this.visionAngle = visionAngle;
@@ -172,7 +209,7 @@ public class DNA {
     /**
      * Obtém o intervalo de tempo para atualização do movimento de vagueio (Wander).
      *
-     * @return O valor de delta T.
+     * @return o valor de delta T
      */
     public float getDeltaTWander() {
         return deltaTWander;
@@ -181,7 +218,7 @@ public class DNA {
     /**
      * Define o intervalo de tempo para o movimento de vagueio.
      *
-     * @param deltaTWander O novo valor.
+     * @param deltaTWander o novo valor de delta T
      */
     public void setDeltaTWander(float deltaTWander) {
         this.deltaTWander = deltaTWander;
@@ -190,7 +227,7 @@ public class DNA {
     /**
      * Obtém o raio do círculo projetado para o cálculo do movimento de vagueio.
      *
-     * @return O raio do círculo de Wander.
+     * @return o raio do círculo de Wander
      */
     public float getRadiusWander() {
         return radiusWander;
@@ -199,7 +236,7 @@ public class DNA {
     /**
      * Define o raio do círculo de vagueio.
      *
-     * @param radiusWander O novo raio.
+     * @param radiusWander o novo raio
      */
     public void setRadiusWander(float radiusWander) {
         this.radiusWander = radiusWander;
@@ -208,7 +245,7 @@ public class DNA {
     /**
      * Obtém a variação máxima do ângulo de direção no movimento de vagueio.
      *
-     * @return A variação em radianos.
+     * @return a variação em radianos
      */
     public float getDeltaPhiWander() {
         return deltaPhiWander;
@@ -217,7 +254,7 @@ public class DNA {
     /**
      * Define a variação máxima do ângulo de direção para o vagueio.
      *
-     * @param deltaPhiWander A nova variação em radianos.
+     * @param deltaPhiWander a nova variação em radianos
      */
     public void setDeltaPhiWander(float deltaPhiWander) {
         this.deltaPhiWander = deltaPhiWander;
@@ -226,7 +263,7 @@ public class DNA {
     /**
      * Obtém o ângulo de visão para a zona de ataque.
      *
-     * @return O ângulo em radianos.
+     * @return o ângulo em radianos
      */
     public float getVisionNearAngle() {
         return visionAttackAngle;
@@ -235,7 +272,7 @@ public class DNA {
     /**
      * Define o ângulo de visão para a zona de ataque.
      *
-     * @param visionNearAngle O novo ângulo em radianos.
+     * @param visionNearAngle o novo ângulo em radianos
      */
     public void setVisionNearAngle(float visionNearAngle) {
         this.visionAttackAngle = visionNearAngle;
@@ -244,26 +281,46 @@ public class DNA {
     /**
      * Gera um número decimal aleatório dentro de um intervalo especificado.
      *
-     * @param min O valor mínimo do intervalo.
-     * @param max O valor máximo do intervalo.
-     * @return Um valor float aleatório entre min e max.
+     * @param min o valor mínimo do intervalo
+     * @param max o valor máximo do intervalo
+     * @return um valor float aleatório entre min e max
      */
     protected static float random(float min, float max) {
         return (float) (min + (max - min) * Math.random());
     }
 
+    /**
+     * Obtém o ângulo de visão de ataque.
+     *
+     * @return o ângulo de ataque em radianos
+     */
     public float getVisionAttackAngle() {
         return visionAttackAngle;
     }
 
+    /**
+     * Define o ângulo de visão de ataque.
+     *
+     * @param visionAttackAngle o novo ângulo de ataque em radianos
+     */
     public void setVisionAttackAngle(float visionAttackAngle) {
         this.visionAttackAngle = visionAttackAngle;
     }
 
+    /**
+     * Obtém a distância de visão de ataque.
+     *
+     * @return a distância de ataque
+     */
     public float getVisionAttack() {
         return visionAttack;
     }
 
+    /**
+     * Define a distância de visão de ataque.
+     *
+     * @param visionAttack a nova distância de ataque
+     */
     public void setVisionAttack(float visionAttack) {
         this.visionAttack = visionAttack;
     }
