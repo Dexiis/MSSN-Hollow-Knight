@@ -29,6 +29,7 @@ public abstract class Entity extends Movement implements IVisualizable {
     protected boolean dead = false;
 
     public float ATTACK_DURATION;
+    public float ATTACK_COOLDOWN;
 
     protected int now;
     protected float dt = 1;

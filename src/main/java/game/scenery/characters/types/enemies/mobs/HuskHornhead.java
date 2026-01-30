@@ -54,6 +54,53 @@ public class HuskHornhead extends Mob implements IVisualizable {
     }
 
     /**
+     * Gere o estado de inatividade (idle) do inimigo.
+     * <p>
+     * Verifica se as condições para iniciar um ataque estão reunidas e,
+     * caso positivo, transita para o estado de antecipação. Atualiza a
+     * animação idle com base no tempo decorrido.
+     * </p>
+     */
+    @Override
+    protected void idling() {
+        if (attackBehaviour.checkBehaviour(this) && now - attackTime > ATTACK_COOLDOWN) {
+            state = State.ANTICIPATION;
+            resetAnimation();
+        }
+        if (now - spriteTime > 120) {
+            this.sprite = spriteArray[spriteIndex][0];
+            spriteTime = now;
+            spriteIndex++;
+            if (spriteIndex > 5) spriteIndex = 0;
+        }
+
+        applyBehaviour(seekBehaviour, dt);
+        applyBehaviour(wanderBehaviour, dt);
+    }
+
+    /**
+     * Gere o estado de viragem (turning) do inimigo.
+     * <p>
+     * Executa a animação de mudança de direção. Quando a animação termina,
+     * atualiza o multiplicador de escala para inverter o sprite e retorna
+     * ao estado idle.
+     * </p>
+     */
+    @Override
+    protected void turning() {
+        if (now - spriteTime > 120) {
+            this.sprite = spriteArray[spriteIndex][1];
+            spriteTime = now;
+            spriteIndex++;
+            if (spriteIndex > 1) {
+                multValue = currentDirection == KnightMovement.RIGHT ? -1 : 1;
+                spriteIndex = 0;
+                state = State.IDLE;
+            }
+        }
+    }
+
+    /**
      * Gere o estado de antecipação antes do ataque.
      * <p>
      * Executa a animação de preparação para o ataque. No final da animação,
@@ -133,53 +180,6 @@ public class HuskHornhead extends Mob implements IVisualizable {
     }
 
     /**
-     * Gere o estado de inatividade (idle) do inimigo.
-     * <p>
-     * Verifica se as condições para iniciar um ataque estão reunidas e,
-     * caso positivo, transita para o estado de antecipação. Atualiza a
-     * animação idle com base no tempo decorrido.
-     * </p>
-     */
-    @Override
-    protected void idling() {
-        if (attackBehaviour.checkBehaviour(this) && now - attackTime > ATTACK_COOLDOWN) {
-            state = State.ANTICIPATION;
-            resetAnimation();
-        }
-        if (now - spriteTime > 120) {
-            this.sprite = spriteArray[spriteIndex][0];
-            spriteTime = now;
-            spriteIndex++;
-            if (spriteIndex > 5) spriteIndex = 0;
-        }
-
-        applyBehaviour(seekBehaviour, dt);
-        applyBehaviour(wanderBehaviour, dt);
-    }
-
-    /**
-     * Gere o estado de viragem (turning) do inimigo.
-     * <p>
-     * Executa a animação de mudança de direção. Quando a animação termina,
-     * atualiza o multiplicador de escala para inverter o sprite e retorna
-     * ao estado idle.
-     * </p>
-     */
-    @Override
-    protected void turning() {
-        if (now - spriteTime > 120) {
-            this.sprite = spriteArray[spriteIndex][1];
-            spriteTime = now;
-            spriteIndex++;
-            if (spriteIndex > 1) {
-                multValue = currentDirection == KnightMovement.RIGHT ? -1 : 1;
-                spriteIndex = 0;
-                state = State.IDLE;
-            }
-        }
-    }
-
-    /**
      * Renderiza o inimigo no ecrã.
      * <p>
      * Desenha a hitbox, atualiza o estado de ataque, gere mudanças de direção,
@@ -200,6 +200,7 @@ public class HuskHornhead extends Mob implements IVisualizable {
         if (isDying()) state = State.DEATH;
         if (state != latestState) resetAnimation();
 
+        this.getEye().look();
         directionChange(IDLE_SPEED);
         stateMachine();
 

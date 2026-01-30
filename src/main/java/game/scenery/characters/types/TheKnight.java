@@ -22,7 +22,6 @@ import java.util.Map;
  * </p>
  */
 public class TheKnight extends Entity implements IVisualizable {
-    public static final float ATTACK_COOLDOWN = 750f;
     public static final float JUMP_STRENGTH = 1000f;
     public static final float SPEED = 275f;
 
@@ -62,6 +61,7 @@ public class TheKnight extends Entity implements IVisualizable {
 
         I_FRAMES = 2000;
         ATTACK_DURATION = 100f;
+        ATTACK_COOLDOWN = 750f;
 
         PIXEL_CORRECTION = 2;
         SPRITE_SIZE = 80;
@@ -315,7 +315,7 @@ public class TheKnight extends Entity implements IVisualizable {
      *
      */
     public void playerAttack() {
-        if (now - attackTime > TheKnight.ATTACK_COOLDOWN) {
+        if (now - attackTime > this.ATTACK_COOLDOWN) {
             this.attack = attack();
             attackTime = now;
         }

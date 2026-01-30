@@ -10,7 +10,6 @@ import game.scenery.characters.types.KnightMovement;
 import game.scenery.characters.types.State;
 import game.scenery.characters.types.TheKnight;
 import game.scenery.characters.types.enemies.FalseKnight;
-import game.scenery.characters.types.enemies.Mob;
 import game.scenery.characters.types.enemies.mobs.Squit;
 import game.scenery.components.Terrain;
 import game.scenery.components.flock.Flock;
@@ -116,7 +115,7 @@ public class Game extends PApplet {
             Entity entity = map.getEntities().get(i);
 
             entity.move(dt);
-            if (entity.isDead()) map.removeEnemy((Mob) entity);
+            if (entity.isDead()) map.removeEnemy((Enemy) entity);
         }
 
         checkCollisions();
@@ -285,7 +284,9 @@ public class Game extends PApplet {
             if (entity instanceof Squit) {
                 if (entity.isDying())
                     entity.applyForce(new PVector(0, -450 * entity.getMass())); // Queda na morte do Squit
-            } else entity.applyForce(gravity(entity));
+            } else if (entity instanceof FalseKnight)
+                entity.applyForce(new PVector(0, -450 * entity.getMass())); // Gravidade apenas para o boss
+            else entity.applyForce(gravity(entity));
         }
     }
 

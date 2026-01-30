@@ -155,7 +155,7 @@ public class Map {
      *
      * @param enemy o inimigo a ser removido
      */
-    public void removeEnemy(Mob enemy) {
+    public void removeEnemy(Enemy enemy) {
         enemies.remove(enemy);
         entities.remove(enemy);
     }

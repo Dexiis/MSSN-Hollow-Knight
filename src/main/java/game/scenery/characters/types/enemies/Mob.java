@@ -1,16 +1,12 @@
 package game.scenery.characters.types.enemies;
 
 import game.scenery.characters.types.Enemy;
-import game.scenery.characters.types.KnightMovement;
 import game.scenery.characters.types.State;
-import game.scenery.characters.types.enemies.attributes.Behaviour;
 import game.scenery.characters.types.enemies.attributes.enemyBehaviours.Attack;
 import game.scenery.characters.types.enemies.attributes.enemyBehaviours.Seek;
 import game.scenery.characters.types.enemies.attributes.enemyBehaviours.Wander;
 import processing.core.PApplet;
 import processing.core.PVector;
-
-import java.util.ArrayList;
 
 /**
  * Classe abstrata que representa um inimigo genérico (mob) no jogo.
@@ -24,7 +20,6 @@ public abstract class Mob extends Enemy {
     protected final Attack attackBehaviour;
     protected final Wander wanderBehaviour;
     protected final Seek seekBehaviour;
-    protected ArrayList<Behaviour> behaviours = new ArrayList<>();
 
     protected float phiWander;
 
@@ -48,12 +43,7 @@ public abstract class Mob extends Enemy {
         this.attackBehaviour = new Attack(1);
         this.wanderBehaviour = new Wander(1);
 
-        this.behaviours.add(seekBehaviour);
-        this.behaviours.add(attackBehaviour);
-        this.behaviours.add(wanderBehaviour);
-
         SPRITE_COUNT = 8;
-        I_FRAMES = 450;
     }
 
     /**
@@ -75,75 +65,6 @@ public abstract class Mob extends Enemy {
      */
     public void setPhiWander(float newPhiWander) {
         this.phiWander = newPhiWander;
-    }
-
-    /**
-     * Aplica uma lista de comportamentos de direção ao inimigo.
-     * <p>
-     * Soma as velocidades desejadas de todos os comportamentos fornecidos na lista
-     * e executa o movimento resultante dessa combinação.
-     * </p>
-     *
-     * @param dt o intervalo de tempo para a atualização física
-     */
-    public void applyBehaviours(float dt) {
-        if (getEye() != null) getEye().look();
-        PVector vd = new PVector();
-
-        for (Behaviour behaviour : behaviours) {
-            if ((this.state == State.IDLE || this.state == State.TURNING) && (behaviour instanceof Wander || behaviour instanceof Seek)) {
-                PVector vdd = behaviour.getDesiredVelocity(this);
-                vd.add(vdd);
-            } else if (this.state == State.ATTACK && behaviour instanceof Attack) {
-                PVector vdd = behaviour.getDesiredVelocity(this);
-                vd.add(vdd);
-            }
-        }
-        move(dt, vd);
-    }
-
-
-    /**
-     * Define a lógica de antecipação antes de um ataque.
-     * <p>
-     * A implementação base é vazia, podendo ser sobrescrita se necessário.
-     * </p>
-     */
-    protected void anticipating() {
-    }
-
-    /**
-     * Define a lógica de execução do ataque.
-     * <p>
-     * Deve ser implementado pelas subclasses específicas.
-     * </p>
-     */
-    protected abstract void attacking();
-
-    /**
-     * Define a lógica para a morte do inimigo.
-     * <p>
-     * A implementação base é vazia, podendo ser sobrescrita se necessário.
-     * </p>
-     */
-    protected void death() {
-    }
-
-    /**
-     * Define a lógica a ser executada quando o inimigo está no estado IDLE (Parado/Vaguear).
-     * <p>
-     * Deve ser implementado pelas subclasses específicas.
-     * </p>
-     */
-    protected abstract void idling();
-
-    /**
-     * Define a lógica para quando o inimigo é surpreendido ou sobressaltado.
-     * <p>
-     * A implementação base é vazia, podendo ser sobrescrita se necessário.
-     * </p>
-     */
-    protected void startled() {
     }
 
     /**
@@ -178,10 +99,51 @@ public abstract class Mob extends Enemy {
     }
 
     /**
+     * Define a lógica a ser executada quando o inimigo está no estado IDLE (Parado/Vaguear).
+     * <p>
+     * Deve ser implementado pelas subclasses específicas.
+     * </p>
+     */
+    protected abstract void idling();
+
+    /**
      * Define a lógica a ser executada quando o inimigo está a mudar de direção.
      * <p>
      * Deve ser implementado pelas subclasses específicas.
      * </p>
      */
     protected abstract void turning();
+
+    /**
+     * Define a lógica para quando o inimigo é surpreendido ou sobressaltado.
+     * <p>
+     * A implementação base é vazia, podendo ser sobrescrita se necessário.
+     * </p>
+     */
+    protected void startled() {
+    }
+
+    /**
+     * Define a lógica de antecipação antes de um ataque.
+     * <p>
+     * A implementação base é vazia, podendo ser sobrescrita se necessário.
+     * </p>
+     */
+    protected abstract void anticipating();
+
+    /**
+     * Define a lógica de execução do ataque.
+     * <p>
+     * Deve ser implementado pelas subclasses específicas.
+     * </p>
+     */
+    protected abstract void attacking();
+
+    /**
+     * Define a lógica para a morte do inimigo.
+     * <p>
+     * A implementação base é vazia, podendo ser sobrescrita se necessário.
+     * </p>
+     */
+    protected abstract void death();
 }

@@ -111,53 +111,6 @@ public class Eye {
     }
 
     /**
-     * Renderiza os cones de visão no ecrã para fins de depuração (debug).
-     * <p>
-     * Desenha o cone de visão distante a vermelho e a zona de ataque a magenta.
-     * Realiza transformações matriciais para alinhar o desenho com a posição
-     * e rotação da entidade.
-     * </p>
-     *
-     * @param p   o contexto gráfico do Processing
-     * @param plt o objeto SubPlot para conversão de coordenadas
-     */
-    public void display(PApplet p, SubPlot plt) {
-        p.pushStyle();
-        p.pushMatrix();
-
-        float[] pp = plt.getPixelCoord(me.getPosition().x, me.getPosition().y);
-        p.translate(pp[0], pp[1]);
-
-        p.rotate(-me.getVelocity().heading());
-        p.noFill();
-        p.stroke(255, 0, 0);
-        p.strokeWeight(3);
-
-        float[] dd1 = plt.getDimInPixel(me.getDna().visionDistance, me.getDna().visionDistance);
-        p.rotate(me.getDna().visionAngle);
-        p.line(0, 0, dd1[0], 0);
-        p.rotate(-2 * me.getDna().visionAngle);
-        p.line(0, 0, dd1[0], 0);
-        p.rotate(me.getDna().visionAngle);
-        p.arc(0, 0, 2 * dd1[0], 2 * dd1[0], -me.getDna().visionAngle, me.getDna().visionAngle);
-
-        float[] dd2 = plt.getDimInPixel(me.getDna().visionAttack, me.getDna().visionAttack);
-        p.stroke(255, 0, 255);
-        if (me.getDna().visionAttackAngle >= Math.PI) {
-            p.circle(0, 0, 2 * dd2[0]);
-        } else {
-            p.rotate(me.getDna().visionAttackAngle);
-            p.line(0, 0, dd2[0], 0);
-            p.rotate(-2 * me.getDna().visionAttackAngle);
-            p.line(0, 0, dd2[0], 0);
-            p.rotate(me.getDna().visionAttackAngle);
-            p.arc(0, 0, 2 * dd2[0], 2 * dd2[0], -me.getDna().visionAttackAngle, me.getDna().visionAttackAngle);
-        }
-        p.popMatrix();
-        p.popStyle();
-    }
-
-    /**
      * Executa o processo de perceção visual.
      * <p>
      * Limpa as memórias visuais anteriores e itera sobre todas as entidades rastreáveis.
@@ -219,5 +172,52 @@ public class Eye {
      */
     private boolean nearSight(PVector t) {
         return inSight(t, me.getDna().visionAttack, me.getDna().visionAttackAngle);
+    }
+
+    /**
+     * Renderiza os cones de visão no ecrã para fins de depuração (debug).
+     * <p>
+     * Desenha o cone de visão distante a vermelho e a zona de ataque a magenta.
+     * Realiza transformações matriciais para alinhar o desenho com a posição
+     * e rotação da entidade.
+     * </p>
+     *
+     * @param p   o contexto gráfico do Processing
+     * @param plt o objeto SubPlot para conversão de coordenadas
+     */
+    public void display(PApplet p, SubPlot plt) {
+        p.pushStyle();
+        p.pushMatrix();
+
+        float[] pp = plt.getPixelCoord(me.getPosition().x, me.getPosition().y);
+        p.translate(pp[0], pp[1]);
+
+        p.rotate(-me.getVelocity().heading());
+        p.noFill();
+        p.stroke(255, 0, 0);
+        p.strokeWeight(3);
+
+        float[] dd1 = plt.getDimInPixel(me.getDna().visionDistance, me.getDna().visionDistance);
+        p.rotate(me.getDna().visionAngle);
+        p.line(0, 0, dd1[0], 0);
+        p.rotate(-2 * me.getDna().visionAngle);
+        p.line(0, 0, dd1[0], 0);
+        p.rotate(me.getDna().visionAngle);
+        p.arc(0, 0, 2 * dd1[0], 2 * dd1[0], -me.getDna().visionAngle, me.getDna().visionAngle);
+
+        float[] dd2 = plt.getDimInPixel(me.getDna().visionAttack, me.getDna().visionAttack);
+        p.stroke(255, 0, 255);
+        if (me.getDna().visionAttackAngle >= Math.PI) {
+            p.circle(0, 0, 2 * dd2[0]);
+        } else {
+            p.rotate(me.getDna().visionAttackAngle);
+            p.line(0, 0, dd2[0], 0);
+            p.rotate(-2 * me.getDna().visionAttackAngle);
+            p.line(0, 0, dd2[0], 0);
+            p.rotate(me.getDna().visionAttackAngle);
+            p.arc(0, 0, 2 * dd2[0], 2 * dd2[0], -me.getDna().visionAttackAngle, me.getDna().visionAttackAngle);
+        }
+        p.popMatrix();
+        p.popStyle();
     }
 }

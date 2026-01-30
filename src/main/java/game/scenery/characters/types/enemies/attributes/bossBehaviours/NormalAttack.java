@@ -2,7 +2,6 @@ package game.scenery.characters.types.enemies.attributes.bossBehaviours;
 
 import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.enemies.attributes.Behaviour;
-import processing.core.PVector;
 
 /**
  * Comportamento de ataque do chefe.
@@ -18,11 +17,8 @@ public class NormalAttack extends Behaviour {
         super(weight);
     }
 
-    public PVector getDesiredVelocity(Enemy me) { //TODO Fazer lógica
-        return new PVector(0, 0);
-    }
-
     public boolean checkBehaviour(Enemy me) {
+        //System.out.println(me.getEye().getNearSight());
         return me.getEye().getNearSight().contains(me.getEye().getTarget());
     }
 

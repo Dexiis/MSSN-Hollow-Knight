@@ -30,8 +30,6 @@ public abstract class Enemy extends Entity {
 
     protected int multValue = 1;
 
-    public float ATTACK_COOLDOWN;
-
     /**
      * Constrói um novo inimigo na posição especificada.
      * <p>
@@ -47,6 +45,7 @@ public abstract class Enemy extends Entity {
         this.p = p;
         now = p.millis();
 
+        I_FRAMES = 500;
         this.state = State.IDLE;
     }
 
@@ -92,6 +91,7 @@ public abstract class Enemy extends Entity {
      * @param dt        o intervalo de tempo para a atualização física
      */
     public void applyBehaviour(Behaviour behaviour, float dt) {
+        if (this instanceof FalseKnight) System.out.println(eye);
         if (eye != null) eye.look();
         PVector vd = behaviour.getDesiredVelocity(this);
         move(dt, vd);

@@ -85,15 +85,11 @@ public class DNA {
         maxSpeed = 180f;
         maxForce = 180f;
 
-        visionDistance = 2000f;
+        visionDistance = 1500f;
         visionAngle = (float) Math.PI * 2f;
 
-        visionAttack = 0.20f * visionDistance;
+        visionAttack = 0.30f * visionDistance;
         visionAttackAngle = (float) Math.PI * 2f;
-
-        deltaTWander = 2f;
-        radiusWander = random(100f, 150f);
-        deltaPhiWander = (float) Math.PI / 8;
     }
 
     /**

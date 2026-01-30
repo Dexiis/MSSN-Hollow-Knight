@@ -20,7 +20,7 @@ public class JumpFlee extends Behaviour {
 
     public PVector getDesiredVelocity(Enemy me) {
         if (checkBehaviour(me))
-            return new PVector((me.getEye().getTarget().getPosition().x - me.getPosition().x) * 2 / 3, 300);
+            me.setVelocity(new PVector((me.getPosition().x - me.getEye().getTarget().getPosition().x) * 2 / 3, 300));
         return new PVector(0, 0);
     }
 
