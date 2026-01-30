@@ -3,11 +3,10 @@ package game;
 import game.core.SubPlot;
 import game.scenery.Background;
 import game.scenery.GUI;
-import game.scenery.Map;
+import game.scenery.World;
 import game.scenery.characters.Entity;
 import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.KnightMovement;
-import game.scenery.characters.types.State;
 import game.scenery.characters.types.TheKnight;
 import game.scenery.characters.types.enemies.FalseKnight;
 import game.scenery.characters.types.enemies.mobs.Squit;
@@ -31,8 +30,8 @@ public class Game extends PApplet {
 
     private Background background;
     private GUI gui;
-    private Map map;
-    private LinePainter painter = new LinePainter() {
+    private World map;
+    private final LinePainter painter = new LinePainter() {
         /**
          * Desenha uma linha convertendo coordenadas do mundo para pixels.
          *
@@ -80,9 +79,9 @@ public class Game extends PApplet {
 
         textSize(22);
 
-        map = new Map(this, painter);
-        gui = new GUI(this);
-        background = new Background(this);
+        map = World.init(this, painter);
+        gui = GUI.init(this);
+        background = Background.init(this);
 
         player = map.getPlayer();
     }
@@ -95,6 +94,8 @@ public class Game extends PApplet {
      */
     @Override
     public void draw() {
+
+        System.out.println(map.getBoss().isWalled());
         if (firstLoop) {
             lastUpdateTime = millis();
             firstLoop = false;
@@ -107,8 +108,6 @@ public class Game extends PApplet {
         moveFlock(background.getFlock(), dt);
 
         handleNaturalMovements(dt);
-        if (!player.isStunned()) handleInputMovements();
-        handleKnightAttack();
         handleMonstersAttacks();
 
         for (int i = map.getEntities().size() - 1; i >= 0; i--) {
@@ -195,77 +194,6 @@ public class Game extends PApplet {
     }
 
     /**
-     * Gere a lógica de movimento do jogador baseada nas entradas (inputs).
-     * <p>
-     * Controla a máquina de estados de movimento (IDLE, RUNNING, JUMPING, FALLING)
-     * e aplica as ações correspondentes como mover para os lados ou saltar.
-     */
-    private void handleInputMovements() {
-        if ((!(player.getDirections().get(KnightMovement.RIGHT)) && !(player.getDirections().get(KnightMovement.LEFT))) || (player.getDirections().get(KnightMovement.RIGHT)) && (player.getDirections().get(KnightMovement.LEFT))) {
-            player.stopMovement();
-            player.setMovement(State.IDLE);
-        } else {
-            if (player.getDirections().get(KnightMovement.RIGHT)) {
-                player.setLastFacingDirection(KnightMovement.RIGHT);
-                player.moveRight();
-            }
-
-            if (player.getDirections().get(KnightMovement.LEFT)) {
-                player.setLastFacingDirection(KnightMovement.LEFT);
-                player.moveLeft();
-            }
-
-            // Este if é 'repetido' umas linhas a baixo, mas este tem uma condição "else" anterior necessária
-            if (player.isGrounded())
-                player.setMovement((player.getDirections().get(KnightMovement.RIGHT) || player.getDirections().get(KnightMovement.LEFT)) ? State.RUNNING : State.IDLE);
-        }
-
-        if (player.isGrounded()) {
-            if (player.getDirections().get(KnightMovement.UP)) player.jump();
-        } else player.setMovement(player.getVelocity().y < 0 ? State.FALLING : State.JUMPING);
-
-
-        // Reinicia a animação
-        if (player.getMovement() != player.getLastMovement()) {
-            player.resetAnimation();
-            player.setLastMovement(player.getMovement());
-        }
-
-        if (player.getDirections().get(KnightMovement.UPRELEASED) && player.getDirections().get(KnightMovement.UP)) {
-            player.setMovingDirection(KnightMovement.UPRELEASED, false);
-            player.setMovingDirection(KnightMovement.UP, false);
-            if (player.getVelocity().y > 0) player.setVelocity(new PVector(player.getVelocity().x, 0));
-        }
-
-    }
-
-    /**
-     * Gere a lógica de combate do jogador.
-     * <p>
-     * Atualiza a posição da área de ataque (hitbox), verifica interseções com inimigos,
-     * aplica dano e remove inimigos derrotados.
-     */
-    private void handleKnightAttack() {
-        if (player.getAttack() != null) {
-            player.getAttack().setPosition(player.getPosition());
-
-            if (map.getEnemies() != null) for (int i = map.getEnemies().size() - 1; i >= 0; i--) {
-                Enemy enemy = map.getEnemies().get(i);
-                if (player.getAttack().intersected(enemy.getHitbox())) {
-                    enemy.damage(player.getPosition());
-
-                    // Pequeno salto ao bater para baixo no ar
-                    if (!player.isGrounded() && player.getFacingDirection() == KnightMovement.DOWN)
-                        player.setVelocity(new PVector(player.getVelocity().x, 400f));
-                }
-            }
-
-            player.getAttack().display(this, painter, plt);
-            if (now - player.getAttackTime() > player.ATTACK_DURATION) player.setAttack(null);
-        }
-    }
-
-    /**
      * Atualiza o comportamento e ataques dos inimigos.
      * <p>
      * Executa a inteligência artificial (Behaviour) de cada inimigo e verifica
@@ -285,7 +213,7 @@ public class Game extends PApplet {
                 if (entity.isDying())
                     entity.applyForce(new PVector(0, -450 * entity.getMass())); // Queda na morte do Squit
             } else if (entity instanceof FalseKnight)
-                entity.applyForce(new PVector(0, -450 * entity.getMass())); // Gravidade apenas para o boss
+                entity.applyForce(new PVector(0, -650 * entity.getMass())); // Gravidade apenas para o boss
             else entity.applyForce(gravity(entity));
         }
     }
@@ -299,6 +227,7 @@ public class Game extends PApplet {
     private void checkCollisions() {
         player.setGrounded(false);
         map.getBoss().setGrounded(false);
+        map.getBoss().setWalled(false);
         for (int i = map.getEntities().size() - 1; i >= 0; i--) {
             Entity entity = map.getEntities().get(i);
             if (entity instanceof Squit) ((Squit) entity).setColliding(false);

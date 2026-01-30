@@ -79,10 +79,14 @@ public class Terrain extends Hitbox implements IVisualizable {
             if (entity instanceof Squit) ((Squit) entity).setColliding(true);
             if (overlapX < overlapY) {
                 entity.setVelocity(new PVector(0, entity.getVelocity().y));
-
+                int PIXEL_CORRECTION = 0;
+                if (entity instanceof FalseKnight) {
+                    ((FalseKnight) entity).setWalled(true);
+                    PIXEL_CORRECTION = 1;
+                }
                 float newX;
-                if (dx > 0) newX = this.getPosition().x + this.width / 2 + otherHitbox.getWidth() / 2;
-                else newX = this.getPosition().x - this.width / 2 - otherHitbox.getWidth() / 2;
+                if (dx > 0) newX = this.getPosition().x + this.width / 2 + otherHitbox.getWidth() / 2 - PIXEL_CORRECTION;
+                else newX = this.getPosition().x - this.width / 2 - otherHitbox.getWidth() / 2 + PIXEL_CORRECTION;
 
                 entity.setPosition(new PVector(newX, entity.getPosition().y));
 

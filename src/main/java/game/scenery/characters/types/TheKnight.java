@@ -1,6 +1,7 @@
 package game.scenery.characters.types;
 
 import game.core.SubPlot;
+import game.scenery.World;
 import game.scenery.characters.Entity;
 import game.scenery.characters.IVisualizable;
 import game.scenery.components.hitbox.Hitbox;
@@ -30,11 +31,13 @@ public class TheKnight extends Entity implements IVisualizable {
     private KnightMovement facingDirection;
     private boolean grounded = false;
     private KnightMovement lastFacingDirection;
-    private State lastMovement;
-    private State movement;
+    private State latestState;
+    private State state;
 
-    protected boolean stunned = false;
+    protected boolean stunned = true;
     protected float stunnedTime = 0f;
+
+    private boolean moving = false;
 
     /**
      * Constrói uma nova instância do Cavaleiro na posição especificada.
@@ -61,7 +64,7 @@ public class TheKnight extends Entity implements IVisualizable {
 
         I_FRAMES = 2000;
         ATTACK_DURATION = 100f;
-        ATTACK_COOLDOWN = 750f;
+        ATTACK_COOLDOWN = 800f;
 
         PIXEL_CORRECTION = 2;
         SPRITE_SIZE = 80;
@@ -75,8 +78,8 @@ public class TheKnight extends Entity implements IVisualizable {
                 spriteArray[x][y] = sprites.get(x * SPRITE_SIZE, y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE);
 
         this.sprite = spriteArray[0][0];
-        movement = State.JUMPING;
-        lastMovement = movement;
+        state = State.JUMPING;
+        latestState = state;
     }
 
     /**
@@ -132,8 +135,8 @@ public class TheKnight extends Entity implements IVisualizable {
      *
      * @return o estado {@code State} anterior
      */
-    public State getLastMovement() {
-        return this.lastMovement;
+    public State getLatestState() {
+        return this.latestState;
     }
 
     /**
@@ -141,8 +144,8 @@ public class TheKnight extends Entity implements IVisualizable {
      *
      * @return o estado {@code State} atual (ex: IDLE, RUNNING)
      */
-    public State getMovement() {
-        return this.movement;
+    public State getState() {
+        return this.state;
     }
 
     /**
@@ -214,19 +217,19 @@ public class TheKnight extends Entity implements IVisualizable {
     /**
      * Define manualmente o registo do estado anterior.
      *
-     * @param lastMovement o estado a registar como anterior
+     * @param latestState o estado a registar como anterior
      */
-    public void setLastMovement(State lastMovement) {
-        this.lastMovement = lastMovement;
+    public void setLatestState(State latestState) {
+        this.latestState = latestState;
     }
 
     /**
      * Define o estado atual de movimento da personagem.
      *
-     * @param movement o novo estado a definir
+     * @param state o novo estado a definir
      */
-    public void setMovement(State movement) {
-        this.movement = movement;
+    public void setState(State state) {
+        this.state = state;
     }
 
     /**
@@ -312,11 +315,12 @@ public class TheKnight extends Entity implements IVisualizable {
      * <p>
      * Verifica se o tempo de recarga já expirou antes de gerar uma nova caixa de ataque.
      * </p>
-     *
      */
     public void playerAttack() {
-        if (now - attackTime > this.ATTACK_COOLDOWN) {
+        if (now - attackTime > this.ATTACK_COOLDOWN && !stunned) {
             this.attack = attack();
+            state = State.ATTACK;
+            resetAnimation();
             attackTime = now;
         }
     }
@@ -370,6 +374,129 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     /**
+     * Gere a lógica de movimento do jogador baseada nas entradas (inputs).
+     * <p>
+     * Controla a máquina de estados de movimento (IDLE, RUNNING, JUMPING, FALLING)
+     * e aplica as ações correspondentes como mover para os lados ou saltar.
+     */
+    private void handleInputMovements() {
+        if ((!(directions.get(KnightMovement.RIGHT)) && !(directions.get(KnightMovement.LEFT))) || (directions.get(KnightMovement.RIGHT)) && (directions.get(KnightMovement.LEFT))) {
+            stopMovement();
+            moving = false;
+        } else {
+            if (directions.get(KnightMovement.RIGHT)) {
+                lastFacingDirection = KnightMovement.RIGHT;
+                moveRight();
+            }
+
+            if (directions.get(KnightMovement.LEFT)) {
+                lastFacingDirection = KnightMovement.LEFT;
+                moveLeft();
+            }
+
+            if (grounded) moving = true;
+        }
+
+        if (grounded && directions.get(KnightMovement.UP)) jump();
+
+        if (directions.get(KnightMovement.UPRELEASED) && directions.get(KnightMovement.UP)) {
+            directions.put(KnightMovement.UPRELEASED, false);
+            directions.put(KnightMovement.UP, false);
+            if (this.velocity.y > 0) this.velocity = new PVector(this.velocity.x, 0);
+        }
+
+    }
+
+//    /**
+//     * Gere a lógica de combate do jogador.
+//     * <p>
+//     * Atualiza a posição da área de ataque (hitbox), verifica interseções com inimigos,
+//     * aplica dano e remove inimigos derrotados.
+//     */
+    private void handleKnightAttack(PApplet p, LinePainter painter, SubPlot plt) { //TODO MANDAR PARA DENTRO DO KNIGHT
+        if (attack != null) {
+            attack.setPosition(this.position);
+
+            if (World.getInstance().getEnemies() != null) for (int i = World.getInstance().getEnemies().size() - 1; i >= 0; i--) {
+                Enemy enemy = World.getInstance().getEnemies().get(i);
+                if (attack.intersected(enemy.getHitbox())) {
+                    enemy.damage(this.position);
+
+                    // Pequeno salto ao bater para baixo no ar
+                    if (!grounded && facingDirection == KnightMovement.DOWN)
+                        this.velocity = new PVector(this.velocity.x, 400f);
+                }
+            }
+
+            attack.display(p, painter, plt);
+            if (now - attackTime > ATTACK_DURATION) setAttack(null);
+        }
+    }
+
+    private void stateMachine() {
+        switch (state) {
+            case State.IDLE:
+                idling();
+                break;
+            case State.RUNNING:
+                running();
+                break;
+            case State.ATTACK:
+                attacking();
+                break;
+            case State.JUMPING:
+                jumping();
+                break;
+            case State.FALLING:
+                falling();
+                break;
+        }
+    }
+
+    private void idling() {
+        if(moving) state = State.RUNNING;
+        if(!grounded) state = State.JUMPING;
+        this.sprite = spriteArray[0][0];
+    }
+
+    private void running() {
+        if(!moving) state = State.IDLE;
+        if(!grounded) state = State.JUMPING;
+        if (now - spriteTime > 40) {
+            this.sprite = spriteArray[spriteIndex][0];
+            spriteTime = now;
+            spriteIndex++;
+            if (spriteIndex > 7) spriteIndex = 0;
+        }
+    }
+
+    private void jumping() {
+        if(this.velocity.y < 0) state = State.FALLING;
+    }
+
+    private void falling() {
+        if(grounded) state = State.IDLE;
+        if (now - spriteTime > 40) {
+            this.sprite = spriteArray[spriteIndex][9];
+            spriteTime = now;
+            spriteIndex++;
+            if (spriteIndex > 7) spriteIndex = 5;
+        }
+    }
+
+    private void attacking() {
+        if (now - spriteTime > ATTACK_DURATION / 6) {
+            this.sprite = spriteArray[spriteIndex][4];
+            spriteTime = now;
+            spriteIndex++;
+            if (spriteIndex > 5) {
+                state = State.IDLE;
+                resetAnimation();
+            }
+        }
+    }
+
+    /**
      * Renderiza o jogador no ecrã.
      * <p>
      * Esta função gere a seleção de sprites baseada no estado e no tempo, converte
@@ -383,35 +510,19 @@ public class TheKnight extends Entity implements IVisualizable {
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
-        // Máquina de estados para aplicar sprites baseado no movimento com animação
-        switch (movement) {
-            case State.IDLE:
-                this.sprite = spriteArray[0][0];
-                break;
-            case State.RUNNING:
-                if (now - spriteTime > 40) {
-                    this.sprite = spriteArray[spriteIndex][0];
-                    spriteTime = now;
-                    spriteIndex++;
-                    if (spriteIndex > 7) spriteIndex = 0;
-                }
-                break;
-            case State.JUMPING:
-                break;
-            case State.FALLING:
-                if (now - spriteTime > 40) {
-                    this.sprite = spriteArray[spriteIndex][9];
-                    spriteTime = now;
-                    spriteIndex++;
-                    if (spriteIndex > 7) spriteIndex = 5;
-                }
-                break;
-        }
-
         if (stunned && now - stunnedTime >= 500 && grounded) this.stunned = false;
 
-        int multValue = 1;
-        if (lastFacingDirection == KnightMovement.LEFT) multValue = -1;
+        if (getState() != getLatestState()) {
+            resetAnimation();
+            setLatestState(getState());
+        }
+
+        if (!stunned) handleInputMovements();
+        handleKnightAttack(p, painter, plt);
+
+        int multValue = (lastFacingDirection == KnightMovement.LEFT) ? -1 : 1;
+
+        stateMachine();
 
         float[] pp = plt.getPixelCoord(this.hitbox.getPosition().x, this.hitbox.getPosition().y);
 

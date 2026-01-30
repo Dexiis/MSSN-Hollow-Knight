@@ -91,7 +91,6 @@ public abstract class Enemy extends Entity {
      * @param dt        o intervalo de tempo para a atualização física
      */
     public void applyBehaviour(Behaviour behaviour, float dt) {
-        if (this instanceof FalseKnight) System.out.println(eye);
         if (eye != null) eye.look();
         PVector vd = behaviour.getDesiredVelocity(this);
         move(dt, vd);

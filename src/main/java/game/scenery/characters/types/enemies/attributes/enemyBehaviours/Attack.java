@@ -36,10 +36,11 @@ public class Attack extends Behaviour {
      * @param me o inimigo que está a executar o comportamento
      * @return o vetor de velocidade de ataque ou (0,0) se o ataque terminar
      */
+    @Override
     public PVector getDesiredVelocity(Enemy me) {
         if (checkBehaviour(me)) {
             if (chargeDirection != null) return chargeDirection;
-            else PVector.sub(targetPosition, me.getPosition()).normalize().mult(me.getDna().getMaxSpeed());
+            else return PVector.sub(targetPosition, me.getPosition()).normalize().mult(me.getDna().getMaxSpeed());
         }
 
         return new PVector();

@@ -1,6 +1,6 @@
 package game.scenery.components.terraintypes;
 
-import game.scenery.Map;
+import game.scenery.World;
 import game.scenery.characters.Entity;
 import game.scenery.characters.types.TheKnight;
 import game.scenery.components.Terrain;
@@ -8,7 +8,7 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 public class SpawnPlatform extends Terrain {
-    private final Map map;
+    private final World map;
 
     /**
      * Representa uma plataforma que ativa o spawn do chefe.
@@ -16,7 +16,7 @@ public class SpawnPlatform extends Terrain {
      * Ao ser tocada pelo cavaleiro, remove-se e inicia o combate com o chefe.
      * </p>
      */
-    public SpawnPlatform(PVector center, float width, float height, Map map, PApplet p) {
+    public SpawnPlatform(PVector center, float width, float height, World map, PApplet p) {
         super(center, width, height, p);
         this.map = map;
     }

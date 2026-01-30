@@ -5,7 +5,6 @@ import game.scenery.characters.types.Enemy;
 import game.scenery.characters.Entity;
 import game.scenery.characters.types.TheKnight;
 import game.scenery.characters.types.enemies.FalseKnight;
-import game.scenery.characters.types.enemies.Mob;
 import game.scenery.characters.types.enemies.attributes.Eye;
 import game.scenery.characters.types.enemies.mobs.HuskHornhead;
 import game.scenery.characters.types.enemies.mobs.Squit;
@@ -23,7 +22,9 @@ import java.util.ArrayList;
  * Atua como contentor para terrenos, jogador e inimigos.
  * </p>
  */
-public class Map {
+public class World {
+    private static World map = null;
+
     private final FalseKnight boss;
     private final ArrayList<Enemy> enemies = new ArrayList<>();
     private final ArrayList<Entity> entities = new ArrayList<>();
@@ -41,12 +42,12 @@ public class Map {
      * @param p       o contexto gráfico do Processing
      * @param painter o objeto auxiliar para desenho de linhas
      */
-    public Map(PApplet p, LinePainter painter) {//TODO ATUALMENTE RAWCODED - TESTE
+    private World(PApplet p, LinePainter painter) {//TODO ATUALMENTE RAWCODED - TESTE
         this.p = p;
         this.painter = painter;
 
         // Secção 1
-        terrains.add(new Wall(new PVector(-150, 400), 200, 1200, p));
+        terrains.add(new Wall(new PVector(-2650, 400), 5200, 1200, p));
         terrains.add(new Terrain(new PVector(450, -100), 1000, 200, p));
         terrains.add(new Terrain(new PVector(200, 600), 150, 800, p));
 
@@ -90,6 +91,21 @@ public class Map {
 
         for (Enemy enemy : enemies)
             enemy.setEye(new Eye(enemy, player));
+    }
+
+    public static World getInstance() {
+        if (map == null)
+            System.out.println("É necessário inicializar o mapa primeiro");
+
+        return map;
+    }
+
+    public synchronized static World init(PApplet p, LinePainter painter) {
+        if (map != null)
+            System.err.println("Mapa já foi inicializado");
+
+        map = new World(p, painter);
+        return map;
     }
 
     /**

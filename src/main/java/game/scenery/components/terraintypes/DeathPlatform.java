@@ -1,6 +1,6 @@
 package game.scenery.components.terraintypes;
 
-import game.scenery.Map;
+import game.scenery.World;
 import game.scenery.characters.Entity;
 import game.scenery.characters.types.enemies.Mob;
 import game.scenery.characters.types.TheKnight;
@@ -9,7 +9,7 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 public class DeathPlatform extends Terrain {
-    private final Map map;
+    private final World map;
 
     /**
      * Representa um terreno letal que causa dano ou remove entidades.
@@ -17,7 +17,7 @@ public class DeathPlatform extends Terrain {
      * Ao interagir com entidades, danifica o cavaleiro ou remove inimigos do mapa.
      * </p>
      */
-    public DeathPlatform(PVector center, float width, float height, Map map, PApplet p) {
+    public DeathPlatform(PVector center, float width, float height, World map, PApplet p) {
         super(center, width, height, p);
         this.map = map;
     }

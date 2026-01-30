@@ -10,6 +10,7 @@ import processing.core.PVector;
 import java.util.ArrayList;
 
 public class Background {
+    private static Background background = null;
 
     private final ArrayList<Flock> flock = new ArrayList<>();
     private final PApplet p;
@@ -20,7 +21,7 @@ public class Background {
      *
      * @param p o contexto gráfico do Processing
      */
-    public Background(PApplet p) {
+    private Background(PApplet p) {
         this.p = p;
         float[] VIEWPORT = {0f, 0f, 1f, 1f};
         double[] WINDOW = {-3.55, 3.55, -2.0, 2.0};
@@ -30,6 +31,21 @@ public class Background {
         
         for (Flock f : flock) f.setEye(new FlockEye(f, flock));
         
+    }
+
+    public static Background getInstance() {
+        if (background == null)
+            System.out.println("É necessário inicializar o mapa primeiro");
+
+        return background;
+    }
+
+    public synchronized static Background init(PApplet p) {
+        if (background != null)
+            System.err.println("Mapa já foi inicializado");
+
+        background = new Background(p);
+        return background;
     }
 
     /**

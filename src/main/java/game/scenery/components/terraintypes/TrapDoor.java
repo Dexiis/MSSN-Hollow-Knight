@@ -1,6 +1,6 @@
 package game.scenery.components.terraintypes;
 
-import game.scenery.Map;
+import game.scenery.World;
 import game.scenery.characters.Entity;
 import game.scenery.characters.types.TheKnight;
 import game.scenery.components.Terrain;
@@ -8,7 +8,7 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 public class TrapDoor extends Terrain {
-    private final Map map;
+    private final World map;
 
     /**
      * Representa uma armadilha que remove-se ao ser tocada pelo cavaleiro.
@@ -23,7 +23,7 @@ public class TrapDoor extends Terrain {
      * @param map o mapa
      * @param p o contexto gráfico
      */
-    public TrapDoor(PVector center, float width, float height, Map map, PApplet p) {
+    public TrapDoor(PVector center, float width, float height, World map, PApplet p) {
         super(center, width, height, p);
         this.map = map;
     }

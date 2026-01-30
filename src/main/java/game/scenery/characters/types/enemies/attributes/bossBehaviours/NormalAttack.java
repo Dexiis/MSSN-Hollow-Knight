@@ -18,7 +18,6 @@ public class NormalAttack extends Behaviour {
     }
 
     public boolean checkBehaviour(Enemy me) {
-        //System.out.println(me.getEye().getNearSight());
         return me.getEye().getNearSight().contains(me.getEye().getTarget());
     }
 

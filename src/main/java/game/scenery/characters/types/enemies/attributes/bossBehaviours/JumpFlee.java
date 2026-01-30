@@ -1,6 +1,7 @@
 package game.scenery.characters.types.enemies.attributes.bossBehaviours;
 
 import game.scenery.characters.types.Enemy;
+import game.scenery.characters.types.enemies.FalseKnight;
 import game.scenery.characters.types.enemies.attributes.Behaviour;
 import processing.core.PVector;
 
@@ -19,8 +20,15 @@ public class JumpFlee extends Behaviour {
     }
 
     public PVector getDesiredVelocity(Enemy me) {
-        if (checkBehaviour(me))
-            me.setVelocity(new PVector((me.getPosition().x - me.getEye().getTarget().getPosition().x) * 2 / 3, 300));
+        if (checkBehaviour(me)) {
+            if (((FalseKnight) me).isWalled()) {
+                PVector toCenter = PVector.sub(new PVector(6100, 0), me.getPosition());
+                me.setVelocity(new PVector(toCenter.x, 500));
+            } else {
+                float xDistance = me.getPosition().x - me.getEye().getTarget().getPosition().x;
+                me.setVelocity(new PVector((500 / xDistance) * 300, 300));
+            }
+        }
         return new PVector(0, 0);
     }
 

@@ -1,10 +1,13 @@
 package game.scenery;
 
 import game.scenery.characters.types.TheKnight;
+import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
 
 //TODO VIDA, COOLDOWNS, DASHES, ETC
 public class GUI {
+    private static GUI gui = null;
+
     private PApplet p;
 
     /**
@@ -12,8 +15,23 @@ public class GUI {
      *
      * @param p o contexto gráfico do Processing
      */
-    public GUI(PApplet p) {
+    private GUI(PApplet p) {
         this.p = p;
+    }
+
+    public static GUI getInstance() {
+        if (gui == null)
+            System.out.println("É necessário inicializar o mapa primeiro");
+
+        return gui;
+    }
+
+    public synchronized static GUI init(PApplet p) {
+        if (gui != null)
+            System.err.println("Mapa já foi inicializado");
+
+        gui = new GUI(p);
+        return gui;
     }
 
     /**

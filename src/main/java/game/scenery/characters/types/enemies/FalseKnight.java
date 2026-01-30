@@ -26,8 +26,7 @@ import processing.core.PVector;
  * </p>
  */
 public class FalseKnight extends Enemy implements IVisualizable {
-    public static final float JUMP_COOLDOWN = 1000f;
-    public static final float JUMP_DURATION = 1500f;
+    public static final float JUMP_COOLDOWN = 3000f;
     public static final float DEATH_DURATION = 5000f;
 
     private float jumpTime = 0f;
@@ -40,6 +39,7 @@ public class FalseKnight extends Enemy implements IVisualizable {
     private final JumpFlee jumpFlee;
 
     private boolean grounded;
+    private boolean walled;
 
     /**
      * Constrói um novo FalseKnight na posição especificada.
@@ -57,8 +57,7 @@ public class FalseKnight extends Enemy implements IVisualizable {
         this.mass = 1f;
         this.health = 30;
 
-        ATTACK_COOLDOWN = 3000f;
-        ATTACK_DURATION = 1000f;
+        ATTACK_COOLDOWN = 2500f;
 
         this.normalAttack = new NormalAttack(1);
         this.jumpAttack = new JumpAttack(1);
@@ -79,7 +78,12 @@ public class FalseKnight extends Enemy implements IVisualizable {
 
         this.sprite = spriteArray[0][0];
         this.grounded = false;
+        this.walled= false;
         this.state = State.JUMP;
+
+        this.currentDirection = KnightMovement.LEFT;
+        this.latestDirection = KnightMovement.LEFT;
+        this.multValue = -1;
     }
 
     /**
@@ -110,6 +114,13 @@ public class FalseKnight extends Enemy implements IVisualizable {
         this.grounded = grounded;
     }
 
+    public boolean isWalled() {
+        return walled;
+    }
+
+    public void setWalled(boolean walled) {
+        this.walled = walled;
+    }
 
     /**
      * Gere a máquina de estados finita (FSM) do chefe.
@@ -160,30 +171,33 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * </p>
      */
     private void idling() {
-        if (normalAttack.checkBehaviour(this) && now - attackTime > ATTACK_COOLDOWN) {
-            state = State.ANTICIPATION;
-            resetAnimation();
-
-        } else if (jumpAttack.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN) {
-            if (p.random(1) > 0.80f) {
-                jumpTime = now;
-                state = State.JUMP;
-                applyBehaviour(jumpFlee, dt);
-            }
-            if (p.random(1) < 0.40f) {
-                jumpTime = now;
-                applyBehaviour(jumpAttack, dt);
-                state = State.JUMP_ATTACK;
-            }
-            resetAnimation();
-        }
-
         if (now - spriteTime > 120) {
             this.sprite = spriteArray[spriteIndex][0];
             spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 4) spriteIndex = 0;
         }
+
+        attack = idleAttack();
+        float action = p.random(1);
+        if (normalAttack.checkBehaviour(this) && now - attackTime > ATTACK_COOLDOWN) {
+            state = State.ANTICIPATION;
+            resetAnimation();
+        } else if (jumpAttack.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action < 0.84f) {
+            applyBehaviour(jumpAttack, dt);
+            state = State.JUMP_ATTACK;
+            jumpTime = now;
+            resetAnimation();
+        } else if (jumpFlee.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action > 0.7f) {
+            applyBehaviour(jumpFlee, dt);
+            state = State.JUMP;
+            jumpTime = now;
+            resetAnimation();
+        }
+    }
+
+    private HurtBox idleAttack() {
+        return null;
     }
 
     /**
@@ -215,6 +229,8 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * </p>
      */
     private void anticipating() {
+        attack = anticipationAttack();
+
         if (now - spriteTime > 80) {
             this.sprite = spriteArray[spriteIndex][5];
             spriteTime = now;
@@ -225,6 +241,10 @@ public class FalseKnight extends Enemy implements IVisualizable {
                 attackTime = now;
             }
         }
+    }
+
+    private HurtBox anticipationAttack() {
+        return null;
     }
 
     /**
@@ -241,12 +261,10 @@ public class FalseKnight extends Enemy implements IVisualizable {
             this.sprite = spriteArray[spriteIndex][6];
             spriteTime = now;
             spriteIndex++;
-            if (spriteIndex > 7) spriteIndex = 0;
-        }
-
-        if (now - attackTime > ATTACK_DURATION && spriteIndex == 0) {
-            state = State.IDLE;
-            setAttack(null);
+            if (spriteIndex > 7) {
+                spriteIndex = 0;
+                state = State.IDLE;
+            }
         }
     }
 
@@ -271,18 +289,16 @@ public class FalseKnight extends Enemy implements IVisualizable {
     private void jumpAttacking() {
         attack = jumpAttack(spriteIndex);
 
-        if (now - spriteTime > 120) {
+        if (now - spriteTime > 80) {
             this.sprite = spriteArray[spriteIndex][7];
             spriteTime = now;
             spriteIndex++;
-            if (spriteIndex > 9) {
-                spriteIndex = 0;
-                state = State.IDLE;
-                jumpTime = now;
-                setVelocity(new PVector(0, 0));
-            }
+            if (spriteIndex > 3 && !grounded) spriteIndex = 3;
+            else if (spriteIndex > 9) spriteIndex = 9;
+            if (spriteIndex > 3) setVelocity(new PVector(0, 0));
         }
 
+        if (spriteIndex == 9) state = State.IDLE;
     }
 
     /**
