@@ -411,6 +411,11 @@ public class FalseKnight extends Enemy implements IVisualizable {
         this.hitbox.draw(painter, plt);
         float[] pp = plt.getPixelCoord(this.getPosition().x, this.getPosition().y);
 
+        if (isDying()) {
+            if (grounded) state = State.LAND_DEATH;
+            else state = State.FALL_DEATH;
+        }
+        
         directionChange();
         stateMachine();
 
@@ -422,6 +427,6 @@ public class FalseKnight extends Enemy implements IVisualizable {
 
         p.popMatrix();
 
-        if (isDying()) setDead(true);
+
     }
 }

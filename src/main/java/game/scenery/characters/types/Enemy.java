@@ -142,6 +142,20 @@ public abstract class Enemy extends Entity {
      * Se a direção mudar, reinicia a animação e coloca o estado como {@code TURNING}.
      * </p>
      */
+    protected void directionChange(float IDLE_SPEED) {
+        if (state == State.IDLE) {
+            PVector vector = PVector.sub(getPosition(), this.getEye().getTarget().getPosition()).normalize();
+            currentDirection = vector.x < 0 ? KnightMovement.RIGHT : KnightMovement.LEFT;
+            if (currentDirection != latestDirection) {
+                resetAnimation();
+                state = State.TURNING;
+                this.getDna().setMaxSpeed(IDLE_SPEED);
+                this.getDna().setMaxForce(IDLE_SPEED);
+            }
+            latestDirection = currentDirection;
+        }
+    }
+
     protected void directionChange() {
         if (state == State.IDLE) {
             PVector vector = PVector.sub(getPosition(), this.getEye().getTarget().getPosition()).normalize();

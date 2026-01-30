@@ -40,7 +40,7 @@ public class HuskHornhead extends Mob implements IVisualizable {
         this.health = 5;
 
         ATTACK_COOLDOWN = 2000f;
-        ATTACK_DURATION = 3000f;
+        ATTACK_DURATION = 1500f;
 
         SPRITE_SIZE = 150;
         PIXEL_CORRECTION = 7;
@@ -48,7 +48,7 @@ public class HuskHornhead extends Mob implements IVisualizable {
 
         this.dna = new DNA(this);
         IDLE_SPEED = this.dna.getMaxSpeed();
-        ATTACK_SPEED_BOOST = 2;
+        ATTACK_SPEED_BOOST = 3;
 
         loadSpriteSheet("images/HuskSprites.png", p, spriteArray);
     }
@@ -74,11 +74,11 @@ public class HuskHornhead extends Mob implements IVisualizable {
                 this.position = new PVector(position.x, position.y - 22);
                 PIXEL_CORRECTION = -31;
 
-                state = State.ATTACK;
+                attackBehaviour.saveTargetPosition(this);
                 this.getDna().setMaxSpeed(IDLE_SPEED * ATTACK_SPEED_BOOST);
                 this.getDna().setMaxForce(IDLE_SPEED * ATTACK_SPEED_BOOST);
-                applyBehaviour(attackBehaviour, dt);
                 attackTime = now;
+                state = State.ATTACK;
             }
         }
     }
@@ -100,13 +100,15 @@ public class HuskHornhead extends Mob implements IVisualizable {
             if (spriteIndex > 3) spriteIndex = 0;
         }
 
-        if (now - attackTime > ATTACK_DURATION) {
-            state = State.IDLE;
+        if (now - attackTime > ATTACK_DURATION && spriteIndex == 0) {
             this.getDna().setMaxSpeed(IDLE_SPEED);
             this.getDna().setMaxForce(IDLE_SPEED);
+            state = State.IDLE;
+
             this.hitbox = new Hitbox(new Point(position.x, position.y), 85, 110);
             PIXEL_CORRECTION = 7;
-        }
+        } else applyBehaviour(attackBehaviour, dt);
+
     }
 
     /**
@@ -198,6 +200,9 @@ public class HuskHornhead extends Mob implements IVisualizable {
         if (isDying()) state = State.DEATH;
         if (state != latestState) resetAnimation();
 
+        directionChange(IDLE_SPEED);
+        stateMachine();
+
         // Diminuir o tamanho da sprite
         float spriteScale = 0.7f;
 
@@ -206,10 +211,6 @@ public class HuskHornhead extends Mob implements IVisualizable {
         p.translate(pp[0], pp[1]);
         p.scale(multValue * spriteScale, spriteScale);
         p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f + PIXEL_CORRECTION);
-
-        stateMachine();
-
-        directionChange();
 
         p.popMatrix();
     }

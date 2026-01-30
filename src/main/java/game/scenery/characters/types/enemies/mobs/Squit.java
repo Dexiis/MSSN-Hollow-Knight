@@ -43,7 +43,7 @@ public class Squit extends Mob implements IVisualizable {
         this.health = 3;
 
         ATTACK_COOLDOWN = 2000f;
-        ATTACK_DURATION = 3000f;
+        ATTACK_DURATION = 1500f;
 
         PIXEL_CORRECTION = 0;
         SPRITE_SIZE = 150;
@@ -76,15 +76,14 @@ public class Squit extends Mob implements IVisualizable {
             spriteIndex++;
             if (spriteIndex > 5) {
                 spriteIndex = 0;
-                state = State.ATTACK;
-
                 PVector targetVector = PVector.sub(this.getEye().getTarget().getPosition(), this.getPosition()).normalize();
                 attackAngle = targetVector.heading();
 
+                attackBehaviour.saveTargetPosition(this);
                 this.getDna().setMaxSpeed(IDLE_SPEED * ATTACK_SPEED_BOOST);
                 this.getDna().setMaxForce(IDLE_SPEED * ATTACK_SPEED_BOOST);
-                applyBehaviour(attackBehaviour, dt);
                 attackTime = now;
+                state = State.ATTACK;
             }
         }
     }
@@ -106,11 +105,12 @@ public class Squit extends Mob implements IVisualizable {
             if (spriteIndex > 2) spriteIndex = 0;
         }
 
-        if (now - attackTime > ATTACK_DURATION) {
-            state = State.IDLE;
+        if (now - attackTime > ATTACK_DURATION && spriteIndex == 0) {
             this.getDna().setMaxSpeed(IDLE_SPEED);
             this.getDna().setMaxForce(IDLE_SPEED);
-        }
+            state = State.IDLE;
+
+        } else applyBehaviour(attackBehaviour, dt);
     }
 
     /**
@@ -220,13 +220,16 @@ public class Squit extends Mob implements IVisualizable {
         this.hitbox.draw(painter, plt);
         float[] pp = plt.getPixelCoord(this.getPosition().x, this.getPosition().y);
 
-        if (colliding) state = State.IDLE;
-
-        directionChange();
+        if (colliding) {
+            this.getDna().setMaxSpeed(IDLE_SPEED);
+            this.getDna().setMaxForce(IDLE_SPEED);
+            state = State.IDLE;
+        }
 
         if (isDying()) state = State.DEATH;
         if (state != latestState) resetAnimation();
 
+        directionChange(IDLE_SPEED);
         stateMachine();
 
         // Diminuir o tamanho da sprite

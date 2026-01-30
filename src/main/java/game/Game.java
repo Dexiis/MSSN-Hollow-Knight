@@ -300,7 +300,7 @@ public class Game extends PApplet {
         map.getBoss().setGrounded(false);
         for (int i = map.getEntities().size() - 1; i >= 0; i--) {
             Entity entity = map.getEntities().get(i);
-            if (entity instanceof Squit) ((Squit) entity).setColliding(true);
+            if (entity instanceof Squit) ((Squit) entity).setColliding(false);
             for (int j = map.getTerrains().size() - 1; j >= 0; j--) {
                 Terrain terrain = map.getTerrains().get(j);
                 terrain.elaborateIntersects(entity);
