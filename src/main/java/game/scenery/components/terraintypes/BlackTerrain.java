@@ -1,12 +1,16 @@
 package game.scenery.components.terraintypes;
 
 import game.core.SubPlot;
-import game.scenery.components.Terrain;
 import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class BlackTerrain extends Terrain {
+public class BlackTerrain {
+
+    private final PVector position;
+    private final float width;
+    private final float height;
+
     /**
      * Constrói um objeto de terreno retangular.
      *
@@ -16,7 +20,9 @@ public class BlackTerrain extends Terrain {
      * @param p      o contexto gráfico do Processing
      */
     public BlackTerrain(PVector center, float width, float height, PApplet p) {
-        super(center, width, height, p);
+        this.position = center;
+        this.width = width;
+        this.height = height;
     }
 
     /**
@@ -29,12 +35,12 @@ public class BlackTerrain extends Terrain {
      * @param painter o objeto responsável pelo desenho das linhas
      * @param plt     o objeto SubPlot para conversão de coordenadas
      */
-    @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
-        float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
+        float[] pp = plt.getPixelCoord(position.x, position.y);
         // draw(painter, plt);
 
         p.fill(0);
-        p.rect(pp[0] - getWidth() / 2f, pp[1] - getHeight() / 2f, getWidth(), getHeight());
+        p.noStroke();
+        p.rect(pp[0] - width / 2f, pp[1] - height / 2f, width, height);
     }
 }

@@ -32,6 +32,7 @@ public class World {
     private final LinePainter painter;
     private final TheKnight player;
     private final ArrayList<Terrain> terrains = new ArrayList<>();
+    private final ArrayList<BlackTerrain> blackTerrains = new ArrayList<>();
 
     /**
      * Constrói o mapa do jogo.
@@ -50,10 +51,10 @@ public class World {
         terrains.add(new Terrain(new PVector(4000, 2200), 10000, 1000, p));
 
         // Secção 1
-        terrains.add(new Wall(new PVector(-2650, 1350), 5200, 2700, p));
+        terrains.add(new Wall(new PVector(-550, 1350), 1000, 2700, p));
         terrains.add(new Floor(new PVector(450, -1000), 1000, 2000, p));
         terrains.add(new Terrain(new PVector(200, 600), 150, 800, p));
-        terrains.add(new BlackTerrain(new PVector(-2650, -1350), 5200, 2700, p));
+        blackTerrains.add(new BlackTerrain(new PVector(-2650, -1350), 5200, 2700, p));
 
         // Plataformas
         terrains.add(new Platform(new PVector(765, 200), 270, 65, p));
@@ -163,8 +164,10 @@ public class World {
      * @param plt o objeto SubPlot para conversão de coordenadas
      */
     public void display(SubPlot plt) {
-        for (Entity entity : entities) entity.display(p, painter, plt);
+        // for (Entity entity : entities) entity.display(p, painter, plt);
         // for (Terrain terrain : terrains) terrain.display(p, painter, plt);
+        player.display(p, painter, plt);
+        for (BlackTerrain blackTerrain : blackTerrains) blackTerrain.display(p, painter, plt);
     }
 
     /**

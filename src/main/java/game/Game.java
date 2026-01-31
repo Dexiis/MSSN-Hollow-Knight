@@ -29,6 +29,7 @@ public class Game extends PApplet {
     private final double[] window = {-800, 800, -450, 450};
 
     private ArrayList<Terrain> loadedTerrains = new ArrayList<>();
+    private ArrayList<Enemy> loadedEnemies = new ArrayList<>();
 
     private Background background;
     private GUI gui;
@@ -105,10 +106,17 @@ public class Game extends PApplet {
         lastUpdateTime = now;
 
         loadedTerrains = new ArrayList<>();
+        loadedEnemies = new ArrayList<>();
+
+        for(Enemy enemy : map.getEnemies()) {
+            float dist = PVector.dist(map.getPlayer().getPosition(), enemy.getPosition());
+            if (dist < 800) loadedEnemies.add(enemy);
+            if (dist < 1200 && enemy instanceof FalseKnight) loadedEnemies.add(enemy);
+        }
 
         for (Terrain terrain : map.getTerrains()) {
             float dist = PVector.dist(map.getPlayer().getPosition(), terrain.getPosition().toPVector());
-            if (dist < 9000) loadedTerrains.add(terrain);
+            if (dist < 2000) loadedTerrains.add(terrain);
         }
 
         background.display(player.getPosition());
@@ -117,21 +125,24 @@ public class Game extends PApplet {
         handleNaturalMovements(dt);
         handleMonstersAttacks();
 
-        for (int i = map.getEntities().size() - 1; i >= 0; i--) {
-            Entity entity = map.getEntities().get(i);
+        player.move(dt);
 
-            entity.move(dt);
-            if (entity.isDead()) map.removeEnemy((Enemy) entity);
+        for (int i = loadedEnemies.size() - 1; i >= 0; i--) {
+            Enemy enemy = loadedEnemies.get(i);
+
+            enemy.move(dt);
+            if (enemy.isDead()) map.removeEnemy(enemy);
         }
 
         checkCollisions();
 
-//        for (Enemy enemy : map.getEnemies()) {
-//            enemy.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
-//        }
+        for (Enemy enemy : loadedEnemies) {
+            enemy.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
+        }
 
         setWindow(player.getPosition());
         for (Terrain terrain : loadedTerrains) terrain.display(this, painter, plt);
+        for (Enemy enemy : loadedEnemies) enemy.display(this, painter, plt);
         map.display(plt);
         gui.display(map.getPlayer());
     }
@@ -208,7 +219,7 @@ public class Game extends PApplet {
      * colisão física entre o inimigo e o jogador para aplicar dano ao jogador.
      */
     private void handleMonstersAttacks() {
-        if (map.getEnemies() != null) for (Enemy enemy : map.getEnemies())
+        if (loadedEnemies != null) for (Enemy enemy : loadedEnemies)
             if (enemy.getHitbox().intersected(player.getHitbox()) && !enemy.isDying())
                 player.damage(enemy.getPosition());
     }
