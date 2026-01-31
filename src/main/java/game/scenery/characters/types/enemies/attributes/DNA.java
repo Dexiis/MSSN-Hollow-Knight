@@ -88,7 +88,7 @@ public class DNA {
         visionDistance = 2200f;
         visionAngle = (float) Math.PI * 2f;
 
-        visionAttack = 0.20f * visionDistance;
+        visionAttack = 0.15f * visionDistance;
         visionAttackAngle = (float) Math.PI * 2f;
     }
 

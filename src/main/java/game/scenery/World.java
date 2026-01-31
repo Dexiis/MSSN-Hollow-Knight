@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * </p>
  */
 public class World {
-    private static World map = null;
+    private static World world = null;
 
     private final FalseKnight boss;
     private final ArrayList<Enemy> enemies = new ArrayList<>();
@@ -78,10 +78,11 @@ public class World {
         terrains.add(new DeathPlatform(new PVector(4000, -6500), 10000, 10000, this, p));
 
         // Spawn Platform
-        terrains.add(new SpawnPlatform(new PVector(5500, -400), 100, 500, this, p));
+        //terrains.add(new SpawnPlatform(new PVector(5500, -400), 100, 500, this, p)); //TODO COLOCAR ESTE MAIS TARDE
+        terrains.add(new SpawnPlatform(new PVector(5900, -400), 100, 500, this, p));
 
         //this.player = new TheKnight(new PVector(50, 800), p);
-        this.player = new TheKnight(new PVector(5700, -100), p);
+        this.player = new TheKnight(new PVector(5900, -100), p);
         entities.add(player);
 
         enemies.add(new Squit(new PVector(500, 500), p));
@@ -98,18 +99,18 @@ public class World {
     }
 
     public static World getInstance() {
-        if (map == null)
+        if (world == null)
             System.out.println("É necessário inicializar o mapa primeiro");
 
-        return map;
+        return world;
     }
 
     public synchronized static World init(PApplet p, LinePainter painter) {
-        if (map != null)
+        if (world != null)
             System.err.println("Mapa já foi inicializado");
 
-        map = new World(p, painter);
-        return map;
+        world = new World(p, painter);
+        return world;
     }
 
     /**

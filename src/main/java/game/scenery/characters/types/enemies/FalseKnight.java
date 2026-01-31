@@ -1,10 +1,12 @@
 package game.scenery.characters.types.enemies;
 
 import game.core.SubPlot;
+import game.scenery.World;
 import game.scenery.characters.IVisualizable;
 import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.KnightMovement;
 import game.scenery.characters.types.State;
+import game.scenery.characters.types.TheKnight;
 import game.scenery.characters.types.enemies.attributes.DNA;
 import game.scenery.characters.types.enemies.attributes.bossBehaviours.JumpAttack;
 import game.scenery.characters.types.enemies.attributes.bossBehaviours.JumpFlee;
@@ -26,13 +28,11 @@ import processing.core.PVector;
  * </p>
  */
 public class FalseKnight extends Enemy implements IVisualizable {
-    public static final float JUMP_COOLDOWN = 3000f;
+    public static final float JUMP_COOLDOWN = 1200f;
     public static final float DEATH_DURATION = 5000f;
 
     private float jumpTime = 0f;
     private float deathTime = 0f;
-
-    private HurtBox attack;
 
     private final NormalAttack normalAttack;
     private final JumpAttack jumpAttack;
@@ -53,18 +53,18 @@ public class FalseKnight extends Enemy implements IVisualizable {
      */
     public FalseKnight(PVector position, PApplet p) {
         super(position, p);
-        this.hitbox = new Hitbox(new Point(position.x, position.y), 435, 280);
+        this.hitbox = new Hitbox(new Point(position.x, position.y), 300, 280);
         this.mass = 1f;
         this.health = 30;
 
-        ATTACK_COOLDOWN = 2500f;
+        ATTACK_COOLDOWN = 1000f;
 
         this.normalAttack = new NormalAttack(1);
         this.jumpAttack = new JumpAttack(1);
         this.jumpFlee = new JumpFlee(1);
 
-        PIXEL_CORRECTION = 200;
-        SPRITE_SIZE = 800;
+        PIXEL_CORRECTION = 282;
+        SPRITE_SIZE = 1000;
         SPRITE_COUNT = 10;
         super.spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
 
@@ -78,23 +78,13 @@ public class FalseKnight extends Enemy implements IVisualizable {
 
         this.sprite = spriteArray[0][0];
         this.grounded = false;
-        this.walled= false;
+        this.walled = false;
         this.state = State.JUMP;
 
         this.currentDirection = KnightMovement.LEFT;
         this.latestDirection = KnightMovement.LEFT;
         this.multValue = -1;
     }
-
-    /**
-     * Define a caixa de dano (HurtBox) atual.
-     *
-     * @param attack a nova {@code HurtBox} ou {@code null} para cancelar o ataque
-     */
-    public void setAttack(HurtBox attack) {
-        this.attack = attack;
-    }
-
 
     /**
      * Verifica se o chefe está no chão.
@@ -120,6 +110,16 @@ public class FalseKnight extends Enemy implements IVisualizable {
 
     public void setWalled(boolean walled) {
         this.walled = walled;
+    }
+
+    private void handleAttack(PApplet p, LinePainter painter, SubPlot plt) {
+        HurtBox attack = attack();
+        if (attack != null) {
+            attack.setPosition(this.position);
+            TheKnight player = World.getInstance().getPlayer();
+            if (attack.intersected(player.getHitbox())) player.damage(this.position);
+            attack.display(p, painter, plt);
+        }
     }
 
     /**
@@ -171,33 +171,28 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * </p>
      */
     private void idling() {
-        if (now - spriteTime > 120) {
+        if (now - spriteTime > 80) {
             this.sprite = spriteArray[spriteIndex][0];
             spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 4) spriteIndex = 0;
         }
 
-        attack = idleAttack();
         float action = p.random(1);
         if (normalAttack.checkBehaviour(this) && now - attackTime > ATTACK_COOLDOWN) {
             state = State.ANTICIPATION;
             resetAnimation();
-        } else if (jumpAttack.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action < 0.84f) {
+        } else if (jumpAttack.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action < 0.5f) {
             applyBehaviour(jumpAttack, dt);
             state = State.JUMP_ATTACK;
             jumpTime = now;
             resetAnimation();
-        } else if (jumpFlee.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action > 0.7f) {
+        } else if (jumpFlee.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action > 0.8f) {
             applyBehaviour(jumpFlee, dt);
             state = State.JUMP;
             jumpTime = now;
             resetAnimation();
         }
-    }
-
-    private HurtBox idleAttack() {
-        return null;
     }
 
     /**
@@ -209,7 +204,7 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * </p>
      */
     private void turning() {
-        if (now - spriteTime > 120) {
+        if (now - spriteTime > 80) {
             this.sprite = spriteArray[spriteIndex][1];
             spriteTime = now;
             spriteIndex++;
@@ -229,10 +224,8 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * </p>
      */
     private void anticipating() {
-        attack = anticipationAttack();
-
         if (now - spriteTime > 80) {
-            this.sprite = spriteArray[spriteIndex][5];
+            this.sprite = spriteArray[spriteIndex][4];
             spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 5) {
@@ -256,9 +249,8 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * </p>
      */
     private void attacking() {
-        attack = attack(spriteIndex);
-        if (now - spriteTime > 120) {
-            this.sprite = spriteArray[spriteIndex][6];
+        if (now - spriteTime > 80) {
+            this.sprite = spriteArray[spriteIndex][5];
             spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 7) {
@@ -266,16 +258,6 @@ public class FalseKnight extends Enemy implements IVisualizable {
                 state = State.IDLE;
             }
         }
-    }
-
-    /**
-     * Cria a HurtBox de ataque corpo a corpo baseada no frame de animação atual.
-     *
-     * @param spriteIndex o índice do sprite atual
-     * @return a HurtBox do ataque, ou {@code null} se ainda não aplicável
-     */
-    private HurtBox attack(int spriteIndex) {
-        return null;
     }
 
     /**
@@ -287,28 +269,19 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * </p>
      */
     private void jumpAttacking() {
-        attack = jumpAttack(spriteIndex);
-
         if (now - spriteTime > 80) {
-            this.sprite = spriteArray[spriteIndex][7];
+            this.sprite = spriteArray[spriteIndex][6];
             spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 3 && !grounded) spriteIndex = 3;
             else if (spriteIndex > 9) spriteIndex = 9;
-            if (spriteIndex > 3) setVelocity(new PVector(0, 0));
+            if (spriteIndex > 3) setVelocity(new PVector());
         }
 
-        if (spriteIndex == 9) state = State.IDLE;
-    }
-
-    /**
-     * Cria a HurtBox de ataque aéreo baseada no frame de animação atual.
-     *
-     * @param spriteIndex o índice do sprite atual
-     * @return a HurtBox do ataque aéreo, ou {@code null} se ainda não aplicável
-     */
-    private HurtBox jumpAttack(int spriteIndex) {
-        return null;
+        if (spriteIndex == 9) {
+            spriteIndex = 0;
+            state = State.IDLE;
+        }
     }
 
     /**
@@ -319,8 +292,8 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * </p>
      */
     private void jumping() {
-        if (now - spriteTime > 120) {
-            this.sprite = spriteArray[spriteIndex][3];
+        if (now - spriteTime > 80) {
+            this.sprite = spriteArray[spriteIndex][2];
             spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 6) {
@@ -329,7 +302,7 @@ public class FalseKnight extends Enemy implements IVisualizable {
                     spriteIndex = 0;
                     state = State.LAND;
                     jumpTime = now;
-                    setVelocity(new PVector(0, 0));
+                    setVelocity(new PVector());
                 }
             }
         }
@@ -343,8 +316,8 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * </p>
      */
     private void landing() {
-        if (now - spriteTime > 120) {
-            this.sprite = spriteArray[spriteIndex][4];
+        if (now - spriteTime > 80) {
+            this.sprite = spriteArray[spriteIndex][3];
             spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 2) {
@@ -355,6 +328,24 @@ public class FalseKnight extends Enemy implements IVisualizable {
     }
 
     /**
+     * Gere o estado de morte em queda do chefe.
+     * <p>
+     * Executa a animação de morte quando o chefe está a cair.
+     * Quando a animação termina, marca o chefe como morto.
+     * </p>
+     */
+    private void fallDeath() {
+        if (now - spriteTime > 80) {
+            this.sprite = spriteArray[spriteIndex][7];
+            spriteTime = now;
+            spriteIndex++;
+            if (spriteIndex > 2) spriteIndex = 2;
+        }
+
+        if (grounded) state = State.LAND_DEATH;
+    }
+
+    /**
      * Gere o estado de morte no chão do chefe.
      * <p>
      * Executa a animação de morte quando o chefe está no chão.
@@ -362,8 +353,8 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * </p>
      */
     private void landDeath() {
-        if (now - spriteTime > 120) {
-            this.sprite = spriteArray[spriteIndex][9];
+        if (now - spriteTime > 80) {
+            this.sprite = spriteArray[spriteIndex][8];
             spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 4) spriteIndex = 4;
@@ -372,22 +363,84 @@ public class FalseKnight extends Enemy implements IVisualizable {
         if (now - deathTime > DEATH_DURATION) setDead(true);
     }
 
-    /**
-     * Gere o estado de morte em queda do chefe.
-     * <p>
-     * Executa a animação de morte quando o chefe está a cair.
-     * Quando a animação termina, marca o chefe como morto.
-     * </p>
-     */
-    private void fallDeath() {
-        if (now - spriteTime > 120) {
-            this.sprite = spriteArray[spriteIndex][8];
-            spriteTime = now;
-            spriteIndex++;
-            if (spriteIndex > 2) spriteIndex = 2;
-        }
+    private HurtBox attack() {
+        HurtBox.Builder builder = new HurtBox.Builder();
 
-        if (now - deathTime > DEATH_DURATION) setDead(true);
+        switch (this.state) {
+            case IDLE -> {
+                switch (spriteIndex) {
+                    case 0 -> addFrame(builder, -155, -260, -65, 40);
+                    case 1 -> addFrame(builder, -155, -260, -50, 55);
+                    case 2, 3 -> addFrame(builder, -155, -260, -45, 60);
+                    case 4 -> addFrame(builder, -155, -260, -60, 45);
+                }
+            }
+            case TURNING -> {
+                switch (spriteIndex) {
+                    case 0 -> addFrame(builder, 65, 170, -55, 50);
+                    case 1 -> addFrame(builder, -85, -190, -55, 50);
+                }
+            }
+            case JUMP, LAND -> { // LAND e JUMP (0-2) partilham os mesmos valores
+                switch (spriteIndex) {
+                    case 0 -> addFrame(builder, -145, -250, -40, 65);
+                    case 1 -> addFrame(builder, -125, -230, -30, 75);
+                    case 2 -> addFrame(builder, -110, -215, -40, 65);
+                    // JUMP continua aqui (indices 3-6)
+                    case 3 -> { if (state == State.JUMP) addFrame(builder, -185, -290, -80, 25); }
+                    case 4 -> { if (state == State.JUMP) addFrame(builder, -185, -290, -75, 30); }
+                    case 5 -> { if (state == State.JUMP) addFrame(builder, -195, -300, -60, 45); }
+                    case 6 -> { if (state == State.JUMP) addFrame(builder, -190, -295, -70, 35); }
+                }
+            }
+            case ANTICIPATION -> {
+                switch (spriteIndex) {
+                    case 0 -> addFrame(builder, -190, -295, -110, -5);
+                    case 1, 4 -> addFrame(builder, -210, -315, -145, -40);
+                    case 2 -> addFrame(builder, -200, -305, -145, -40);
+                    case 3 -> addFrame(builder, -185, -290, -150, -45);
+                    case 5 -> addFrame(builder, -195, -300, -145, -40);
+                }
+            }
+            case ATTACK -> {
+                switch (spriteIndex) {
+                    case 0 -> addFrame(builder, 0, -105, 155, 260);
+                    case 1 -> addFrame(builder, 310, 205, -35, 70);
+                    case 2 -> addFrame(builder, 285, 180, -150, -45);
+                    case 3 -> addFrame(builder, 15, -90, 165, 270);
+                    case 4 -> addFrame(builder, -105, -210, 150, 255);
+                    case 5 -> addFrame(builder, -145, -250, 100, 205);
+                    case 6 -> addFrame(builder, -75, -180, 25, 130);
+                    case 7 -> addFrame(builder, -125, -230, -65, 40);
+                }
+            }
+            case JUMP_ATTACK -> {
+                switch (spriteIndex) {
+                    case 0 -> addFrame(builder, -180, -285, -65, 40);
+                    case 1 -> addFrame(builder, -200, -305, -65, 40);
+                    case 2 -> addFrame(builder, -215, -320, -120, -15);
+                    case 3 -> addFrame(builder, -240, -345, -100, 5);
+                    case 4 -> addFrame(builder, -75, -180, 150, 255);
+                    case 5 -> addFrame(builder, 265, 160, -140, -35);
+                    case 6 -> addFrame(builder, -55, -160, 155, 260);
+                    case 7 -> addFrame(builder, -105, -210, 105, 210);
+                    case 8 -> addFrame(builder, -100, -205, 40, 145);
+                    case 9 -> addFrame(builder, -135, -240, -70, 35);
+                }
+            }
+        }
+        return builder.build();
+    }
+
+    /**
+     * Auxilia a criar o rectângulo preservando a ordem dos pontos:
+     * (x1, y1) -> (x2, y1) -> (x2, y2) -> (x1, y2)
+     */
+    private void addFrame(HurtBox.Builder b, int x1, int x2, int y1, int y2) {
+        b.addPoint(x1 * multValue, y1)
+                .addPoint(x2 * multValue, y1)
+                .addPoint(x2 * multValue, y2)
+                .addPoint(x1 * multValue, y2);
     }
 
     /**
@@ -414,8 +467,10 @@ public class FalseKnight extends Enemy implements IVisualizable {
         }
 
         this.getEye().look();
+
         directionChange();
         stateMachine();
+        handleAttack(p, painter, plt); //TODO CONFIRMAR PORQUE ESTÁ "LAGADO"?
 
         p.pushMatrix();
 

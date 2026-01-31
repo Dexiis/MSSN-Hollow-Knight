@@ -22,8 +22,8 @@ public class JumpFlee extends Behaviour {
     public PVector getDesiredVelocity(Enemy me) {
         if (checkBehaviour(me)) {
             if (((FalseKnight) me).isWalled()) {
-                PVector toCenter = PVector.sub(new PVector(6100, 0), me.getPosition());
-                me.setVelocity(new PVector(toCenter.x, 500));
+                PVector toCenter = PVector.sub(new PVector(6000, 0), me.getPosition());
+                me.setVelocity(new PVector(toCenter.x, 350));
             } else {
                 float xDistance = me.getPosition().x - me.getEye().getTarget().getPosition().x;
                 me.setVelocity(new PVector((500 / xDistance) * 300, 300));

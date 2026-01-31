@@ -356,18 +356,14 @@ public class TheKnight extends Entity implements IVisualizable {
         else facingDirection = KnightMovement.UP;
 
         switch (facingDirection) {
-            case DOWN:
-                builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, -100).addPoint(25, -150).addPoint(-25, -150).addPoint(-55, -100);
-                break;
-            case LEFT:
-                builder.addPoint(0, -65).addPoint(0, 65).addPoint(-100, 55).addPoint(-150, 25).addPoint(-150, -25).addPoint(-100, -55);
-                break;
-            case RIGHT:
-                builder.addPoint(0, 65).addPoint(0, -65).addPoint(100, -55).addPoint(150, -25).addPoint(150, 25).addPoint(100, 55);
-                break;
-            default:
-                builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, 100).addPoint(25, 150).addPoint(-25, 150).addPoint(-55, 100);
-                break;
+            case DOWN ->
+                    builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, -100).addPoint(25, -150).addPoint(-25, -150).addPoint(-55, -100);
+            case LEFT ->
+                    builder.addPoint(0, -65).addPoint(0, 65).addPoint(-100, 55).addPoint(-150, 25).addPoint(-150, -25).addPoint(-100, -55);
+            case RIGHT ->
+                    builder.addPoint(0, 65).addPoint(0, -65).addPoint(100, -55).addPoint(150, -25).addPoint(150, 25).addPoint(100, 55);
+            default ->
+                    builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, 100).addPoint(25, 150).addPoint(-25, 150).addPoint(-55, 100);
         }
 
         return builder.build();
@@ -407,26 +403,27 @@ public class TheKnight extends Entity implements IVisualizable {
 
     }
 
-//    /**
-//     * Gere a lógica de combate do jogador.
-//     * <p>
-//     * Atualiza a posição da área de ataque (hitbox), verifica interseções com inimigos,
-//     * aplica dano e remove inimigos derrotados.
-//     */
-    private void handleKnightAttack(PApplet p, LinePainter painter, SubPlot plt) { //TODO MANDAR PARA DENTRO DO KNIGHT
+    /**
+     * Gere a lógica de combate do jogador.
+     * <p>
+     * Atualiza a posição da área de ataque (hitbox), verifica interseções com inimigos,
+     * aplica dano e remove inimigos derrotados.
+     */
+    private void handleAttack(PApplet p, LinePainter painter, SubPlot plt) {
         if (attack != null) {
             attack.setPosition(this.position);
 
-            if (World.getInstance().getEnemies() != null) for (int i = World.getInstance().getEnemies().size() - 1; i >= 0; i--) {
-                Enemy enemy = World.getInstance().getEnemies().get(i);
-                if (attack.intersected(enemy.getHitbox())) {
-                    enemy.damage(this.position);
+            if (World.getInstance().getEnemies() != null)
+                for (int i = World.getInstance().getEnemies().size() - 1; i >= 0; i--) {
+                    Enemy enemy = World.getInstance().getEnemies().get(i);
+                    if (attack.intersected(enemy.getHitbox())) {
+                        enemy.damage(this.position);
 
-                    // Pequeno salto ao bater para baixo no ar
-                    if (!grounded && facingDirection == KnightMovement.DOWN)
-                        this.velocity = new PVector(this.velocity.x, 400f);
+                        // Pequeno salto ao bater para baixo no ar
+                        if (!grounded && facingDirection == KnightMovement.DOWN)
+                            this.velocity = new PVector(this.velocity.x, 400f);
+                    }
                 }
-            }
 
             attack.display(p, painter, plt);
             if (now - attackTime > ATTACK_DURATION) setAttack(null);
@@ -454,14 +451,14 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     private void idling() {
-        if(moving) state = State.RUNNING;
-        if(!grounded) state = State.JUMPING;
+        if (moving) state = State.RUNNING;
+        if (!grounded) state = State.JUMPING;
         this.sprite = spriteArray[0][0];
     }
 
     private void running() {
-        if(!moving) state = State.IDLE;
-        if(!grounded) state = State.JUMPING;
+        if (!moving) state = State.IDLE;
+        if (!grounded) state = State.JUMPING;
         if (now - spriteTime > 40) {
             this.sprite = spriteArray[spriteIndex][0];
             spriteTime = now;
@@ -471,11 +468,11 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     private void jumping() {
-        if(this.velocity.y < 0) state = State.FALLING;
+        if (this.velocity.y < 0) state = State.FALLING;
     }
 
     private void falling() {
-        if(grounded) state = State.IDLE;
+        if (grounded) state = State.IDLE;
         if (now - spriteTime > 40) {
             this.sprite = spriteArray[spriteIndex][9];
             spriteTime = now;
@@ -518,7 +515,7 @@ public class TheKnight extends Entity implements IVisualizable {
         }
 
         if (!stunned) handleInputMovements();
-        handleKnightAttack(p, painter, plt);
+        handleAttack(p, painter, plt);
 
         int multValue = (lastFacingDirection == KnightMovement.LEFT) ? -1 : 1;
 

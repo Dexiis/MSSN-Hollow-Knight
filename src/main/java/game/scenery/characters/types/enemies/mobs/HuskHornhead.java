@@ -67,7 +67,7 @@ public class HuskHornhead extends Mob implements IVisualizable {
             state = State.ANTICIPATION;
             resetAnimation();
         }
-        if (now - spriteTime > 120) {
+        if (now - spriteTime > 80) {
             this.sprite = spriteArray[spriteIndex][0];
             spriteTime = now;
             spriteIndex++;
@@ -88,7 +88,7 @@ public class HuskHornhead extends Mob implements IVisualizable {
      */
     @Override
     protected void turning() {
-        if (now - spriteTime > 120) {
+        if (now - spriteTime > 80) {
             this.sprite = spriteArray[spriteIndex][1];
             spriteTime = now;
             spriteIndex++;
@@ -142,7 +142,7 @@ public class HuskHornhead extends Mob implements IVisualizable {
      */
     @Override
     protected void attacking() {
-        if (now - spriteTime > 120) {
+        if (now - spriteTime > 80) {
             this.sprite = spriteArray[spriteIndex][3];
             spriteTime = now;
             spriteIndex++;
@@ -172,7 +172,7 @@ public class HuskHornhead extends Mob implements IVisualizable {
      */
     @Override
     protected void death() {
-        if (now - spriteTime > 120) {
+        if (now - spriteTime > 80) {
             this.sprite = spriteArray[spriteIndex][4];
             spriteTime = now;
             spriteIndex++;

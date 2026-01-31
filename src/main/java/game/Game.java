@@ -221,7 +221,7 @@ public class Game extends PApplet {
                 if (entity.isDying())
                     entity.applyForce(new PVector(0, -450 * entity.getMass())); // Queda na morte do Squit
             } else if (entity instanceof FalseKnight)
-                entity.applyForce(new PVector(0, -650 * entity.getMass())); // Gravidade apenas para o boss
+                entity.applyForce(new PVector(0, -350 * entity.getMass())); // Gravidade apenas para o boss
             else entity.applyForce(gravity(entity));
         }
     }
