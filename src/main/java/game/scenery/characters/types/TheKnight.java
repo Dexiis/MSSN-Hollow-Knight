@@ -39,6 +39,13 @@ public class TheKnight extends Entity implements IVisualizable {
 
     private boolean moving = false;
 
+    private static PImage attackSprite;
+    private static float attackSpriteAngle;
+    private static float attackOffset;
+    private static final int ATTACK_WIDTH = 150;
+    private static final int ATTACK_HEIGHT = 130;
+    private static final int ATTACK_PIXEL_CORRECTION = 70;
+
     /**
      * Constrói uma nova instância do Cavaleiro na posição especificada.
      * <p>
@@ -70,6 +77,8 @@ public class TheKnight extends Entity implements IVisualizable {
         SPRITE_SIZE = 80;
         SPRITE_COUNT = 12;
         super.spriteArray = new PImage[SPRITE_COUNT][SPRITE_COUNT];
+
+        attackSprite = p.loadImage("images/TheKnightAttack.png");
 
         // Enche o array de sprites iterativamente
         PImage sprites = p.loadImage("images/TheKnightSprites.png");
@@ -355,15 +364,29 @@ public class TheKnight extends Entity implements IVisualizable {
         else if (directions.get(KnightMovement.RIGHT)) facingDirection = KnightMovement.RIGHT;
         else facingDirection = KnightMovement.UP;
 
+        attackOffset = 0;
+
         switch (facingDirection) {
-            case DOWN ->
-                    builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, -100).addPoint(25, -150).addPoint(-25, -150).addPoint(-55, -100);
-            case LEFT ->
-                    builder.addPoint(0, -65).addPoint(0, 65).addPoint(-100, 55).addPoint(-150, 25).addPoint(-150, -25).addPoint(-100, -55);
-            case RIGHT ->
-                    builder.addPoint(0, 65).addPoint(0, -65).addPoint(100, -55).addPoint(150, -25).addPoint(150, 25).addPoint(100, 55);
-            default ->
-                    builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, 100).addPoint(25, 150).addPoint(-25, 150).addPoint(-55, 100);
+            case DOWN:
+                builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, -100).addPoint(25, -150).addPoint(-25, -150).addPoint(-55, -100);
+                attackSpriteAngle = 270;
+                attackOffset = ATTACK_HEIGHT + ATTACK_PIXEL_CORRECTION;
+                break;
+            case LEFT:
+                builder.addPoint(0, -65).addPoint(0, 65).addPoint(-100, 55).addPoint(-150, 25).addPoint(-150, -25).addPoint(-100, -55);
+                attackSpriteAngle = 0;
+                attackOffset = ATTACK_WIDTH + ATTACK_PIXEL_CORRECTION;
+                break;
+            case RIGHT:
+                builder.addPoint(0, 65).addPoint(0, -65).addPoint(100, -55).addPoint(150, -25).addPoint(150, 25).addPoint(100, 55);
+                attackSpriteAngle = 180;
+                attackOffset = ATTACK_WIDTH + ATTACK_PIXEL_CORRECTION;
+                break;
+            default:
+                builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, 100).addPoint(25, 150).addPoint(-25, 150).addPoint(-55, 100);
+                attackSpriteAngle = 90;
+                attackOffset = ATTACK_HEIGHT + ATTACK_PIXEL_CORRECTION;
+                break;
         }
 
         return builder.build();
@@ -425,7 +448,6 @@ public class TheKnight extends Entity implements IVisualizable {
                     }
                 }
 
-            attack.display(p, painter, plt);
             if (now - attackTime > ATTACK_DURATION) setAttack(null);
         }
     }
@@ -493,6 +515,24 @@ public class TheKnight extends Entity implements IVisualizable {
         }
     }
 
+    private void displayAttack(PApplet p, LinePainter painter, SubPlot plt) {
+        if(attack == null) return;
+
+        // attack.display(p, painter, plt);
+
+        float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
+
+
+        p.pushMatrix();
+
+        p.translate(pp[0], pp[1]);
+        p.scale(0.6f);
+        p.rotate(PApplet.radians(attackSpriteAngle));
+        p.image(attackSprite, -attack.getWidth() / 2f - attackOffset, -attack.getHeight() / 2f);
+
+        p.popMatrix();
+    }
+
     /**
      * Renderiza o jogador no ecrã.
      * <p>
@@ -516,6 +556,7 @@ public class TheKnight extends Entity implements IVisualizable {
 
         if (!stunned) handleInputMovements();
         handleAttack(p, painter, plt);
+        displayAttack(p, painter, plt);
 
         int multValue = (lastFacingDirection == KnightMovement.LEFT) ? -1 : 1;
 

@@ -71,7 +71,7 @@ public class HuskHornhead extends Mob implements IVisualizable {
             this.sprite = spriteArray[spriteIndex][0];
             spriteTime = now;
             spriteIndex++;
-            if (spriteIndex > 5) spriteIndex = 0;
+            if (spriteIndex > 6) spriteIndex = 0;
         }
 
         applyBehaviour(seekBehaviour, dt);
@@ -142,6 +142,10 @@ public class HuskHornhead extends Mob implements IVisualizable {
      */
     @Override
     protected void attacking() {
+        if(!attackBehaviour.checkBehaviour(this)){
+            state = State.IDLE;
+            resetAnimation();
+        }
         if (now - spriteTime > 80) {
             this.sprite = spriteArray[spriteIndex][3];
             spriteTime = now;
@@ -154,7 +158,7 @@ public class HuskHornhead extends Mob implements IVisualizable {
             this.getDna().setMaxForce(IDLE_SPEED);
             state = State.IDLE;
 
-            this.position = new PVector(position.x, position.y + 22);
+            this.setPosition(new PVector(position.x, position.y + 22));
             this.hitbox = new Hitbox(new Point(position.x, position.y), 85, 110);
             PIXEL_CORRECTION = 7;
 

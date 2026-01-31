@@ -110,9 +110,15 @@ public class Game extends PApplet {
 
         for(Enemy enemy : map.getEnemies()) {
             float dist = PVector.dist(map.getPlayer().getPosition(), enemy.getPosition());
-            if (dist < 800) loadedEnemies.add(enemy);
-            if (dist < 1200 && enemy instanceof FalseKnight) loadedEnemies.add(enemy);
+            if(enemy instanceof FalseKnight) {
+                if (dist < 1200) loadedEnemies.add(enemy);
+            } else {
+                if (dist < 800) loadedEnemies.add(enemy);
+            }
         }
+
+        println(map.getEnemies().get(1).getPosition());
+        println(map.getEnemies().get(0).getPosition());
 
         for (Terrain terrain : map.getTerrains()) {
             float dist = PVector.dist(map.getPlayer().getPosition(), terrain.getPosition().toPVector());
@@ -225,15 +231,18 @@ public class Game extends PApplet {
     }
 
     private void handleNaturalMovements(float dt) {
-        for (Entity entity : map.getEntities()) {
-            entity.updateTime(dt, now);
+        player.updateTime(dt, now);
+        player.applyForce(gravity(player));
 
-            if (entity instanceof Squit) {
-                if (entity.isDying())
-                    entity.applyForce(new PVector(0, -450 * entity.getMass())); // Queda na morte do Squit
-            } else if (entity instanceof FalseKnight)
-                entity.applyForce(new PVector(0, -350 * entity.getMass())); // Gravidade apenas para o boss
-            else entity.applyForce(gravity(entity));
+        for (Enemy enemy : loadedEnemies) {
+            enemy.updateTime(dt, now);
+
+            if (enemy instanceof Squit) {
+                if (enemy.isDying())
+                    enemy.applyForce(new PVector(0, -450 * enemy.getMass())); // Queda na morte do Squit
+            } else if (enemy instanceof FalseKnight)
+                enemy.applyForce(new PVector(0, -350 * enemy.getMass())); // Gravidade apenas para o boss
+            else enemy.applyForce(gravity(enemy));
         }
     }
 
@@ -250,6 +259,7 @@ public class Game extends PApplet {
         for (int i = map.getEntities().size() - 1; i >= 0; i--) {
             Entity entity = map.getEntities().get(i);
             if (entity instanceof Squit) ((Squit) entity).setColliding(false);
+            World.getInstance().getDeathPlatform().elaborateIntersects(entity);
             for (int j = loadedTerrains.size() - 1; j >= 0; j--) {
                 Terrain terrain = loadedTerrains.get(j);
                 terrain.elaborateIntersects(entity);

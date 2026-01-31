@@ -28,6 +28,8 @@ public class World {
     private final FalseKnight boss;
     private final ArrayList<Enemy> enemies = new ArrayList<>();
     private final ArrayList<Entity> entities = new ArrayList<>();
+
+    private final DeathPlatform deathPlatform;
     private final PApplet p;
     private final LinePainter painter;
     private final TheKnight player;
@@ -76,7 +78,7 @@ public class World {
         terrains.add(new Terrain(new PVector(7350, -500), 200, 800, p));
 
         // Death Platform
-        terrains.add(new DeathPlatform(new PVector(4000, -6500), 10000, 10000, this, p));
+        deathPlatform = new DeathPlatform(new PVector(4000, -6500), 10000, 10000, this, p);
 
         // Spawn Platform
         terrains.add(new SpawnPlatform(new PVector(5500, -400), 100, 500, this, p));
@@ -167,6 +169,7 @@ public class World {
         // for (Entity entity : entities) entity.display(p, painter, plt);
         // for (Terrain terrain : terrains) terrain.display(p, painter, plt);
         player.display(p, painter, plt);
+        deathPlatform.display(p, painter, plt);
         for (BlackTerrain blackTerrain : blackTerrains) blackTerrain.display(p, painter, plt);
     }
 
@@ -198,5 +201,9 @@ public class World {
     public void spawnBoss() {
         enemies.add(boss);
         entities.add(boss);
+    }
+
+    public DeathPlatform getDeathPlatform() {
+        return deathPlatform;
     }
 }
