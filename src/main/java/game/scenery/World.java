@@ -78,11 +78,10 @@ public class World {
         terrains.add(new DeathPlatform(new PVector(4000, -6500), 10000, 10000, this, p));
 
         // Spawn Platform
-        //terrains.add(new SpawnPlatform(new PVector(5500, -400), 100, 500, this, p)); //TODO COLOCAR ESTE MAIS TARDE
-        terrains.add(new SpawnPlatform(new PVector(5900, -400), 100, 500, this, p));
+        terrains.add(new SpawnPlatform(new PVector(5500, -400), 100, 500, this, p));
 
         //this.player = new TheKnight(new PVector(50, 800), p);
-        this.player = new TheKnight(new PVector(5900, -100), p);
+        this.player = new TheKnight(new PVector(5300, -100), p);
         entities.add(player);
 
         enemies.add(new Squit(new PVector(500, 500), p));

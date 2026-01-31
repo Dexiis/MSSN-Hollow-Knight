@@ -13,12 +13,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/Game.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/World.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/World.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/FalseKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/FalseKnight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/DNA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/DNA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/bossBehaviours/JumpAttack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/bossBehaviours/JumpAttack.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/bossBehaviours/JumpFlee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/bossBehaviours/JumpFlee.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/images/FalseKnightSprites.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/images/FalseKnightSprites.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/enemyBehaviours/Attack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/enemyBehaviours/Attack.java" afterDir="false" />
     </list>
     <list id="35cb66f5-a107-43e2-b909-1cfb0e7d3476" name="Changes by Bernardo Aguiar" comment="" />
     <list id="572c0861-a753-4fa0-8d50-003e349ea9f1" name="Changes by david" comment="" />
@@ -187,6 +183,8 @@
       <workItem from="1769717673852" duration="2344000" />
       <workItem from="1769736236719" duration="20569000" />
       <workItem from="1769794715366" duration="16834000" />
+      <workItem from="1769834496371" duration="586000" />
+      <workItem from="1769862771146" duration="1235000" />
     </task>
     <task id="LOCAL-00001" summary="File restructure.">
       <option name="closed" value="true" />

@@ -108,7 +108,7 @@ public class Game extends PApplet {
 
         for (Terrain terrain : map.getTerrains()) {
             float dist = PVector.dist(map.getPlayer().getPosition(), terrain.getPosition().toPVector());
-            if (dist < 1500) loadedTerrains.add(terrain);
+            if (dist < 9000) loadedTerrains.add(terrain);
         }
 
         background.display(player.getPosition());
@@ -126,9 +126,9 @@ public class Game extends PApplet {
 
         checkCollisions();
 
-        for (Enemy enemy : map.getEnemies()) {
-            enemy.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
-        }
+//        for (Enemy enemy : map.getEnemies()) {
+//            enemy.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
+//        }
 
         setWindow(player.getPosition());
         for (Terrain terrain : loadedTerrains) terrain.display(this, painter, plt);

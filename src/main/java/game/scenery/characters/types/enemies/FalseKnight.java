@@ -466,12 +466,6 @@ public class FalseKnight extends Enemy implements IVisualizable {
             else state = State.FALL_DEATH;
         }
 
-        this.getEye().look();
-
-        directionChange();
-        stateMachine();
-        handleAttack(p, painter, plt); //TODO CONFIRMAR PORQUE ESTÁ "LAGADO"?
-
         p.pushMatrix();
 
         p.translate(pp[0], pp[1]);
@@ -480,6 +474,9 @@ public class FalseKnight extends Enemy implements IVisualizable {
 
         p.popMatrix();
 
-
+        directionChange();
+        stateMachine();
+        this.getEye().look();
+        handleAttack(p, painter, plt); //TODO CONFIRMAR PORQUE ESTÁ "LAGADO"?
     }
 }

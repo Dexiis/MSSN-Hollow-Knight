@@ -38,11 +38,7 @@ public class Attack extends Behaviour {
      */
     @Override
     public PVector getDesiredVelocity(Enemy me) {
-        if (checkBehaviour(me)) {
-            if (chargeDirection != null) return chargeDirection;
-            else return PVector.sub(targetPosition, me.getPosition()).normalize().mult(me.getDna().getMaxSpeed());
-        }
-
+        if (checkBehaviour(me)) if (chargeDirection != null) return chargeDirection;
         return new PVector();
     }
 
