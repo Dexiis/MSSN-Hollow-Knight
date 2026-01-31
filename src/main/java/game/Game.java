@@ -117,9 +117,6 @@ public class Game extends PApplet {
             }
         }
 
-        println(map.getEnemies().get(1).getPosition());
-        println(map.getEnemies().get(0).getPosition());
-
         for (Terrain terrain : map.getTerrains()) {
             float dist = PVector.dist(map.getPlayer().getPosition(), terrain.getPosition().toPVector());
             if (dist < 2000) loadedTerrains.add(terrain);

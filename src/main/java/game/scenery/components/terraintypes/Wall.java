@@ -57,8 +57,14 @@ public class Wall extends Terrain {
         p.fill(0);
         p.rect(pp[0] - getWidth() / 2f, pp[1] - getHeight() / 2f, getWidth(), getHeight());
 
-        for(int i = 0; i < slices; i++)
-            p.image(sprite, pp[0] - getWidth() / 2f + pixelCorrectionX, pp[1] - getHeight() / 2f + i * SPRITE_HEIGHT);
+        for(int i = 0; i < slices; i++) {
+            if(i == slices - 1) {
+                PImage cropped = sprite.get(0, 0, sprite.pixelWidth, (int) ((pp[1] + getHeight() / 2f) - (pp[1] - getHeight() / 2f + i * SPRITE_HEIGHT)));
+                p.image(cropped, pp[0] - getWidth() / 2f + pixelCorrectionX, pp[1] - getHeight() / 2f + i * SPRITE_HEIGHT);
+            } else {
+                p.image(sprite, pp[0] - getWidth() / 2f + pixelCorrectionX, pp[1] - getHeight() / 2f + i * SPRITE_HEIGHT);
+            }
 
+        }
     }
 }

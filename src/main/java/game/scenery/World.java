@@ -74,8 +74,8 @@ public class World {
 
         // Boss Room
         terrains.add(new Floor(new PVector(6000, -800), 2500, 200, p));
-        terrains.add(new Terrain(new PVector(4650, -500), 200, 800, p));
-        terrains.add(new Terrain(new PVector(7350, -500), 200, 800, p));
+        terrains.add(new Wall(new PVector(4250, 0), 1000, 1400, p));
+        terrains.add(new Wall(new PVector(7750, 0), 1000, 1400, p));
 
         // Death Platform
         deathPlatform = new DeathPlatform(new PVector(4000, -6500), 10000, 10000, this, p);
