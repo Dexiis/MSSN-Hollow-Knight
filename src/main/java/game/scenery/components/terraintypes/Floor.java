@@ -43,7 +43,7 @@ public class Floor extends Terrain {
         p.fill(0);
         p.rect(pp[0] - getWidth() / 2f, pp[1] - getHeight() / 2f, getWidth(), getHeight());
 
-        p.image(sprite, pp[0] - getWidth() / 2f, pp[1] - getHeight() / 2f);
+        p.image(sprite, pp[0] - getWidth() / 2f, pp[1] - getHeight() / 2f, getWidth(), sprite.pixelHeight);
 
     }
 }

@@ -53,7 +53,7 @@ public class Platform extends Terrain {
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
-        draw(painter, plt);
+        // draw(painter, plt);
 
         p.image(sprite, pp[0] - getWidth() / 2f - PIXEL_CORRECTION_X, pp[1] - getHeight() / 2f - PIXEL_CORRECTION_Y);
 
