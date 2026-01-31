@@ -1,5 +1,7 @@
 package game.scenery.components.hitbox;
 
+import processing.core.PVector;
+
 /**
  * Representa uma coordenada espacial bidimensional.
  * <p>
@@ -23,6 +25,11 @@ public class Point {
     public Point(float x, float y) {
         this.x = x;
         this.y = y;
+    }
+
+
+    public PVector toPVector() {
+        return new PVector(x, y);
     }
 
 }

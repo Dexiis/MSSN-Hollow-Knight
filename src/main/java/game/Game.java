@@ -28,6 +28,8 @@ public class Game extends PApplet {
     private final float[] viewport = {0f, 0f, 1f, 1f};
     private final double[] window = {-800, 800, -450, 450};
 
+    private ArrayList<Terrain> loadedTerrains = new ArrayList<>();
+
     private Background background;
     private GUI gui;
     private World map;
@@ -94,8 +96,6 @@ public class Game extends PApplet {
      */
     @Override
     public void draw() {
-
-        System.out.println(map.getBoss().isWalled());
         if (firstLoop) {
             lastUpdateTime = millis();
             firstLoop = false;
@@ -103,6 +103,13 @@ public class Game extends PApplet {
         now = millis();
         float dt = (now - lastUpdateTime) / 1000f;
         lastUpdateTime = now;
+
+        loadedTerrains = new ArrayList<>();
+
+        for (Terrain terrain : map.getTerrains()) {
+            float dist = PVector.dist(map.getPlayer().getPosition(), terrain.getPosition().toPVector());
+            if (dist < 1500) loadedTerrains.add(terrain);
+        }
 
         background.display(player.getPosition());
         moveFlock(background.getFlock(), dt);
@@ -124,6 +131,7 @@ public class Game extends PApplet {
         }
 
         setWindow(player.getPosition());
+        for (Terrain terrain : loadedTerrains) terrain.display(this, painter, plt);
         map.display(plt);
         gui.display(map.getPlayer());
     }
@@ -231,8 +239,8 @@ public class Game extends PApplet {
         for (int i = map.getEntities().size() - 1; i >= 0; i--) {
             Entity entity = map.getEntities().get(i);
             if (entity instanceof Squit) ((Squit) entity).setColliding(false);
-            for (int j = map.getTerrains().size() - 1; j >= 0; j--) {
-                Terrain terrain = map.getTerrains().get(j);
+            for (int j = loadedTerrains.size() - 1; j >= 0; j--) {
+                Terrain terrain = loadedTerrains.get(j);
                 terrain.elaborateIntersects(entity);
             }
         }

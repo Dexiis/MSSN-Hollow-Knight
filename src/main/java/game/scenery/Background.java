@@ -27,7 +27,7 @@ public class Background {
         double[] WINDOW = {-3.55, 3.55, -2.0, 2.0};
         this.plt = new SubPlot(WINDOW, VIEWPORT, p.width, p.height);
 
-        for (int i = 0; i < 30; i++) flock.add(new Flock(randomPVector(), plt, p));
+        for (int i = 0; i < 20; i++) flock.add(new Flock(randomPVector(), plt, p));
         
         for (Flock f : flock) f.setEye(new FlockEye(f, flock));
         
@@ -96,7 +96,7 @@ public class Background {
 
                 int iter = 0;
                 double ESCAPE_RADIUS = 2.0;
-                int MAX_ITER = 20;
+                int MAX_ITER = 10;
                 while (iter < MAX_ITER && Z.norm() <= ESCAPE_RADIUS) {
                     Complex Z_copy = new Complex(Z.getA(), Z.getB());
                     Z.mult(Z_copy);

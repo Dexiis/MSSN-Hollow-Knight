@@ -49,7 +49,7 @@ public class Wall extends Terrain {
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
-        draw(painter, plt);
+        // draw(painter, plt);
 
         float pixelCorrectionX = getWidth() - sprite.pixelWidth + 12;
         int slices = PApplet.ceil(getHeight() / SPRITE_HEIGHT);

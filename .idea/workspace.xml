@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="MSSN-Hollow-Knight:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/BlackTerrain.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/Floor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/Enemy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/Enemy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/FalseKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/FalseKnight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/DNA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/DNA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/bossBehaviours/JumpFlee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/bossBehaviours/JumpFlee.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/bossBehaviours/NormalAttack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/bossBehaviours/NormalAttack.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/enemyBehaviours/Attack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/enemyBehaviours/Attack.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/Terrain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/Terrain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/Background.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/Background.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/World.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/World.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/mobs/HuskHornhead.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/mobs/HuskHornhead.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/mobs/Squit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/mobs/Squit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/Point.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/Point.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/Wall.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/Wall.java" afterDir="false" />
     </list>
     <list id="35cb66f5-a107-43e2-b909-1cfb0e7d3476" name="Changes by Bernardo Aguiar" comment="" />
-    <list id="572c0861-a753-4fa0-8d50-003e349ea9f1" name="Changes by david" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/Map.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/FalseKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/FalseKnight.java" afterDir="false" />
-    </list>
+    <list id="572c0861-a753-4fa0-8d50-003e349ea9f1" name="Changes by david" comment="" />
     <list id="caa23359-5f65-48a1-8ee5-b34609ea65fd" name="Changes by pitad" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,62 +58,6 @@
     &quot;accountId&quot;: &quot;d0088d2c-32c9-4b17-86c7-48b0939a96cf&quot;
   }
 }</component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/FalseKnight.java">
-      <ranges>
-        <range start1="28" end1="30" start2="28" end2="29" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="42" end1="42" start2="41" end2="42" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="59" end1="61" start2="59" end2="60" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="81" end1="81" start2="80" end2="81" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="82" end1="82" start2="82" end2="86" changelist="572c0861-a753-4fa0-8d50-003e349ea9f1" />
-        <range start1="112" end1="112" start2="116" end2="123" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="162" end1="162" start2="173" end2="182" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="165" end1="177" start2="185" end2="194" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="179" end1="186" start2="196" end2="196" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="187" end1="187" start2="197" end2="201" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="217" end1="217" start2="231" end2="233" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="228" end1="228" start2="244" end2="248" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="243" end1="244" start2="263" end2="267" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="245" end1="250" start2="268" end2="268" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="273" end1="274" start2="291" end2="292" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="277" end1="283" start2="295" end2="298" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="285" end1="285" start2="300" end2="301" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java">
-      <ranges>
-        <range start1="32" end1="34" start2="32" end2="34" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="35" end1="36" start2="35" end2="36" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="37" end1="37" start2="37" end2="39" changelist="572c0861-a753-4fa0-8d50-003e349ea9f1" />
-        <range start1="63" end1="64" start2="65" end2="66" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="77" end1="79" start2="79" end2="81" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="134" end1="136" start2="136" end2="138" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="143" end1="145" start2="145" end2="147" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="216" end1="217" start2="218" end2="219" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="218" end1="220" start2="220" end2="222" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="225" end1="226" start2="227" end2="228" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="227" end1="229" start2="229" end2="231" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="314" end1="315" start2="316" end2="316" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="317" end1="318" start2="318" end2="319" changelist="572c0861-a753-4fa0-8d50-003e349ea9f1" />
-        <range start1="319" end1="319" start2="320" end2="322" changelist="572c0861-a753-4fa0-8d50-003e349ea9f1" />
-        <range start1="370" end1="370" start2="373" end2="496" changelist="572c0861-a753-4fa0-8d50-003e349ea9f1" />
-        <range start1="385" end1="410" start2="511" end2="511" changelist="572c0861-a753-4fa0-8d50-003e349ea9f1" />
-        <range start1="412" end1="414" start2="513" end2="524" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/src/main/java/game/Game.java">
-      <ranges>
-        <range start1="9" end1="10" start2="9" end2="9" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="34" end1="35" start2="33" end2="34" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="82" end1="83" start2="81" end2="82" changelist="572c0861-a753-4fa0-8d50-003e349ea9f1" />
-        <range start1="97" end1="97" start2="96" end2="98" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="109" end1="111" start2="110" end2="110" changelist="572c0861-a753-4fa0-8d50-003e349ea9f1" />
-        <range start1="195" end1="266" start2="194" end2="194" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="287" end1="288" start2="215" end2="216" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-        <range start1="301" end1="301" start2="229" end2="230" changelist="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" />
-      </ranges>
-    </file>
-  </component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -149,7 +93,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
+    "project.structure.last.edited": "Artifacts",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.40386385",
     "run.code.analysis.last.selected.profile": "pProject Default",

@@ -106,6 +106,8 @@ public class Squit extends Mob implements IVisualizable {
                 state = State.IDLE;
             }
         }
+        applyBehaviour(seekBehaviour, dt);
+        applyBehaviour(wanderBehaviour, dt);
     }
 
     /**
@@ -177,7 +179,7 @@ public class Squit extends Mob implements IVisualizable {
             this.getDna().setMaxSpeed(IDLE_SPEED);
             this.getDna().setMaxForce(IDLE_SPEED);
             state = State.IDLE;
-
+            this.acceleration = new PVector(0, 0);
         } else applyBehaviour(attackBehaviour, dt);
     }
 
@@ -217,7 +219,6 @@ public class Squit extends Mob implements IVisualizable {
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
-        this.hitbox.draw(painter, plt);
         float[] pp = plt.getPixelCoord(this.getPosition().x, this.getPosition().y);
 
         if (colliding) {
@@ -228,10 +229,6 @@ public class Squit extends Mob implements IVisualizable {
 
         if (isDying()) state = State.DEATH;
         if (state != latestState) resetAnimation();
-
-        this.getEye().look();
-        directionChange(IDLE_SPEED);
-        stateMachine();
 
         // Diminuir o tamanho da sprite
         float spriteScale = 0.7f;
@@ -253,5 +250,10 @@ public class Squit extends Mob implements IVisualizable {
         p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f);
 
         p.popMatrix();
+
+        directionChange(IDLE_SPEED);
+        stateMachine();
+        this.getEye().look();
+        this.hitbox.draw(painter, plt);
     }
 }

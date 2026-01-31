@@ -98,6 +98,8 @@ public class HuskHornhead extends Mob implements IVisualizable {
                 state = State.IDLE;
             }
         }
+        applyBehaviour(seekBehaviour, dt);
+        applyBehaviour(wanderBehaviour, dt);
     }
 
     /**
@@ -117,8 +119,8 @@ public class HuskHornhead extends Mob implements IVisualizable {
             if (spriteIndex > 4) {
                 spriteIndex = 0;
 
-                this.hitbox = new Hitbox(new Point(position.x, position.y), 95, 65);
                 this.position = new PVector(position.x, position.y - 22);
+                this.hitbox = new Hitbox(new Point(position.x, position.y), 95, 65);
                 PIXEL_CORRECTION = -31;
 
                 attackBehaviour.saveTargetPosition(this);
@@ -152,8 +154,11 @@ public class HuskHornhead extends Mob implements IVisualizable {
             this.getDna().setMaxForce(IDLE_SPEED);
             state = State.IDLE;
 
+            this.position = new PVector(position.x, position.y + 22);
             this.hitbox = new Hitbox(new Point(position.x, position.y), 85, 110);
             PIXEL_CORRECTION = 7;
+
+            this.acceleration = new PVector(0, 0);
         } else applyBehaviour(attackBehaviour, dt);
 
     }
@@ -193,16 +198,10 @@ public class HuskHornhead extends Mob implements IVisualizable {
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
-        this.hitbox.draw(painter, plt);
-
         float[] pp = plt.getPixelCoord(this.getPosition().x, this.getPosition().y);
 
         if (isDying()) state = State.DEATH;
         if (state != latestState) resetAnimation();
-
-        this.getEye().look();
-        directionChange(IDLE_SPEED);
-        stateMachine();
 
         // Diminuir o tamanho da sprite
         float spriteScale = 0.7f;
@@ -214,5 +213,11 @@ public class HuskHornhead extends Mob implements IVisualizable {
         p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f + PIXEL_CORRECTION);
 
         p.popMatrix();
+
+        directionChange(IDLE_SPEED);
+        stateMachine();
+        this.getEye().look();
+
+        this.hitbox.draw(painter, plt);
     }
 }
