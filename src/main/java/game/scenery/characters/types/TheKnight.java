@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class TheKnight extends Entity implements IVisualizable {
     public static final float JUMP_STRENGTH = 1000f;
-    public static final float SPEED = 275f;
+    public static final float SPEED = 300f;
 
     private HurtBox attack = null;
     private final Map<KnightMovement, Boolean> directions;

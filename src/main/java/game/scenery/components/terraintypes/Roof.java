@@ -7,8 +7,8 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 
-public class Floor extends Terrain {
-
+public class Roof extends Terrain {
+    private static final float PIXEL_CORRECTION = 100f;
     private static PImage sprite;
 
     /**
@@ -19,10 +19,10 @@ public class Floor extends Terrain {
      * @param height a altura total
      * @param p      o contexto gráfico do Processing
      */
-    public Floor(PVector center, float width, float height, PApplet p) {
+    public Roof(PVector center, float width, float height, PApplet p) {
         super(center, width, height, p);
 
-        sprite = p.loadImage("images/Floor01.png");
+        sprite = p.loadImage("images/roof.png");
     }
 
     /**
@@ -38,13 +38,16 @@ public class Floor extends Terrain {
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
-        // draw(painter, plt);
+        //draw(painter, plt);
 
-        p.fill(0);
-        p.noStroke();
-        p.rect(pp[0] - getWidth() / 2f, pp[1] - getHeight() / 2f, getWidth(), getHeight());
+        // TODO tentar melhorar performance
 
-        p.image(sprite, pp[0] - getWidth() / 2f, pp[1] - getHeight() / 2f, getWidth(), sprite.pixelHeight);
+        p.pushMatrix();
+        p.translate(pp[0], pp[1]);
+        p.scale(0.4f);
 
+        p.image(sprite,-getWidth() / 2f, getHeight() - PIXEL_CORRECTION);
+
+        p.popMatrix();
     }
 }

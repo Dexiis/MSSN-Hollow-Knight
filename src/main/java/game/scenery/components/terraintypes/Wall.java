@@ -17,6 +17,11 @@ public class Wall extends Terrain {
 
     private static final int SPRITE_HEIGHT = 353;
     private static PImage sprite;
+    private final SIDE side;
+
+    public enum SIDE {
+        LEFT, RIGHT
+    }
 
     /**
      * Constrói uma nova parede com as dimensões especificadas.
@@ -30,8 +35,9 @@ public class Wall extends Terrain {
      * @param height a altura da parede
      * @param p o contexto gráfico do Processing
      */
-    public Wall(PVector center, float width, float height, PApplet p) {
+    public Wall(PVector center, float width, float height, PApplet p, SIDE side) {
         super(center, width, height, p);
+        this.side = side;
 
         sprite = p.loadImage("images/wall.png");
     }
@@ -55,16 +61,32 @@ public class Wall extends Terrain {
         int slices = PApplet.ceil(getHeight() / SPRITE_HEIGHT);
 
         p.fill(0);
+        p.noStroke();
         p.rect(pp[0] - getWidth() / 2f, pp[1] - getHeight() / 2f, getWidth(), getHeight());
 
-        for(int i = 0; i < slices; i++) {
-            if(i == slices - 1) {
-                PImage cropped = sprite.get(0, 0, sprite.pixelWidth, (int) ((pp[1] + getHeight() / 2f) - (pp[1] - getHeight() / 2f + i * SPRITE_HEIGHT)));
-                p.image(cropped, pp[0] - getWidth() / 2f + pixelCorrectionX, pp[1] - getHeight() / 2f + i * SPRITE_HEIGHT);
-            } else {
-                p.image(sprite, pp[0] - getWidth() / 2f + pixelCorrectionX, pp[1] - getHeight() / 2f + i * SPRITE_HEIGHT);
+        if(side == SIDE.LEFT) {
+            p.pushMatrix();
+            p.translate(pp[0], pp[1]);
+            p.scale(-1, 1);
+            for(int i = 0; i < slices; i++) {
+                if(i == slices - 1) {
+                    PImage cropped = sprite.get(0, 0, sprite.pixelWidth, (int) ((pp[1] + getHeight() / 2f) - (pp[1] - getHeight() / 2f + i * SPRITE_HEIGHT)));
+                    p.image(cropped, - getWidth() / 2f + pixelCorrectionX, - getHeight() / 2f + i * SPRITE_HEIGHT);
+                } else {
+                    p.image(sprite, - getWidth() / 2f + pixelCorrectionX, - getHeight() / 2f + i * SPRITE_HEIGHT);
+                }
             }
-
+            p.popMatrix();
+        } else {
+            for(int i = 0; i < slices; i++) {
+                if(i == slices - 1) {
+                    PImage cropped = sprite.get(0, 0, sprite.pixelWidth, (int) ((pp[1] + getHeight() / 2f) - (pp[1] - getHeight() / 2f + i * SPRITE_HEIGHT)));
+                    p.image(cropped, pp[0] - getWidth() / 2f + pixelCorrectionX, pp[1] - getHeight() / 2f + i * SPRITE_HEIGHT);
+                } else {
+                    p.image(sprite, pp[0] - getWidth() / 2f + pixelCorrectionX, pp[1] - getHeight() / 2f + i * SPRITE_HEIGHT);
+                }
+            }
         }
     }
+
 }

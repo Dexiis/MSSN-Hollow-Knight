@@ -8,7 +8,6 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 public class SpawnPlatform extends Terrain {
-    private final World map;
 
     /**
      * Representa uma plataforma que ativa o spawn do chefe.
@@ -16,9 +15,8 @@ public class SpawnPlatform extends Terrain {
      * Ao ser tocada pelo cavaleiro, remove-se e inicia o combate com o chefe.
      * </p>
      */
-    public SpawnPlatform(PVector center, float width, float height, World map, PApplet p) {
+    public SpawnPlatform(PVector center, float width, float height, PApplet p) {
         super(center, width, height, p);
-        this.map = map;
     }
 
     /**
@@ -33,8 +31,8 @@ public class SpawnPlatform extends Terrain {
     public void elaborateIntersects(Entity entity) {
         if (entity instanceof TheKnight) {
             if (super.intersected(entity.getHitbox())) {
-                map.removeTerrain(this);
-                map.spawnBoss();
+                World.getInstance().removeTerrain(this);
+                World.getInstance().spawnBoss();
             }
         }
     }

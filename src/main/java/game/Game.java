@@ -34,6 +34,7 @@ public class Game extends PApplet {
     private Background background;
     private GUI gui;
     private World map;
+
     private final LinePainter painter = new LinePainter() {
         /**
          * Desenha uma linha convertendo coordenadas do mundo para pixels.
@@ -257,6 +258,7 @@ public class Game extends PApplet {
             Entity entity = map.getEntities().get(i);
             if (entity instanceof Squit) ((Squit) entity).setColliding(false);
             World.getInstance().getDeathPlatform().elaborateIntersects(entity);
+            World.getInstance().getRoof().elaborateIntersects(entity);
             for (int j = loadedTerrains.size() - 1; j >= 0; j--) {
                 Terrain terrain = loadedTerrains.get(j);
                 terrain.elaborateIntersects(entity);

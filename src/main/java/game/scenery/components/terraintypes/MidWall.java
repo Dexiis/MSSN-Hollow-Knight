@@ -7,9 +7,10 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 
-public class Floor extends Terrain {
-
-    private static PImage sprite;
+public class MidWall extends Terrain {
+    private static final float PIXEL_CORRECTION = 25f;
+    private static PImage pillarSprite;
+    private static PImage bottomWallSprite;
 
     /**
      * Constrói um objeto de terreno retangular.
@@ -19,10 +20,11 @@ public class Floor extends Terrain {
      * @param height a altura total
      * @param p      o contexto gráfico do Processing
      */
-    public Floor(PVector center, float width, float height, PApplet p) {
+    public MidWall(PVector center, float width, float height, PApplet p) {
         super(center, width, height, p);
 
-        sprite = p.loadImage("images/Floor01.png");
+        pillarSprite = p.loadImage("images/pillar.png");
+        bottomWallSprite = p.loadImage("images/wall_bottom.png");
     }
 
     /**
@@ -40,11 +42,10 @@ public class Floor extends Terrain {
         float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
         // draw(painter, plt);
 
-        p.fill(0);
-        p.noStroke();
-        p.rect(pp[0] - getWidth() / 2f, pp[1] - getHeight() / 2f, getWidth(), getHeight());
+        for(int i = 0; i < 2; i++)
+            p.image(pillarSprite, pp[0] - getWidth() / 2f, pp[1] - getHeight() / 2f + i * pillarSprite.pixelHeight);
 
-        p.image(sprite, pp[0] - getWidth() / 2f, pp[1] - getHeight() / 2f, getWidth(), sprite.pixelHeight);
+        p.image(bottomWallSprite, pp[0] - getWidth() / 2f - PIXEL_CORRECTION, pp[1] - getHeight() / 2f + 2 * pillarSprite.pixelHeight);
 
     }
 }

@@ -9,7 +9,6 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 public class DeathPlatform extends Terrain {
-    private final World map;
 
     /**
      * Representa um terreno letal que causa dano ou remove entidades.
@@ -17,9 +16,8 @@ public class DeathPlatform extends Terrain {
      * Ao interagir com entidades, danifica o cavaleiro ou remove inimigos do mapa.
      * </p>
      */
-    public DeathPlatform(PVector center, float width, float height, World map, PApplet p) {
+    public DeathPlatform(PVector center, float width, float height, PApplet p) {
         super(center, width, height, p);
-        this.map = map;
     }
 
     /**
@@ -52,7 +50,7 @@ public class DeathPlatform extends Terrain {
                 entity.setVelocity(new PVector(0, 0));
                 entity.setAcceleration(new PVector(0, 0));
             } else {
-                map.removeEnemy((Mob) entity);
+                World.getInstance().removeEnemy((Mob) entity);
             }
         }
     }
