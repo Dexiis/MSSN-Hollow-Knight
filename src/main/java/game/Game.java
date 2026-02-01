@@ -15,6 +15,7 @@ import game.scenery.components.flock.Flock;
 import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
 import processing.core.PVector;
+import processing.sound.SoundFile;
 
 import java.util.ArrayList;
 
@@ -34,6 +35,8 @@ public class Game extends PApplet {
     private Background background;
     private GUI gui;
     private World map;
+
+    private static SoundFile song;
 
     private final LinePainter painter = new LinePainter() {
         /**
@@ -81,6 +84,10 @@ public class Game extends PApplet {
      */
     @Override
     public void setup() {
+        song = new SoundFile(this, "sounds/backgroundsong.wav");
+        song.loop();
+        song.amp(0.1f);
+
         plt = new SubPlot(window, viewport, width, height);
 
         textSize(22);

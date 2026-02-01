@@ -83,8 +83,8 @@ public class World {
         // Spawn Platform
         terrains.add(new SpawnPlatform(new PVector(5500, -400), 100, 500, p));
 
-        //this.player = new TheKnight(new PVector(50, 800), p);
-        this.player = new TheKnight(new PVector(5300, -100), p);
+        this.player = new TheKnight(new PVector(50, 800), p);
+        //this.player = new TheKnight(new PVector(5300, -100), p);
         entities.add(player);
 
         enemies.add(new Squit(new PVector(500, 500), p));
