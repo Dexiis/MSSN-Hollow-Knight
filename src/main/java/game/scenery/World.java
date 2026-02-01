@@ -36,6 +36,7 @@ public class World {
     private final TheKnight player;
     private final ArrayList<Terrain> terrains = new ArrayList<>();
     private final ArrayList<BlackTerrain> blackTerrains = new ArrayList<>();
+    private final ArrayList<Bush> bushes = new ArrayList<>();
 
     /**
      * Constrói o mapa do jogo.
@@ -46,17 +47,16 @@ public class World {
      * @param p       o contexto gráfico do Processing
      * @param painter o objeto auxiliar para desenho de linhas
      */
-    private World(PApplet p, LinePainter painter) {//TODO ATUALMENTE RAWCODED - TESTE
+    private World(PApplet p, LinePainter painter) {
         this.p = p;
         this.painter = painter;
-
-        // TODO ADICIONAR FOLLIAGE NOS CANTOS, TEXTURA LATERAL NO CHÃO, TETO
 
         // Teto
         blackTerrains.add(new BlackTerrain(new PVector(4000, 2700), 10000, 1000, p));
         roof = new Roof(new PVector(4000, 2200), 10000, 1000, p);
 
         // Secção 1
+        bushes.add(new Bush(new PVector(150, 75), p));
         terrains.add(new Wall(new PVector(-550, 1350), 1000, 2700, p, Wall.SIDE.RIGHT));
         terrains.add(new Floor(new PVector(450, -1000), 1000, 2000, p));
         terrains.add(new MidWall(new PVector(287, 940), 124, 1480, p));
@@ -68,6 +68,7 @@ public class World {
         terrains.add(new Platform(new PVector(1865, 600), 270, 65, p));
 
         // Secção 2
+        bushes.add(new Bush(new PVector(2600, 875), p));
         terrains.add(new Floor(new PVector(2700, 300), 1000, 1000, p));
 
         // Plataformas
@@ -169,8 +170,9 @@ public class World {
         // for (Terrain terrain : terrains) terrain.display(p, painter, plt);
         player.display(p, painter, plt);
         deathPlatform.display(p, painter, plt);
-        roof.display(p, painter, plt);
         for (BlackTerrain blackTerrain : blackTerrains) blackTerrain.display(p, painter, plt);
+        for (Bush bush : bushes) bush.display(p, painter, plt);
+        roof.display(p, painter, plt);
     }
 
     /**
