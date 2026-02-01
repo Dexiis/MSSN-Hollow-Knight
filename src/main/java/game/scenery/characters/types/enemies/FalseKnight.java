@@ -182,12 +182,12 @@ public class FalseKnight extends Enemy implements IVisualizable {
         if (normalAttack.checkBehaviour(this) && now - attackTime > ATTACK_COOLDOWN) {
             state = State.ANTICIPATION;
             resetAnimation();
-        } else if (jumpAttack.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action < 0.5f) {
+        } else if (jumpAttack.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action < 0.4f) {
             applyBehaviour(jumpAttack, dt);
             state = State.JUMP_ATTACK;
             jumpTime = now;
             resetAnimation();
-        } else if (jumpFlee.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action > 0.8f) {
+        } else if (jumpFlee.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action > 0.25f) {
             applyBehaviour(jumpFlee, dt);
             state = State.JUMP;
             jumpTime = now;
@@ -381,12 +381,11 @@ public class FalseKnight extends Enemy implements IVisualizable {
                     case 1 -> addFrame(builder, -85, -190, -55, 50);
                 }
             }
-            case JUMP, LAND -> { // LAND e JUMP (0-2) partilham os mesmos valores
+            case JUMP, LAND -> {
                 switch (spriteIndex) {
                     case 0 -> addFrame(builder, -145, -250, -40, 65);
                     case 1 -> addFrame(builder, -125, -230, -30, 75);
                     case 2 -> addFrame(builder, -110, -215, -40, 65);
-                    // JUMP continua aqui (indices 3-6)
                     case 3 -> { if (state == State.JUMP) addFrame(builder, -185, -290, -80, 25); }
                     case 4 -> { if (state == State.JUMP) addFrame(builder, -185, -290, -75, 30); }
                     case 5 -> { if (state == State.JUMP) addFrame(builder, -195, -300, -60, 45); }
@@ -406,7 +405,7 @@ public class FalseKnight extends Enemy implements IVisualizable {
                 switch (spriteIndex) {
                     case 0 -> addFrame(builder, 0, -105, 155, 260);
                     case 1 -> addFrame(builder, 310, 205, -35, 70);
-                    case 2 -> addFrame(builder, 285, 180, -150, -45);
+                    case 2 -> addFrame(builder, 285, 180, -150, 150);
                     case 3 -> addFrame(builder, 15, -90, 165, 270);
                     case 4 -> addFrame(builder, -105, -210, 150, 255);
                     case 5 -> addFrame(builder, -145, -250, 100, 205);
@@ -421,7 +420,7 @@ public class FalseKnight extends Enemy implements IVisualizable {
                     case 2 -> addFrame(builder, -215, -320, -120, -15);
                     case 3 -> addFrame(builder, -240, -345, -100, 5);
                     case 4 -> addFrame(builder, -75, -180, 150, 255);
-                    case 5 -> addFrame(builder, 265, 160, -140, -35);
+                    case 5 -> addFrame(builder, 265, 160, -140, 150);
                     case 6 -> addFrame(builder, -55, -160, 155, 260);
                     case 7 -> addFrame(builder, -105, -210, 105, 210);
                     case 8 -> addFrame(builder, -100, -205, 40, 145);
@@ -474,9 +473,10 @@ public class FalseKnight extends Enemy implements IVisualizable {
 
         p.popMatrix();
 
+        handleAttack(p, painter, plt); //TODO CONFIRMAR PORQUE ESTÁ "LAGADO"?
         directionChange();
         stateMachine();
         this.getEye().look();
-        handleAttack(p, painter, plt); //TODO CONFIRMAR PORQUE ESTÁ "LAGADO"?
+
     }
 }

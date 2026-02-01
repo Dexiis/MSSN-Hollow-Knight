@@ -43,7 +43,7 @@ public class Squit extends Mob implements IVisualizable {
         this.health = 3;
 
         ATTACK_COOLDOWN = 2000f;
-        ATTACK_DURATION = 1500f;
+        ATTACK_DURATION = 5000f;
 
         PIXEL_CORRECTION = 0;
         SPRITE_SIZE = 150;

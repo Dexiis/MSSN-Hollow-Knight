@@ -84,13 +84,28 @@ public class World {
         terrains.add(new SpawnPlatform(new PVector(5500, -400), 100, 500, p));
 
         this.player = new TheKnight(new PVector(50, 800), p);
-        //this.player = new TheKnight(new PVector(5300, -100), p);
         entities.add(player);
 
         enemies.add(new Squit(new PVector(500, 500), p));
         entities.add(enemies.getLast());
+        enemies.add(new Squit(new PVector(765, 500), p));
+        entities.add(enemies.getLast());
+        enemies.add(new Squit(new PVector(1365, 600), p));
+        entities.add(enemies.getLast());
+        enemies.add(new Squit(new PVector(1865, 1000), p));
+        entities.add(enemies.getLast());
+
+        enemies.add(new Squit(new PVector(3565, 1500), p));
+        entities.add(enemies.getLast());
+        enemies.add(new Squit(new PVector(4165, 1700), p));
+        entities.add(enemies.getLast());
+        enemies.add(new Squit(new PVector(4790, 1800), p));
+        entities.add(enemies.getLast());
+
 
         enemies.add(new HuskHornhead(new PVector(300, 200), p));
+        entities.add(enemies.getLast());
+        enemies.add(new HuskHornhead(new PVector(2600, 875), p));
         entities.add(enemies.getLast());
 
         boss = new FalseKnight(new PVector(6100, 300), p);
@@ -166,8 +181,6 @@ public class World {
      * @param plt o objeto SubPlot para conversão de coordenadas
      */
     public void display(SubPlot plt) {
-        // for (Entity entity : entities) entity.display(p, painter, plt);
-        // for (Terrain terrain : terrains) terrain.display(p, painter, plt);
         player.display(p, painter, plt);
         deathPlatform.display(p, painter, plt);
         for (BlackTerrain blackTerrain : blackTerrains) blackTerrain.display(p, painter, plt);

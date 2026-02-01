@@ -1,9 +1,11 @@
 package game.scenery.components.terraintypes;
 
+import game.core.SubPlot;
 import game.scenery.World;
 import game.scenery.characters.Entity;
 import game.scenery.characters.types.TheKnight;
 import game.scenery.components.Terrain;
+import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -35,5 +37,9 @@ public class SpawnPlatform extends Terrain {
                 World.getInstance().spawnBoss();
             }
         }
+    }
+
+    @Override
+    public void display(PApplet p, LinePainter painter, SubPlot plt) {
     }
 }

@@ -370,22 +370,22 @@ public class TheKnight extends Entity implements IVisualizable {
             case DOWN:
                 builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, -100).addPoint(25, -150).addPoint(-25, -150).addPoint(-55, -100);
                 attackSpriteAngle = 270;
-                attackOffset = ATTACK_HEIGHT + ATTACK_PIXEL_CORRECTION;
+                attackOffset = (ATTACK_HEIGHT + ATTACK_PIXEL_CORRECTION) * 2;
                 break;
             case LEFT:
                 builder.addPoint(0, -65).addPoint(0, 65).addPoint(-100, 55).addPoint(-150, 25).addPoint(-150, -25).addPoint(-100, -55);
                 attackSpriteAngle = 0;
-                attackOffset = ATTACK_WIDTH + ATTACK_PIXEL_CORRECTION;
+                attackOffset = (ATTACK_WIDTH + ATTACK_PIXEL_CORRECTION) * 2;
                 break;
             case RIGHT:
                 builder.addPoint(0, 65).addPoint(0, -65).addPoint(100, -55).addPoint(150, -25).addPoint(150, 25).addPoint(100, 55);
                 attackSpriteAngle = 180;
-                attackOffset = ATTACK_WIDTH + ATTACK_PIXEL_CORRECTION;
+                attackOffset = (ATTACK_WIDTH + ATTACK_PIXEL_CORRECTION) * 2;
                 break;
             default:
                 builder.addPoint(-65, 0).addPoint(65, 0).addPoint(55, 100).addPoint(25, 150).addPoint(-25, 150).addPoint(-55, 100);
                 attackSpriteAngle = 90;
-                attackOffset = ATTACK_HEIGHT + ATTACK_PIXEL_CORRECTION;
+                attackOffset = (ATTACK_HEIGHT + ATTACK_PIXEL_CORRECTION) * 2;
                 break;
         }
 
@@ -528,9 +528,13 @@ public class TheKnight extends Entity implements IVisualizable {
         p.translate(pp[0], pp[1]);
         p.scale(0.6f);
         p.rotate(PApplet.radians(attackSpriteAngle));
+
+        p.scale(0.55f, 1.5f);
         p.image(attackSprite, -attack.getWidth() / 2f - attackOffset, -attack.getHeight() / 2f);
 
         p.popMatrix();
+
+        attack.display(p, painter, plt);
     }
 
     /**

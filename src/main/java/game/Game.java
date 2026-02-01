@@ -115,9 +115,9 @@ public class Game extends PApplet {
         for(Enemy enemy : map.getEnemies()) {
             float dist = PVector.dist(map.getPlayer().getPosition(), enemy.getPosition());
             if(enemy instanceof FalseKnight) {
-                if (dist < 1200) loadedEnemies.add(enemy);
+                if (dist < 2000) loadedEnemies.add(enemy);
             } else {
-                if (dist < 800) loadedEnemies.add(enemy);
+                if (dist < 1500) loadedEnemies.add(enemy);
             }
         }
 
@@ -142,10 +142,6 @@ public class Game extends PApplet {
         }
 
         checkCollisions();
-
-        for (Enemy enemy : loadedEnemies) {
-            enemy.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
-        }
 
         setWindow(player.getPosition());
         for (Terrain terrain : loadedTerrains) terrain.display(this, painter, plt);
@@ -180,12 +176,11 @@ public class Game extends PApplet {
      * </p>
      */
     @Override
-    public void keyReleased() { // ACONTEÇA O QUE ACONTECER, NÃO MEXER NESTE MÉT.ODO. A LÓGICA NÃO É FEITA AQUI
+    public void keyReleased() {
         if (key == 'w' || key == 'W' || key == ' ') player.setMovingDirection(KnightMovement.UPRELEASED, true);
         if (key == 's' || key == 'S') player.setMovingDirection(KnightMovement.DOWN, false);
         if (key == 'a' || key == 'A') player.setMovingDirection(KnightMovement.LEFT, false);
         if (key == 'd' || key == 'D') player.setMovingDirection(KnightMovement.RIGHT, false);
-        if (key == 'm' || key == 'M') player.setPosition(new PVector(0, 50)); // DEBUGGING - TODO RETIRAR MAIS TARDE
     }
 
     /**
@@ -242,7 +237,7 @@ public class Game extends PApplet {
                 if (enemy.isDying())
                     enemy.applyForce(new PVector(0, -450 * enemy.getMass())); // Queda na morte do Squit
             } else if (enemy instanceof FalseKnight)
-                enemy.applyForce(new PVector(0, -350 * enemy.getMass())); // Gravidade apenas para o boss
+                enemy.applyForce(new PVector(0, -980 * enemy.getMass())); // Gravidade apenas para o boss
             else enemy.applyForce(gravity(enemy));
         }
     }
@@ -275,10 +270,10 @@ public class Game extends PApplet {
      * @param playerPosition A posição atual do jogador no mundo.
      */
     private void setWindow(PVector playerPosition) {
-        window[0] = playerPosition.x - 800; // Esquerda
-        window[1] = playerPosition.x + 800; // Direita
-        window[2] = playerPosition.y - 450; // Topo (Menor valor)
-        window[3] = playerPosition.y + 450; // Fundo (Maior valor)
+        window[0] = playerPosition.x - 800;
+        window[1] = playerPosition.x + 800;
+        window[2] = playerPosition.y - 450;
+        window[3] = playerPosition.y + 450;
 
         plt.setWindow(window);
     }
