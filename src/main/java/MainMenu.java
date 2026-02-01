@@ -1,5 +1,7 @@
 import game.Game;
 import processing.core.PApplet;
+import processing.core.PImage;
+import processing.sound.SoundFile;
 
 /**
  * Menu principal do jogo.
@@ -9,7 +11,9 @@ import processing.core.PApplet;
  */
 public class MainMenu extends PApplet {
 
-    private final String play = "Start Playing";
+    private final String play = "Start Game";
+    private static PImage background;
+    private static PImage title;
 
     /**
      * Define as configurações iniciais da janela.
@@ -18,7 +22,7 @@ public class MainMenu extends PApplet {
      * </p>
      */
     public void settings() {
-        size(360, 300);
+        size(1024, 900);
     }
 
     /**
@@ -28,9 +32,16 @@ public class MainMenu extends PApplet {
      * </p>
      */
     public void setup() {
+        SoundFile song = new SoundFile(this, "sounds/backgroundsong.wav");
+        song.loop();
+        song.amp(0.1f);
+
         textAlign(CENTER, CENTER);
         textSize(16);
         rectMode(CENTER);
+
+        background = loadImage("images/Menu.png");
+        title = loadImage("images/title.png");
     }
 
     /**
@@ -41,10 +52,16 @@ public class MainMenu extends PApplet {
      */
     public void draw() {
         background(200);
+        pushMatrix();
+        scale(0.52f);
+        image(background,0, 0);
+        popMatrix();
+
+        image(title, 0, 100);
 
         fill(0);
 
-        drawButton(width / 2, 80, 300, 40, play, 1);
+        drawButton(width / 2, 700, 300, 40, play, 1);
     }
 
     /**
@@ -72,7 +89,7 @@ public class MainMenu extends PApplet {
      * @param args argumentos da linha de comandos
      */
     public static void main(String[] args) {
-        PApplet.main(Game.class.getName());
+        PApplet.main(MainMenu.class.getName());
     }
 
     /**
@@ -96,7 +113,7 @@ public class MainMenu extends PApplet {
         float w = 300;
         float h = 40;
 
-        if (checkButton(80, x, w, h)) {
+        if (checkButton(700, x, w, h)) {
             surface.setVisible(false);
             PApplet.main(Game.class);
         }

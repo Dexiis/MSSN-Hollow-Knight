@@ -36,8 +36,6 @@ public class Game extends PApplet {
     private GUI gui;
     private World map;
 
-    private static SoundFile song;
-
     private final LinePainter painter = new LinePainter() {
         /**
          * Desenha uma linha convertendo coordenadas do mundo para pixels.
@@ -84,10 +82,6 @@ public class Game extends PApplet {
      */
     @Override
     public void setup() {
-        song = new SoundFile(this, "sounds/backgroundsong.wav");
-        song.loop();
-        song.amp(0.1f);
-
         plt = new SubPlot(window, viewport, width, height);
 
         textSize(22);
