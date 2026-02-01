@@ -52,8 +52,8 @@ public class World {
         this.painter = painter;
 
         // Teto
-        blackTerrains.add(new BlackTerrain(new PVector(4000, 2700), 10000, 1000, p));
-        roof = new Roof(new PVector(4000, 2200), 10000, 1000, p);
+        blackTerrains.add(new BlackTerrain(new PVector(4000, 3000), 10000, 1000, p));
+        roof = new Roof(new PVector(4000, 2500), 10000, 1000, p);
 
         // Secção 1
         bushes.add(new Bush(new PVector(150, 75), p));
@@ -75,19 +75,17 @@ public class World {
         terrains.add(new Platform(new PVector(3565, 1000), 270, 65, p));
         terrains.add(new Platform(new PVector(4165, 1200), 270, 65, p));
         terrains.add(new Platform(new PVector(4790, 1325), 520, 65, p));
-        terrains.add(new TrapDoor(new PVector(5275, 1283), 150, 150, p));
+        terrains.add(new TrapDoor(new PVector(5575, 1283), 150, 150, p));
 
         // Death Platform
         deathPlatform = new DeathPlatform(new PVector(4000, -6500), 10000, 10000, p);
 
         // Spawn Platform
-        terrains.add(new SpawnPlatform(new PVector(5500, -400), 100, 500, p));
+        terrains.add(new SpawnPlatform(new PVector(6200, -400), 100, 500, p));
 
         this.player = new TheKnight(new PVector(50, 800), p);
         entities.add(player);
 
-        enemies.add(new Squit(new PVector(500, 500), p));
-        entities.add(enemies.getLast());
         enemies.add(new Squit(new PVector(765, 500), p));
         entities.add(enemies.getLast());
         enemies.add(new Squit(new PVector(1365, 600), p));
@@ -108,7 +106,7 @@ public class World {
         enemies.add(new HuskHornhead(new PVector(2600, 875), p));
         entities.add(enemies.getLast());
 
-        boss = new FalseKnight(new PVector(6100, 300), p);
+        boss = new FalseKnight(new PVector(6800, 300), p);
         boss.setEye(new Eye(boss, player));
 
         for (Enemy enemy : enemies)

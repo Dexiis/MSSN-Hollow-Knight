@@ -114,7 +114,7 @@ public abstract class Enemy extends Entity {
             if (other.x > this.position.x) direction = -1;
             else direction = 1;
 
-            this.setVelocity(new PVector(50 * direction, 100));
+            this.applyForce(new PVector(3000 * direction, 6000));
         }
     }
 

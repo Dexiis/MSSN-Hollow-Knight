@@ -19,8 +19,10 @@ public class JumpAttack extends Behaviour {
     }
 
     public PVector getDesiredVelocity(Enemy me) {
-        if (checkBehaviour(me))
-            me.setVelocity(new PVector((me.getEye().getTarget().getPosition().x - me.getPosition().x) * 2 / 3, 600));
+        if (checkBehaviour(me)) {
+            float xDistance = me.getEye().getTarget().getPosition().x - me.getPosition().x;
+            me.setVelocity(new PVector(xDistance / 2, xDistance));
+        }
         return new PVector(0, 0);
     }
 

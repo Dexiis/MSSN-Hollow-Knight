@@ -96,7 +96,7 @@ public class Background {
 
                 int iter = 0;
                 double ESCAPE_RADIUS = 2.0;
-                int MAX_ITER = 10;
+                int MAX_ITER = 20;
                 while (iter < MAX_ITER && Z.norm() <= ESCAPE_RADIUS) {
                     Complex Z_copy = new Complex(Z.getA(), Z.getB());
                     Z.mult(Z_copy);

@@ -43,7 +43,7 @@ public class Squit extends Mob implements IVisualizable {
         this.health = 3;
 
         ATTACK_COOLDOWN = 2000f;
-        ATTACK_DURATION = 5000f;
+        ATTACK_DURATION = 3000f;
 
         PIXEL_CORRECTION = 0;
         SPRITE_SIZE = 150;
@@ -70,16 +70,16 @@ public class Squit extends Mob implements IVisualizable {
      */
     @Override
     protected void idling() {
-        if (attackBehaviour.checkBehaviour(this) && now - attackTime > ATTACK_COOLDOWN) {
-            state = State.STARTLED;
-            resetAnimation();
-        }
-
         if (now - spriteTime > 80) {
             this.sprite = spriteArray[spriteIndex][0];
             spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 2) spriteIndex = 0;
+        }
+
+        if (attackBehaviour.checkBehaviour(this) && now - attackTime > ATTACK_COOLDOWN) {
+            state = State.STARTLED;
+            resetAnimation();
         }
 
         applyBehaviour(seekBehaviour, dt);
@@ -106,6 +106,7 @@ public class Squit extends Mob implements IVisualizable {
                 state = State.IDLE;
             }
         }
+
         applyBehaviour(seekBehaviour, dt);
         applyBehaviour(wanderBehaviour, dt);
     }
@@ -146,12 +147,13 @@ public class Squit extends Mob implements IVisualizable {
             spriteIndex++;
             if (spriteIndex > 5) {
                 spriteIndex = 0;
+
                 PVector targetVector = PVector.sub(this.getEye().getTarget().getPosition(), this.getPosition()).normalize();
                 attackAngle = targetVector.heading();
 
-                attackBehaviour.saveTargetPosition(this);
                 this.getDna().setMaxSpeed(IDLE_SPEED * ATTACK_SPEED_BOOST);
                 this.getDna().setMaxForce(IDLE_SPEED * ATTACK_SPEED_BOOST);
+                attackBehaviour.saveTargetPosition(this);
                 attackTime = now;
                 state = State.ATTACK;
             }
@@ -233,6 +235,10 @@ public class Squit extends Mob implements IVisualizable {
         // Diminuir o tamanho da sprite
         float spriteScale = 0.7f;
 
+        this.getEye().look();
+        directionChange(IDLE_SPEED);
+        stateMachine();
+
         p.pushMatrix();
 
         p.translate(pp[0], pp[1]);
@@ -250,10 +256,5 @@ public class Squit extends Mob implements IVisualizable {
         p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f);
 
         p.popMatrix();
-
-        directionChange(IDLE_SPEED);
-        stateMachine();
-        this.getEye().look();
-        this.hitbox.draw(painter, plt);
     }
 }

@@ -40,7 +40,7 @@ public class HuskHornhead extends Mob implements IVisualizable {
         this.health = 5;
 
         ATTACK_COOLDOWN = 2000f;
-        ATTACK_DURATION = 5000f;
+        ATTACK_DURATION = 3000f;
 
         SPRITE_SIZE = 150;
         PIXEL_CORRECTION = 7;
@@ -123,9 +123,9 @@ public class HuskHornhead extends Mob implements IVisualizable {
                 this.hitbox = new Hitbox(new Point(position.x, position.y), 95, 65);
                 PIXEL_CORRECTION = -31;
 
-                attackBehaviour.saveTargetPosition(this);
                 this.getDna().setMaxSpeed(IDLE_SPEED * ATTACK_SPEED_BOOST);
                 this.getDna().setMaxForce(IDLE_SPEED * ATTACK_SPEED_BOOST);
+                attackBehaviour.saveTargetPosition(this);
                 attackTime = now;
                 state = State.ATTACK;
             }

@@ -15,7 +15,6 @@ import game.scenery.components.flock.Flock;
 import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
 import processing.core.PVector;
-import processing.sound.SoundFile;
 
 import java.util.ArrayList;
 
@@ -112,9 +111,9 @@ public class Game extends PApplet {
         loadedTerrains = new ArrayList<>();
         loadedEnemies = new ArrayList<>();
 
-        for(Enemy enemy : map.getEnemies()) {
+        for (Enemy enemy : map.getEnemies()) {
             float dist = PVector.dist(map.getPlayer().getPosition(), enemy.getPosition());
-            if(enemy instanceof FalseKnight) {
+            if (enemy instanceof FalseKnight) {
                 if (dist < 2000) loadedEnemies.add(enemy);
             } else {
                 if (dist < 1500) loadedEnemies.add(enemy);
@@ -142,6 +141,10 @@ public class Game extends PApplet {
         }
 
         checkCollisions();
+
+        for (Enemy enemy : loadedEnemies) {
+            enemy.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
+        }
 
         setWindow(player.getPosition());
         for (Terrain terrain : loadedTerrains) terrain.display(this, painter, plt);
@@ -186,7 +189,7 @@ public class Game extends PApplet {
     /**
      * Processa cliques do mouse.
      * <p>
-     * Teleporta o jogador para a posição clicada ou inicia ataque.
+     * Teletransporta o jogador para a posição clicada ou inicia ataque.
      * </p>
      */
     @Override

@@ -38,7 +38,7 @@ public class Attack extends Behaviour {
      */
     @Override
     public PVector getDesiredVelocity(Enemy me) {
-        if (checkBehaviour(me)) if (chargeDirection != null) return chargeDirection;
+        if (chargeDirection != null) return chargeDirection;
         return new PVector();
     }
 
