@@ -236,10 +236,6 @@ public class FalseKnight extends Enemy implements IVisualizable {
         }
     }
 
-    private HurtBox anticipationAttack() {
-        return null;
-    }
-
     /**
      * Gere o estado de ataque corpo a corpo do chefe.
      * <p>
@@ -465,6 +461,11 @@ public class FalseKnight extends Enemy implements IVisualizable {
             else state = State.FALL_DEATH;
         }
 
+        this.getEye().look();
+        directionChange();
+        handleAttack(p, painter, plt); //TODO CONFIRMAR PORQUE ESTÁ "LAGADO"?
+        stateMachine();
+
         p.pushMatrix();
 
         p.translate(pp[0], pp[1]);
@@ -473,10 +474,7 @@ public class FalseKnight extends Enemy implements IVisualizable {
 
         p.popMatrix();
 
-        handleAttack(p, painter, plt); //TODO CONFIRMAR PORQUE ESTÁ "LAGADO"?
-        directionChange();
-        stateMachine();
-        this.getEye().look();
+
 
     }
 }

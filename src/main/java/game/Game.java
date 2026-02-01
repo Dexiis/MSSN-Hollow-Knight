@@ -115,14 +115,12 @@ public class Game extends PApplet {
             float dist = PVector.dist(map.getPlayer().getPosition(), enemy.getPosition());
             if (enemy instanceof FalseKnight) {
                 if (dist < 2000) loadedEnemies.add(enemy);
-            } else {
-                if (dist < 1500) loadedEnemies.add(enemy);
-            }
+            } else if (dist < 1500) loadedEnemies.add(enemy);
         }
 
         for (Terrain terrain : map.getTerrains()) {
             float dist = PVector.dist(map.getPlayer().getPosition(), terrain.getPosition().toPVector());
-            if (dist < 2000) loadedTerrains.add(terrain);
+            if (dist < 3000) loadedTerrains.add(terrain);
         }
 
         background.display(player.getPosition());
@@ -141,10 +139,6 @@ public class Game extends PApplet {
         }
 
         checkCollisions();
-
-        for (Enemy enemy : loadedEnemies) {
-            enemy.getEye().display(this, plt); // DEBUGGING - TODO RETIRAR MAIS TARDE
-        }
 
         setWindow(player.getPosition());
         for (Terrain terrain : loadedTerrains) terrain.display(this, painter, plt);
@@ -236,12 +230,10 @@ public class Game extends PApplet {
         for (Enemy enemy : loadedEnemies) {
             enemy.updateTime(dt, now);
 
-            if (enemy instanceof Squit) {
+            if (enemy instanceof Squit && enemy.isDying()) {
                 if (enemy.isDying())
                     enemy.applyForce(new PVector(0, -450 * enemy.getMass())); // Queda na morte do Squit
-            } else if (enemy instanceof FalseKnight)
-                enemy.applyForce(new PVector(0, -980 * enemy.getMass())); // Gravidade apenas para o boss
-            else enemy.applyForce(gravity(enemy));
+            } else enemy.applyForce(gravity(enemy));
         }
     }
 

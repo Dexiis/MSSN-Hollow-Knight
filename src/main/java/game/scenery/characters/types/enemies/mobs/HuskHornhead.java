@@ -207,9 +207,11 @@ public class HuskHornhead extends Mob implements IVisualizable {
         if (isDying()) state = State.DEATH;
         if (state != latestState) resetAnimation();
 
-        // Diminuir o tamanho da sprite
-        float spriteScale = 0.7f;
+        this.getEye().look();
+        directionChange(IDLE_SPEED);
+        stateMachine();
 
+        float spriteScale = 0.7f;
         p.pushMatrix();
 
         p.translate(pp[0], pp[1]);
@@ -217,11 +219,5 @@ public class HuskHornhead extends Mob implements IVisualizable {
         p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f + PIXEL_CORRECTION);
 
         p.popMatrix();
-
-        directionChange(IDLE_SPEED);
-        stateMachine();
-        this.getEye().look();
-
-        this.hitbox.draw(painter, plt);
     }
 }

@@ -69,7 +69,7 @@ public class TheKnight extends Entity implements IVisualizable {
         this.directions.put(KnightMovement.LEFT, false);
         this.directions.put(KnightMovement.UPRELEASED, false);
 
-        I_FRAMES = 2000;
+        I_FRAMES = 1500;
         ATTACK_DURATION = 100f;
         ATTACK_COOLDOWN = 800f;
 
@@ -518,11 +518,8 @@ public class TheKnight extends Entity implements IVisualizable {
     private void displayAttack(PApplet p, LinePainter painter, SubPlot plt) {
         if(attack == null) return;
 
-        // attack.display(p, painter, plt);
-
         float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
-
-
+        
         p.pushMatrix();
 
         p.translate(pp[0], pp[1]);
@@ -533,8 +530,6 @@ public class TheKnight extends Entity implements IVisualizable {
         p.image(attackSprite, -attack.getWidth() / 2f - attackOffset, -attack.getHeight() / 2f);
 
         p.popMatrix();
-
-        attack.display(p, painter, plt);
     }
 
     /**
@@ -575,7 +570,5 @@ public class TheKnight extends Entity implements IVisualizable {
         p.image(this.sprite, 0, 0);
 
         p.popMatrix();
-
-        this.hitbox.draw(painter, plt);
     }
 }

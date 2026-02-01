@@ -232,13 +232,12 @@ public class Squit extends Mob implements IVisualizable {
         if (isDying()) state = State.DEATH;
         if (state != latestState) resetAnimation();
 
-        // Diminuir o tamanho da sprite
-        float spriteScale = 0.7f;
-
         this.getEye().look();
         directionChange(IDLE_SPEED);
         stateMachine();
 
+
+        float spriteScale = 0.7f;
         p.pushMatrix();
 
         p.translate(pp[0], pp[1]);
@@ -249,9 +248,8 @@ public class Squit extends Mob implements IVisualizable {
 
             p.scale(spriteScale, multiplier * spriteScale);
             p.rotate(-multiplier * attackAngle + PApplet.radians(225));
-        } else {
-            p.scale(multValue * spriteScale, spriteScale);
-        }
+        } else p.scale(multValue * spriteScale, spriteScale);
+
 
         p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f);
 
