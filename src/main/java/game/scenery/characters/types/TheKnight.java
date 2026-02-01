@@ -519,7 +519,7 @@ public class TheKnight extends Entity implements IVisualizable {
         if(attack == null) return;
 
         float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
-        
+
         p.pushMatrix();
 
         p.translate(pp[0], pp[1]);

@@ -72,4 +72,13 @@ public abstract class Behaviour {
         return null;
     }
 
+    protected void calculateTrajectory(Enemy me, float g, float theta, float xDistance, float direction) {
+        float velocity = (float) Math.sqrt((Math.abs(xDistance) * g) / Math.sin(2 * theta));
+
+        float xVelocity = velocity * (float) Math.cos(theta) * direction;
+        float yVelocity = velocity * (float) Math.sin(theta);
+
+        me.setVelocity(new PVector(xVelocity, Math.abs(yVelocity)));
+    }
+
 }

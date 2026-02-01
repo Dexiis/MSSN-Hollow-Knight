@@ -12,17 +12,13 @@ public class JumpAttack extends Behaviour {
 
     public PVector getDesiredVelocity(Enemy me) {
         if (checkBehaviour(me)) {
-            float xDistance = me.getEye().getTarget().getPosition().x - me.getPosition().x - me.getHitbox().getWidth() / 2;
+            float xDistance = me.getEye().getTarget().getPosition().x - me.getPosition().x;
             float direction = xDistance / Math.abs(xDistance);
+            xDistance = Math.abs(xDistance) - me.getHitbox().getWidth() / 2;
             float g = 1280f;
             float theta = (float) Math.toRadians(30);
 
-            float velocity = (float) Math.sqrt((Math.abs(xDistance) * g) / Math.sin(2 * theta));
-
-            float xVelocity = velocity * (float) Math.cos(theta) * direction;
-            float yVelocity = velocity * (float) Math.sin(theta);
-
-            me.setVelocity(new PVector(xVelocity, Math.abs(yVelocity)));
+            super.calculateTrajectory(me, g, theta, xDistance, direction);
         }
         return new PVector(0, 0);
     }

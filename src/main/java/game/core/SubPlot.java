@@ -12,7 +12,7 @@ public class SubPlot {
 
     private double[] window;
     private float[] viewport;
-    private double fullHeight, fullWidth;
+    private final double fullHeight, fullWidth;
 
     private double mx;
     private double bx;
@@ -228,7 +228,7 @@ public class SubPlot {
     }
 
     /**
-     * Obtém a caixa delimitadora de todo o viewport em pixels.
+     * Obtém a caixa delimitadora de t.odo o viewport em pixels.
      * <p>
      * Calcula as coordenadas de pixel que correspondem aos limites completos
      * da janela do mundo definida.

@@ -230,7 +230,7 @@ public class Game extends PApplet {
         for (Enemy enemy : loadedEnemies) {
             enemy.updateTime(dt, now);
 
-            if (enemy instanceof Squit && enemy.isDying()) {
+            if (enemy instanceof Squit) {
                 if (enemy.isDying())
                     enemy.applyForce(new PVector(0, -450 * enemy.getMass())); // Queda na morte do Squit
             } else enemy.applyForce(gravity(enemy));

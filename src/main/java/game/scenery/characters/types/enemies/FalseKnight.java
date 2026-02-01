@@ -187,7 +187,7 @@ public class FalseKnight extends Enemy implements IVisualizable {
             state = State.JUMP_ATTACK;
             jumpTime = now;
             resetAnimation();
-        } else if (jumpFlee.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action > 0.25f) {
+        } else if (jumpFlee.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action > 0.80f) {
             applyBehaviour(jumpFlee, dt);
             state = State.JUMP;
             jumpTime = now;
@@ -463,7 +463,7 @@ public class FalseKnight extends Enemy implements IVisualizable {
 
         this.getEye().look();
         directionChange();
-        handleAttack(p, painter, plt); //TODO CONFIRMAR PORQUE ESTÁ "LAGADO"?
+        handleAttack(p, painter, plt);
         stateMachine();
 
         p.pushMatrix();

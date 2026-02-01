@@ -1,14 +1,12 @@
 package game.scenery;
 
 import game.scenery.characters.types.TheKnight;
-import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
 
-//TODO VIDA, COOLDOWNS, DASHES, ETC
 public class GUI {
     private static GUI gui = null;
 
-    private PApplet p;
+    private final PApplet p;
 
     /**
      * Gere a interface gráfica do utilizador.
