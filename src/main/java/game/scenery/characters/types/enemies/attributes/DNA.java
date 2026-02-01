@@ -8,8 +8,8 @@ import game.scenery.components.flock.Flock;
 /**
  * Define os atributos genéticos e físicos de uma entidade.
  * <p>
- * Esta classe armazena valores como velocidade máxima, força máxima e parâmetros de visão,
- * que influenciam o comportamento e movimento dos personagens no jogo. Cada tipo de entidade
+ * Esta estrutura armazena valores fundamentais como velocidade máxima, força máxima e parâmetros de visão,
+ * que influenciam a conduta e o movimento das personagens no jogo. Cada tipo de entidade
  * possui o seu próprio conjunto de valores, definidos através de construtores específicos.
  * </p>
  */
@@ -26,13 +26,13 @@ public class DNA {
     protected float visionDistance;
 
     /**
-     * Constrói um DNA específico para a entidade Squit.
+     * Inicializa o código genético para a entidade Squit.
      * <p>
-     * Inicializa os atributos com valores aleatórios dentro de intervalos
-     * pré-definidos adequados para este tipo de entidade.
+     * Atribui valores aleatórios dentro de intervalos pré-definidos para a velocidade,
+     * força e visão, adequados às características ágeis deste inimigo.
      * </p>
      *
-     * @param me a instância de Squit para a qual criar o DNA
+     * @param me a instância de Squit a ser configurada.
      */
     public DNA(Squit me) {
         maxSpeed = random(125f, 175f);
@@ -50,13 +50,13 @@ public class DNA {
     }
 
     /**
-     * Constrói um DNA específico para a entidade HuskHornhead.
+     * Inicializa o código genético para a entidade HuskHornhead.
      * <p>
-     * Inicializa os atributos com valores aleatórios dentro de intervalos
-     * pré-definidos adequados para este tipo de entidade.
+     * Define os atributos físicos e sensoriais com base em intervalos aleatórios
+     * específicos para este tipo de monstro, geralmente mais lentos que outros.
      * </p>
      *
-     * @param me a instância de HuskHornhead para a qual criar o DNA
+     * @param me a instância de HuskHornhead a ser configurada.
      */
     public DNA(HuskHornhead me) {
         maxSpeed = random(70f, 80f);
@@ -74,12 +74,13 @@ public class DNA {
     }
 
     /**
-     * Constrói um DNA específico para a entidade FalseKnight.
+     * Inicializa o código genético para a entidade FalseKnight.
      * <p>
-     * Inicializa os atributos com valores fixos adequados para este chefe.
+     * Configura os atributos com valores fixos e elevados, refletindo o estatuto
+     * de chefe e a potência superior desta personagem.
      * </p>
      *
-     * @param me a instância de FalseKnight para a qual criar o DNA
+     * @param me a instância de FalseKnight a ser configurada.
      */
     public DNA(FalseKnight me) {
         maxSpeed = 180f;
@@ -93,13 +94,13 @@ public class DNA {
     }
 
     /**
-     * Constrói um DNA específico para entidades do tipo Flock (grupo).
+     * Inicializa o código genético para um comportamento de grupo (Flock).
      * <p>
-     * Inicializa os atributos com valores aleatórios adequados para comportamentos
-     * de grupo, tipicamente com valores menores do que entidades individuais.
+     * Estabelece valores reduzidos e aleatórios para simular o movimento coletivo
+     * de pequenas entidades, favorecendo a coesão em vez da potência individual.
      * </p>
      *
-     * @param me a instância de Flock para a qual criar o DNA
+     * @param me a instância de Flock a ser configurada.
      */
     public DNA(Flock me) {
         maxSpeed = random(1f, 2f);
@@ -113,209 +114,149 @@ public class DNA {
     }
 
     /**
-     * Obtém a variação máxima do ângulo de direção no movimento de vagueio.
+     * Devolve a variação angular para o movimento de vagueio.
+     * <p>
+     * Indica o quanto o ângulo de direção pode mudar em cada atualização do
+     * algoritmo de movimento aleatório, influenciando a "trepidação" da trajetória.
+     * </p>
      *
-     * @return a variação em radianos
+     * @return a variação máxima em radianos.
      */
     public float getDeltaPhiWander() {
         return deltaPhiWander;
     }
 
     /**
-     * Obtém o intervalo de tempo para atualização do movimento de vagueio (Wander).
+     * Devolve o fator de projeção temporal para o vagueio.
+     * <p>
+     * Representa a distância à frente da entidade onde o círculo de vagueio é projetado,
+     * afetando a suavidade da curva de viragem.
+     * </p>
      *
-     * @return o valor de delta T
+     * @return o valor do deslocamento temporal (delta T).
      */
     public float getDeltaTWander() {
         return deltaTWander;
     }
 
     /**
-     * Obtém a força máxima que pode ser aplicada para mover a entidade.
+     * Devolve a força máxima aplicada.
+     * <p>
+     * Este valor limita a magnitude do vetor de direção (steering) antes de ser
+     * aplicado à aceleração da entidade.
+     * </p>
      *
-     * @return o valor da força máxima
+     * @return o valor da força máxima.
      */
     public float getMaxForce() {
         return maxForce;
     }
 
     /**
-     * Obtém a velocidade máxima que a entidade pode atingir.
+     * Devolve a velocidade limite.
+     * <p>
+     * Define o quão rápido a entidade se pode deslocar no espaço do jogo num determinado instante.
+     * </p>
      *
-     * @return o valor da velocidade máxima
+     * @return o valor da velocidade máxima.
      */
     public float getMaxSpeed() {
         return maxSpeed;
     }
 
     /**
-     * Obtém o raio do círculo projetado para o cálculo do movimento de vagueio.
+     * Devolve o raio do círculo de vagueio.
+     * <p>
+     * Define a amplitude do círculo projetado usado para calcular o vetor de deslocamento aleatório.
+     * </p>
      *
-     * @return o raio do círculo de Wander
+     * @return o raio do círculo de Wander.
      */
     public float getRadiusWander() {
         return radiusWander;
     }
 
     /**
-     * Obtém o ângulo do campo de visão (Field of View).
+     * Devolve a amplitude do campo de visão.
+     * <p>
+     * Determina o ângulo total que a entidade consegue observar ao seu redor.
+     * </p>
      *
-     * @return o ângulo em radianos
+     * @return o ângulo de visão em radianos.
      */
     public float getVisionAngle() {
         return visionAngle;
     }
 
     /**
-     * Obtém a distância de visão de ataque.
+     * Devolve o alcance para iniciar um ataque.
+     * <p>
+     * Define a distância máxima a que um alvo pode estar para desencadear uma ofensiva.
+     * </p>
      *
-     * @return a distância de ataque
+     * @return a distância de ataque.
      */
     public float getVisionAttack() {
         return visionAttack;
     }
 
     /**
-     * Obtém o ângulo de visão de ataque.
+     * Devolve o ângulo do cone de ataque.
+     * <p>
+     * Especifica a largura da área frontal onde o ataque é considerado eficaz.
+     * </p>
      *
-     * @return o ângulo de ataque em radianos
+     * @return o ângulo de ataque em radianos.
      */
     public float getVisionAttackAngle() {
         return visionAttackAngle;
     }
 
     /**
-     * Obtém a distância máxima de visão da entidade.
+     * Devolve o alcance visual máximo.
+     * <p>
+     * Define a distância radial até onde a entidade consegue detetar outros objetos ou personagens.
+     * </p>
      *
-     * @return o raio de visão
+     * @return o raio máximo de visão.
      */
     public float getVisionDistance() {
         return visionDistance;
     }
 
     /**
-     * Obtém o ângulo de visão para a zona de ataque.
+     * Atualiza a força máxima permitida.
+     * <p>
+     * Permite alterar dinamicamente a capacidade de manobra da entidade durante a execução.
+     * </p>
      *
-     * @return o ângulo em radianos
-     */
-    public float getVisionNearAngle() {
-        return visionAttackAngle;
-    }
-
-    /**
-     * Obtém a distância de visão curta (zona de ataque ou interação próxima).
-     *
-     * @return o raio de visão próxima
-     */
-    public float getVisionNearDistance() {
-        return visionAttack;
-    }
-
-    /**
-     * Define a variação máxima do ângulo de direção para o vagueio.
-     *
-     * @param deltaPhiWander a nova variação em radianos
-     */
-    public void setDeltaPhiWander(float deltaPhiWander) {
-        this.deltaPhiWander = deltaPhiWander;
-    }
-
-    /**
-     * Define o intervalo de tempo para o movimento de vagueio.
-     *
-     * @param deltaTWander o novo valor de delta T
-     */
-    public void setDeltaTWander(float deltaTWander) {
-        this.deltaTWander = deltaTWander;
-    }
-
-    /**
-     * Define a força máxima da entidade.
-     *
-     * @param maxForce o novo valor da força máxima
+     * @param maxForce o novo valor limite de força.
      */
     public void setMaxForce(float maxForce) {
         this.maxForce = maxForce;
     }
 
     /**
-     * Define a velocidade máxima da entidade.
+     * Atualiza a velocidade limite.
+     * <p>
+     * Modifica a rapidez máxima de deslocamento da personagem.
+     * </p>
      *
-     * @param maxSpeed o novo valor da velocidade máxima
+     * @param maxSpeed o novo valor limite de velocidade.
      */
     public void setMaxSpeed(float maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
 
     /**
-     * Define o raio do círculo de vagueio.
+     * Produz um valor numérico aleatório num intervalo.
+     * <p>
+     * Gera um número de vírgula flutuante entre os limites mínimo e máximo fornecidos.
+     * </p>
      *
-     * @param radiusWander o novo raio
-     */
-    public void setRadiusWander(float radiusWander) {
-        this.radiusWander = radiusWander;
-    }
-
-    /**
-     * Define o ângulo do campo de visão.
-     *
-     * @param visionAngle o novo ângulo em radianos
-     */
-    public void setVisionAngle(float visionAngle) {
-        this.visionAngle = visionAngle;
-    }
-
-    /**
-     * Define a distância de visão de ataque.
-     *
-     * @param visionAttack a nova distância de ataque
-     */
-    public void setVisionAttack(float visionAttack) {
-        this.visionAttack = visionAttack;
-    }
-
-    /**
-     * Define o ângulo de visão de ataque.
-     *
-     * @param visionAttackAngle o novo ângulo de ataque em radianos
-     */
-    public void setVisionAttackAngle(float visionAttackAngle) {
-        this.visionAttackAngle = visionAttackAngle;
-    }
-
-    /**
-     * Define a distância máxima de visão.
-     *
-     * @param visionDistance o novo raio de visão
-     */
-    public void setVisionDistance(float visionDistance) {
-        this.visionDistance = visionDistance;
-    }
-
-    /**
-     * Define o ângulo de visão para a zona de ataque.
-     *
-     * @param visionNearAngle o novo ângulo em radianos
-     */
-    public void setVisionNearAngle(float visionNearAngle) {
-        this.visionAttackAngle = visionNearAngle;
-    }
-
-    /**
-     * Define a distância de visão curta.
-     *
-     * @param visionNearDistance o novo raio de visão próxima
-     */
-    public void setVisionNearDistance(float visionNearDistance) {
-        this.visionAttack = visionNearDistance;
-    }
-
-    /**
-     * Gera um número decimal aleatório dentro de um intervalo especificado.
-     *
-     * @param min o valor mínimo do intervalo
-     * @param max o valor máximo do intervalo
-     * @return um valor float aleatório entre min e max
+     * @param min o limite inferior do intervalo.
+     * @param max o limite superior do intervalo.
+     * @return um valor aleatório contido no intervalo [min, max].
      */
     protected static float random(float min, float max) {
         return (float) (min + (max - min) * Math.random());

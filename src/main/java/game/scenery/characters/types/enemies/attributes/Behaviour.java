@@ -5,12 +5,12 @@ import game.scenery.components.flock.Flock;
 import processing.core.PVector;
 
 /**
- * Classe abstrata que representa um comportamento de movimento ou decisão.
+ * Define a base abstrata para ações de movimento ou decisão.
  * <p>
- * Define a estrutura base para implementar diferentes padrões de comportamento
- * de personagens no jogo, tais como vaguear, perseguir, atacar, entre outros.
- * Cada comportamento possui um peso que determina a sua influência no cálculo
- * final da direção de movimento.
+ * Estabelece a estrutura fundamental para implementar diferentes padrões de conduta
+ * nas personagens do jogo, tais como vaguear, perseguir ou atacar.
+ * Cada ação possui um peso associado que determina a sua influência no cálculo
+ * final da direção a tomar.
  * </p>
  */
 public abstract class Behaviour {
@@ -18,60 +18,84 @@ public abstract class Behaviour {
     protected float weight;
 
     /**
-     * Constrói um novo comportamento com o peso especificado.
+     * Inicializa uma nova instância de comportamento com a ponderação indicada.
+     * <p>
+     * Atribui o valor inicial à variável de peso, definindo a prioridade desta
+     * ação no cálculo da resultante final.
+     * </p>
      *
-     * @param weight o peso inicial ou prioridade deste comportamento no cálculo final da direção
+     * @param weight o peso inicial ou prioridade desta ação.
      */
     public Behaviour(float weight) {
         this.weight = weight;
     }
 
     /**
-     * Define o peso (influência) deste comportamento.
+     * Atualiza o valor da influência deste comportamento.
+     * <p>
+     * Permite ajustar dinamicamente a importância desta ação em relação às outras
+     * durante a execução do programa.
+     * </p>
      *
-     * @param weight o novo valor do peso
+     * @param weight o novo valor a atribuir ao peso.
      */
     public void setWeight(float weight) {
         this.weight = weight;
     }
 
     /**
-     * Obtém o peso atual deste comportamento.
+     * Devolve o nível de influência atual.
+     * <p>
+     * Acede ao valor armazenado que representa a prioridade desta conduta.
+     * </p>
      *
-     * @return o valor do peso
+     * @return o valor numérico do peso.
      */
     public float getWeight() {
         return weight;
     }
 
     /**
-     * Calcula a velocidade desejada com base no comportamento específico para um inimigo.
+     * Calcula a velocidade pretendida para um inimigo específico.
      * <p>
      * Este é um dos principais pontos de extensão da classe. As subclasses devem
-     * sobrescrever esta função para implementar a lógica específica do comportamento.
+     * sobrepor esta função para implementar a lógica concreta da ação a realizar.
      * </p>
      *
-     * @param me o inimigo para o qual calcular a velocidade desejada
-     * @return o vetor de velocidade desejada, ou {@code null} se não aplicável
+     * @param me o agente inimigo que executa a ação.
+     * @return o vetor de velocidade desejada, ou {@code null} se a lógica não for aplicável.
      */
     public PVector getDesiredVelocity(Enemy me) {
         return null;
     }
 
     /**
-     * Calcula a velocidade desejada com base no comportamento específico para um grupo (flock).
+     * Determina a velocidade pretendida para um enxame (Flock).
      * <p>
-     * Este é um dos principais pontos de extensão da classe. As subclasses podem
-     * sobrescrever esta função para implementar comportamentos de grupo.
+     * Funciona como ponto de extensão para lógicas de grupo. As subclasses podem
+     * sobrepor esta operação para ditar regras coletivas.
      * </p>
      *
-     * @param me o grupo para o qual calcular a velocidade desejada
-     * @return o vetor de velocidade desejada, ou {@code null} se não aplicável
+     * @param me o grupo de entidades alvo da ação.
+     * @return o vetor de velocidade desejada, ou {@code null} se a lógica não for aplicável.
      */
     public PVector getDesiredVelocity(Flock me) {
         return null;
     }
 
+    /**
+     * Computa e aplica uma trajetória balística à entidade.
+     * <p>
+     * Realiza o cálculo físico necessário para lançar a entidade, baseando-se na gravidade,
+     * ângulo e distância. O resultado é aplicado diretamente na velocidade da entidade fornecida.
+     * </p>
+     *
+     * @param me a entidade que sofrerá a alteração de velocidade.
+     * @param g o valor da aceleração gravitacional a considerar.
+     * @param theta o ângulo de lançamento em radianos.
+     * @param xDistance a distância horizontal até ao alvo.
+     * @param direction a direção do movimento (1 ou -1).
+     */
     protected void calculateTrajectory(Enemy me, float g, float theta, float xDistance, float direction) {
         float velocity = (float) Math.sqrt((Math.abs(xDistance) * g) / Math.sin(2 * theta));
 

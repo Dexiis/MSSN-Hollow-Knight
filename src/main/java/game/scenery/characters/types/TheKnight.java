@@ -11,6 +11,7 @@ import game.scenery.components.hitbox.Point;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
+import processing.sound.SoundFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,6 +47,18 @@ public class TheKnight extends Entity implements IVisualizable {
     private static final int ATTACK_HEIGHT = 130;
     private static final int ATTACK_PIXEL_CORRECTION = 70;
 
+    private static SoundFile jumpSound;
+    private static SoundFile runSound;
+    private static SoundFile fallingSound;
+    private static SoundFile landSound;
+    private static SoundFile attackSound;
+    private static SoundFile damageSound;
+
+    private static boolean isJumpSoundPlaying = false;
+    private static boolean isRunSoundPlaying = false;
+    private static boolean isFallingSoundPlaying = false;
+    private static boolean isAttackSoundPlaying = false;
+
     /**
      * Constrói uma nova instância do Cavaleiro na posição especificada.
      * <p>
@@ -57,7 +70,7 @@ public class TheKnight extends Entity implements IVisualizable {
      * @param p        o contexto gráfico do Processing necessário para carregar imagens
      */
     public TheKnight(PVector position, PApplet p) {
-        super(position);
+        super(position, p);
         this.hitbox = new Hitbox(new Point(position.x, position.y), 35, 70);
         this.mass = 1f;
         this.health = 10;
@@ -89,54 +102,13 @@ public class TheKnight extends Entity implements IVisualizable {
         this.sprite = spriteArray[0][0];
         state = State.JUMPING;
         latestState = state;
-    }
 
-    /**
-     * Obtém a caixa de dano (HurtBox) ativa no momento.
-     *
-     * @return a {@code HurtBox} atual ou {@code null} se não houver ataque ativo
-     */
-    public HurtBox getAttack() {
-        return attack;
-    }
-
-    /**
-     * Obtém o momento em que o último ataque foi iniciado.
-     *
-     * @return o tempo em milissegundos
-     */
-    public float getAttackTime() {
-        return attackTime;
-    }
-
-    /**
-     * Obtém o mapa de entradas de direção.
-     *
-     * @return um mapa que associa cada direção a um valor booleano (ativo/inativo)
-     */
-    public Map<KnightMovement, Boolean> getDirections() {
-        return directions;
-    }
-
-    /**
-     * Obtém a direção para a qual o jogador está virado atualmente.
-     *
-     * @return a direção {@code KnightMovement} atual
-     */
-    public KnightMovement getFacingDirection() {
-        return facingDirection;
-    }
-
-    /**
-     * Obtém a última direção horizontal para a qual o jogador olhou.
-     * <p>
-     * Retorna a direção LEFT ou RIGHT.
-     * </p>
-     *
-     * @return a direção {@code LEFT} ou {@code RIGHT}
-     */
-    public KnightMovement getLastFacingDirection() {
-        return lastFacingDirection;
+        jumpSound = new SoundFile(p, "sounds/TheKnight/hero_jump.wav");
+        runSound = new SoundFile(p, "sounds/TheKnight/hero_run_footsteps_stone.wav");
+        fallingSound = new SoundFile(p, "sounds/TheKnight/hero_falling.wav");
+        landSound = new SoundFile(p, "sounds/TheKnight/hero_land_soft.wav");
+        attackSound = new SoundFile(p, "sounds/TheKnight/hero_butterfly_blade.wav");
+        damageSound = new SoundFile(p, "sounds/TheKnight/hero_damage.wav");
     }
 
     /**
@@ -158,48 +130,12 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     /**
-     * Verifica se o jogador está apoiado numa superfície física.
-     *
-     * @return {@code true} se estiver no chão, {@code false} caso contrário
-     */
-    public boolean isGrounded() {
-        return grounded;
-    }
-
-    /**
-     * Verifica se o jogador está atordoado.
-     *
-     * @return {@code true} se estiver atordoado, {@code false} caso contrário
-     */
-    public boolean isStunned() {
-        return stunned;
-    }
-
-    /**
      * Define a caixa de dano (HurtBox) atual.
      *
      * @param attack a nova {@code HurtBox} ou {@code null} para cancelar o ataque
      */
     public void setAttack(HurtBox attack) {
         this.attack = attack;
-    }
-
-    /**
-     * Regista o momento do último ataque.
-     *
-     * @param attackTime o tempo em milissegundos
-     */
-    public void setAttackTime(float attackTime) {
-        this.attackTime = attackTime;
-    }
-
-    /**
-     * Define a direção para a qual o jogador está virado.
-     *
-     * @param facingDirection a nova direção
-     */
-    public void setFacingDirection(KnightMovement facingDirection) {
-        this.facingDirection = facingDirection;
     }
 
     /**
@@ -212,33 +148,12 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     /**
-     * Define a última direção horizontal do jogador.
-     * <p>
-     * Esta informação é utilizada para orientar o sprite corretamente (inversão horizontal).
-     * </p>
-     *
-     * @param lastFacingDirection a nova direção horizontal
-     */
-    public void setLastFacingDirection(KnightMovement lastFacingDirection) {
-        this.lastFacingDirection = lastFacingDirection;
-    }
-
-    /**
      * Define manualmente o registo do estado anterior.
      *
      * @param latestState o estado a registar como anterior
      */
     public void setLatestState(State latestState) {
         this.latestState = latestState;
-    }
-
-    /**
-     * Define o estado atual de movimento da personagem.
-     *
-     * @param state o novo estado a definir
-     */
-    public void setState(State state) {
-        this.state = state;
     }
 
     /**
@@ -252,19 +167,6 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     /**
-     * Define o estado de atordoamento do jogador.
-     * <p>
-     * Se o estado for verdadeiro, inicia também o temporizador de atordoamento.
-     * </p>
-     *
-     * @param stunned o novo estado de atordoamento
-     */
-    public void setStunned(boolean stunned) {
-        this.stunned = stunned;
-        if (stunned) this.stunnedTime = now;
-    }
-
-    /**
      * Aplica dano à entidade e gere a reação física.
      * <p>
      * Se o período de invencibilidade tiver passado, reduz a vida, aplica uma força de
@@ -275,6 +177,8 @@ public class TheKnight extends Entity implements IVisualizable {
      */
     public void damage(PVector other) {
         if (now - hitTime > I_FRAMES) {
+            playDamageSound();
+
             int direction;
             if (other.x > this.position.x) direction = -1;
             else direction = 1;
@@ -287,6 +191,10 @@ public class TheKnight extends Entity implements IVisualizable {
             health--;
             hitTime = now;
         }
+    }
+
+    public void playDamageSound() {
+        damageSound.play(1.0f, 0.3f);
     }
 
     /**
@@ -479,8 +387,20 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     private void running() {
-        if (!moving) state = State.IDLE;
-        if (!grounded) state = State.JUMPING;
+        if (!isRunSoundPlaying) {
+            runSound.loop();
+            isRunSoundPlaying = true;
+        }
+        if (!moving) {
+            runSound.stop();
+            isRunSoundPlaying = false;
+            state = State.IDLE;
+        }
+        if (!grounded) {
+            runSound.stop();
+            isRunSoundPlaying = false;
+            state = State.JUMPING;
+        }
         if (now - spriteTime > 40) {
             this.sprite = spriteArray[spriteIndex][0];
             spriteTime = now;
@@ -490,11 +410,27 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     private void jumping() {
-        if (this.velocity.y < 0) state = State.FALLING;
+        if (!isJumpSoundPlaying) {
+            jumpSound.play();
+            isJumpSoundPlaying = true;
+        }
+        if (this.velocity.y < 0) {
+            isJumpSoundPlaying = false;
+            state = State.FALLING;
+        }
     }
 
     private void falling() {
-        if (grounded) state = State.IDLE;
+        if(!isFallingSoundPlaying) {
+            fallingSound.loop(1.0f, 0.4f);
+            isFallingSoundPlaying = true;
+        }
+        if (grounded) {
+            landSound.play();
+            fallingSound.stop();
+            isFallingSoundPlaying = false;
+            state = State.IDLE;
+        }
         if (now - spriteTime > 40) {
             this.sprite = spriteArray[spriteIndex][9];
             spriteTime = now;
@@ -504,11 +440,16 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     private void attacking() {
+        if(!isAttackSoundPlaying) {
+            attackSound.play(1.0f, 0.4f);
+            isAttackSoundPlaying = true;
+        }
         if (now - spriteTime > ATTACK_DURATION / 6) {
             this.sprite = spriteArray[spriteIndex][4];
             spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 5) {
+                isAttackSoundPlaying = false;
                 state = State.IDLE;
                 resetAnimation();
             }
@@ -547,6 +488,8 @@ public class TheKnight extends Entity implements IVisualizable {
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         if (stunned && now - stunnedTime >= 500 && grounded) this.stunned = false;
+
+        if(isDying()) setDead(true);
 
         if (getState() != getLatestState()) {
             resetAnimation();

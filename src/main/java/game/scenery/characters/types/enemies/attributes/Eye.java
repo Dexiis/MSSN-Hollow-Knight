@@ -26,14 +26,14 @@ public class Eye {
     protected Entity target;
 
     /**
-     * Constrói um novo sensor visual para uma entidade.
+     * Inicializa um novo sensor visual para a entidade.
      * <p>
-     * Inicializa a referência para a entidade proprietária e define um alvo
-     * inicial para rastreio.
+     * Guarda a referência para a entidade proprietária e define um alvo
+     * inicial para iniciar o rastreio imediatamente.
      * </p>
      *
-     * @param me     a entidade a quem este olho pertence
-     * @param target o alvo inicial a ser rastreado
+     * @param me     a entidade a quem este olho pertence.
+     * @param target o alvo inicial a ser rastreado.
      */
     public Eye(Enemy me, Entity target) {
         this.me = me;
@@ -42,69 +42,52 @@ public class Eye {
     }
 
     /**
-     * Obtém a lista de todas as entidades que estão configuradas para serem rastreadas.
-     *
-     * @return lista de entidades rastreáveis
-     */
-    public List<Entity> getAllTrackingBodies() {
-        return allTrackingBodies;
-    }
-
-    /**
-     * Obtém a lista de entidades detetadas dentro do campo de visão distante.
+     * Devolve a lista de entidades detetadas no campo de visão distante.
      * <p>
-     * Esta lista é atualizada a cada chamada de {@code look()}.
+     * A coleção retornada contém os elementos identificados durante a última
+     * execução da operação de perceção.
      * </p>
      *
-     * @return lista de entidades visíveis ao longe
+     * @return a lista de entidades visíveis ao longe.
      */
     public List<Entity> getFarSight() {
         return farSight;
     }
 
     /**
-     * Obtém a lista de entidades detetadas dentro do campo de visão próximo.
+     * Devolve a lista de entidades detetadas no campo de visão próximo.
      * <p>
-     * Representa a zona de ataque. Esta lista é atualizada a cada chamada de {@code look()}.
+     * Corresponde à zona de ataque. A coleção é atualizada sempre que a
+     * perceção visual é recalculada.
      * </p>
      *
-     * @return lista de entidades visíveis ao perto
+     * @return a lista de entidades visíveis ao perto.
      */
     public List<Entity> getNearSight() {
         return nearSight;
     }
 
     /**
-     * Obtém a referência para o alvo atual.
+     * Devolve a referência para o alvo principal atual.
+     * <p>
+     * Permite aceder à entidade que está a ser considerada como foco
+     * principal das atenções deste sensor.
+     * </p>
      *
-     * @return a entidade alvo
+     * @return a entidade alvo.
      */
     public Entity getTarget() {
         return target;
     }
 
     /**
-     * Define a lista completa de todas as entidades que este olho deve monitorizar.
+     * Adiciona uma nova entidade à lista de corpos a rastrear.
+     * <p>
+     * Insere o objeto fornecido no conjunto de elementos que serão testados
+     * quanto à visibilidade nas próximas atualizações.
+     * </p>
      *
-     * @param allTrackingBodies lista de entidades rastreáveis
-     */
-    public void setAllTrackingBodies(List<Entity> allTrackingBodies) {
-        this.allTrackingBodies = allTrackingBodies;
-    }
-
-    /**
-     * Define o alvo principal que a entidade deve tentar localizar ou perseguir.
-     *
-     * @param target a entidade alvo
-     */
-    public void setTarget(Entity target) {
-        this.target = target;
-    }
-
-    /**
-     * Adiciona uma nova entidade específica à lista de corpos a rastrear.
-     *
-     * @param target a entidade a adicionar
+     * @param target a entidade a adicionar ao rastreio.
      */
     public void addTarget(Entity target) {
         this.allTrackingBodies.add(target);
@@ -113,9 +96,9 @@ public class Eye {
     /**
      * Executa o processo de perceção visual.
      * <p>
-     * Limpa as memórias visuais anteriores e itera sobre todas as entidades rastreáveis.
-     * Para cada uma, verifica se se encontra dentro dos limites de visão (longe ou perto)
-     * definidos no DNA e atualiza as listas correspondentes.
+     * Reinicia as memórias visuais e itera sobre as entidades rastreáveis.
+     * Para cada uma, verifica se se encontra dentro dos limites geométricos
+     * (longe ou perto) definidos no DNA e atualiza as respetivas listas.
      * </p>
      */
     public void look() {
@@ -128,30 +111,31 @@ public class Eye {
     }
 
     /**
-     * Verifica se uma posição específica está dentro do alcance de visão distante.
+     * Verifica se uma posição se encontra no alcance de visão distante.
      * <p>
-     * Utiliza a distância e ângulo de visão definidos no DNA da entidade.
+     * Utiliza a distância máxima e o ângulo de visão definidos no código genético
+     * da entidade para validar a visibilidade.
      * </p>
      *
-     * @param t o vetor de posição a verificar
-     * @return {@code true} se estiver visível, {@code false} caso contrário
+     * @param t o vetor de posição a analisar.
+     * @return {@code true} se o ponto estiver visível ao longe, {@code false} caso contrário.
      */
     private boolean farSight(PVector t) {
         return inSight(t, me.getDna().visionDistance, me.getDna().visionAngle);
     }
 
     /**
-     * Cálculo matemático auxiliar para determinar a visibilidade.
+     * Realiza o cálculo geométrico para determinar a visibilidade de um ponto.
      * <p>
-     * Calcula o vetor relativo ao alvo, a magnitude da distância e o ângulo em relação
-     * ao vetor de velocidade atual da entidade para validar se o ponto está dentro
-     * do cone cónico definido.
+     * Calcula o vetor relativo ao ponto, a magnitude da distância e o ângulo
+     * em relação à direção atual da entidade. Valida se estes valores se
+     * encontram dentro dos limites do cone especificado.
      * </p>
      *
-     * @param t           a posição do alvo
-     * @param maxDistance a distância máxima de perceção
-     * @param maxAngle    o ângulo máximo de abertura da visão (metade do cone)
-     * @return {@code true} se o ponto cumprir os critérios geométricos
+     * @param t           a posição do ponto a testar.
+     * @param maxDistance a distância máxima permitida.
+     * @param maxAngle    a abertura angular máxima (metade do cone).
+     * @return {@code true} se o ponto cumprir os critérios geométricos.
      */
     private boolean inSight(PVector t, float maxDistance, float maxAngle) {
         PVector r = PVector.sub(t, me.getPosition());
@@ -161,29 +145,29 @@ public class Eye {
     }
 
     /**
-     * Verifica se uma posição específica está dentro do alcance de visão curta.
+     * Verifica se uma posição se encontra no alcance de visão curta.
      * <p>
-     * Representa a zona de ataque. Utiliza a distância e ângulo de ataque
-     * definidos no DNA da entidade.
+     * Analisa se o ponto está dentro da zona de ataque, usando os parâmetros
+     * específicos de distância e ângulo de ataque do DNA.
      * </p>
      *
-     * @param t o vetor de posição a verificar
-     * @return {@code true} se estiver ao alcance, {@code false} caso contrário
+     * @param t o vetor de posição a analisar.
+     * @return {@code true} se o ponto estiver ao alcance de ataque, {@code false} caso contrário.
      */
     private boolean nearSight(PVector t) {
         return inSight(t, me.getDna().visionAttack, me.getDna().visionAttackAngle);
     }
 
     /**
-     * Renderiza os cones de visão no ecrã para fins de depuração (debug).
+     * Renderiza os cones de visão para fins de depuração (debug).
      * <p>
-     * Desenha o cone de visão distante a vermelho e a zona de ataque a magenta.
-     * Realiza transformações matriciais para alinhar o desenho com a posição
-     * e rotação da entidade.
+     * Desenha graficamente o cone de visão distante e a zona de ataque no ecrã,
+     * aplicando as transformações matriciais necessárias para alinhar com a
+     * posição e rotação da entidade.
      * </p>
      *
-     * @param p   o contexto gráfico do Processing
-     * @param plt o objeto SubPlot para conversão de coordenadas
+     * @param p   o contexto gráfico do Processing.
+     * @param plt o objeto auxiliar para conversão de coordenadas.
      */
     public void display(PApplet p, SubPlot plt) {
         p.pushStyle();

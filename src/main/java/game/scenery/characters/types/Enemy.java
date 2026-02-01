@@ -37,11 +37,11 @@ public abstract class Enemy extends Entity {
      * A posição base é gerida pela superclasse.
      * </p>
      *
-     * @param position o vetor de posição inicial da entidade
-     * @param p        o contexto gráfico do Processing
+     * @param position o vetor de posição inicial da entidade.
+     * @param p        o contexto gráfico do Processing.
      */
     protected Enemy(PVector position, PApplet p) {
-        super(position);
+        super(position, p);
         this.p = p;
         now = p.millis();
 
@@ -56,7 +56,7 @@ public abstract class Enemy extends Entity {
      * e a força máxima aplicável.
      * </p>
      *
-     * @return o objeto DNA do inimigo
+     * @return o objeto DNA do inimigo.
      */
     public DNA getDna() {
         return dna;
@@ -64,8 +64,12 @@ public abstract class Enemy extends Entity {
 
     /**
      * Obtém o sensor visual (olho) associado a este inimigo.
+     * <p>
+     * Permite aceder ao componente responsável pela deteção de outras entidades
+     * no ambiente envolvente.
+     * </p>
      *
-     * @return o objeto Eye atual
+     * @return o objeto Eye atual.
      */
     public Eye getEye() {
         return this.eye;
@@ -73,8 +77,12 @@ public abstract class Enemy extends Entity {
 
     /**
      * Define o sensor visual para este inimigo.
+     * <p>
+     * Atribui um novo componente de visão à entidade, permitindo-lhe detetar
+     * alvos e ameaças.
+     * </p>
      *
-     * @param eye o novo objeto Eye a ser associado
+     * @param eye o novo objeto Eye a ser associado.
      */
     public void setEye(Eye eye) {
         this.eye = eye;
@@ -87,8 +95,8 @@ public abstract class Enemy extends Entity {
      * e executa o movimento correspondente.
      * </p>
      *
-     * @param behaviour o comportamento a aplicar
-     * @param dt        o intervalo de tempo para a atualização física
+     * @param behaviour o comportamento a aplicar.
+     * @param dt        o intervalo de tempo para a atualização física.
      */
     public void applyBehaviour(Behaviour behaviour, float dt) {
         if (eye != null) eye.look();
@@ -100,13 +108,16 @@ public abstract class Enemy extends Entity {
      * Aplica dano à entidade de forma genérica.
      * <p>
      * Implementa um sistema de "invencibilidade temporária" (I-Frames). A vida só é reduzida
-     * se tiver passado tempo suficiente desde o último golpe recebido.
+     * se tiver passado tempo suficiente desde o último golpe recebido. Aplica também uma força
+     * de repulsão baseada na posição da origem do dano.
      * </p>
      *
+     * @param other a posição da origem do dano (ex: posição do ataque ou do atacante).
      */
     public void damage(PVector other) {
         if (this instanceof FalseKnight) super.damage();
         else if (now - hitTime > I_FRAMES) {
+            enemyDamageSound.play();
             health--;
             hitTime = now;
 
@@ -125,8 +136,8 @@ public abstract class Enemy extends Entity {
      * à velocidade desejada e limitando o resultado pela força máxima definida no DNA.
      * </p>
      *
-     * @param dt o intervalo de tempo para a atualização física
-     * @param vd o vetor de velocidade desejada
+     * @param dt o intervalo de tempo para a atualização física.
+     * @param vd o vetor de velocidade desejada.
      */
     public void move(float dt, PVector vd) {
         vd.normalize().mult(dna.getMaxSpeed());
@@ -136,10 +147,14 @@ public abstract class Enemy extends Entity {
     }
 
     /**
-     * Verifica e atualiza a direção visual (esquerda/direita) baseada na velocidade horizontal atual.
+     * Verifica e atualiza a direção visual (esquerda/direita) com redefinição de velocidade.
      * <p>
-     * Se a direção mudar, reinicia a animação e coloca o estado como {@code TURNING}.
+     * Compara a posição do alvo com a da entidade para determinar a orientação. Se a direção mudar,
+     * reinicia a animação, define o estado como viragem (TURNING) e ajusta os limites de velocidade
+     * para o valor de inatividade fornecido.
      * </p>
+     *
+     * @param IDLE_SPEED a velocidade a definir durante a viragem.
      */
     protected void directionChange(float IDLE_SPEED) {
         if (state == State.IDLE) {
@@ -155,6 +170,14 @@ public abstract class Enemy extends Entity {
         }
     }
 
+    /**
+     * Verifica e atualiza a direção visual (esquerda/direita) sem alteração de velocidade.
+     * <p>
+     * Analisa a posição relativa do alvo para orientar o sprite. Caso ocorra uma inversão de sentido,
+     * a animação é reiniciada e o estado transita para viragem (TURNING), mantendo as propriedades
+     * de movimento atuais.
+     * </p>
+     */
     protected void directionChange() {
         if (state == State.IDLE) {
             PVector vector = PVector.sub(getPosition(), this.getEye().getTarget().getPosition()).normalize();
@@ -174,9 +197,9 @@ public abstract class Enemy extends Entity {
      * e armazena-os na matriz. Define também o sprite inicial.
      * </p>
      *
-     * @param filename    o caminho para o ficheiro de imagem
-     * @param p           o contexto gráfico do Processing
-     * @param spriteArray a matriz onde os sprites recortados serão armazenados
+     * @param filename    o caminho para o ficheiro de imagem.
+     * @param p           o contexto gráfico do Processing.
+     * @param spriteArray a matriz onde os sprites recortados serão armazenados.
      */
     protected void loadSpriteSheet(String filename, PApplet p, PImage[][] spriteArray) {
         // Enche o array de sprites iterativamente

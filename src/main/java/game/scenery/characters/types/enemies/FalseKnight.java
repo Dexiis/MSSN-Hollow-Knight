@@ -48,8 +48,8 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * (BossAttack, JumpAttack, JumpFlee), sprites e DNA específico para este chefe.
      * </p>
      *
-     * @param position a posição inicial do chefe no mundo
-     * @param p        o contexto gráfico do Processing
+     * @param position a posição inicial do chefe no mundo.
+     * @param p        o contexto gráfico do Processing.
      */
     public FalseKnight(PVector position, PApplet p) {
         super(position, p);
@@ -88,8 +88,12 @@ public class FalseKnight extends Enemy implements IVisualizable {
 
     /**
      * Verifica se o chefe está no chão.
+     * <p>
+     * Devolve o estado da variável que indica se a entidade está em contacto com
+     * a superfície inferior.
+     * </p>
      *
-     * @return {@code true} se estiver no chão, {@code false} caso contrário
+     * @return {@code true} se estiver no chão, {@code false} caso contrário.
      */
     public boolean isGrounded() {
         return grounded;
@@ -97,21 +101,53 @@ public class FalseKnight extends Enemy implements IVisualizable {
 
     /**
      * Define se o chefe está no chão.
+     * <p>
+     * Atualiza o estado de contacto com o solo, influenciando a física e as
+     * transições de estado (como a aterragem).
+     * </p>
      *
-     * @param grounded {@code true} se estiver no chão, {@code false} caso contrário
+     * @param grounded {@code true} se estiver no chão, {@code false} caso contrário.
      */
     public void setGrounded(boolean grounded) {
         this.grounded = grounded;
     }
 
+    /**
+     * Verifica se o chefe está em contacto com uma parede.
+     * <p>
+     * Retorna a indicação de colisão lateral, usada para limitar o movimento
+     * ou desencadear comportamentos específicos.
+     * </p>
+     *
+     * @return {@code true} se estiver a tocar numa parede, {@code false} caso contrário.
+     */
     public boolean isWalled() {
         return walled;
     }
 
+    /**
+     * Define se o chefe está em contacto com uma parede.
+     * <p>
+     * Atualiza o estado de colisão lateral da entidade.
+     * </p>
+     *
+     * @param walled {@code true} se estiver a tocar numa parede, {@code false} caso contrário.
+     */
     public void setWalled(boolean walled) {
         this.walled = walled;
     }
 
+    /**
+     * Processa a lógica de ataque e colisão.
+     * <p>
+     * Obtém a caixa de dano (HurtBox) ativa para o frame atual, posiciona-a corretamente
+     * no mundo e verifica se intersecta o jogador. Se houver colisão, aplica dano ao jogador.
+     * </p>
+     *
+     * @param p       o contexto gráfico do Processing.
+     * @param painter o objeto auxiliar para desenho de linhas.
+     * @param plt     o objeto auxiliar para conversão de coordenadas.
+     */
     private void handleAttack(PApplet p, LinePainter painter, SubPlot plt) {
         HurtBox attack = attack();
         if (attack != null) {
@@ -125,7 +161,7 @@ public class FalseKnight extends Enemy implements IVisualizable {
     /**
      * Gere a máquina de estados finita (FSM) do chefe.
      * <p>
-     * Verifica qual é o estado atual na variável {@code state} e invoca a função
+     * Verifica qual é o estado atual na variável {@code state} e invoca a operação
      * correspondente. Atualiza também o registo do último estado conhecido.
      * </p>
      */
@@ -182,12 +218,12 @@ public class FalseKnight extends Enemy implements IVisualizable {
         if (normalAttack.checkBehaviour(this) && now - attackTime > ATTACK_COOLDOWN) {
             state = State.ANTICIPATION;
             resetAnimation();
-        } else if (jumpAttack.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action < 0.4f) {
+        } else if (jumpAttack.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action < 0.5f) {
             applyBehaviour(jumpAttack, dt);
             state = State.JUMP_ATTACK;
             jumpTime = now;
             resetAnimation();
-        } else if (jumpFlee.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action > 0.80f) {
+        } else if (jumpFlee.checkBehaviour(this) && now - jumpTime > JUMP_COOLDOWN && action > 0.75f) {
             applyBehaviour(jumpFlee, dt);
             state = State.JUMP;
             jumpTime = now;
@@ -359,6 +395,15 @@ public class FalseKnight extends Enemy implements IVisualizable {
         if (now - deathTime > DEATH_DURATION) setDead(true);
     }
 
+    /**
+     * Constrói e retorna a HurtBox correspondente ao estado e frame atuais.
+     * <p>
+     * Define as coordenadas e dimensões da área de ataque para cada frame das
+     * animações de ataque (idle, turning, jump, anticipation, attack, jump_attack).
+     * </p>
+     *
+     * @return a HurtBox configurada ou {@code null} se não houver ataque no frame atual.
+     */
     private HurtBox attack() {
         HurtBox.Builder builder = new HurtBox.Builder();
 
@@ -382,10 +427,18 @@ public class FalseKnight extends Enemy implements IVisualizable {
                     case 0 -> addFrame(builder, -145, -250, -40, 65);
                     case 1 -> addFrame(builder, -125, -230, -30, 75);
                     case 2 -> addFrame(builder, -110, -215, -40, 65);
-                    case 3 -> { if (state == State.JUMP) addFrame(builder, -185, -290, -80, 25); }
-                    case 4 -> { if (state == State.JUMP) addFrame(builder, -185, -290, -75, 30); }
-                    case 5 -> { if (state == State.JUMP) addFrame(builder, -195, -300, -60, 45); }
-                    case 6 -> { if (state == State.JUMP) addFrame(builder, -190, -295, -70, 35); }
+                    case 3 -> {
+                        if (state == State.JUMP) addFrame(builder, -185, -290, -80, 25);
+                    }
+                    case 4 -> {
+                        if (state == State.JUMP) addFrame(builder, -185, -290, -75, 30);
+                    }
+                    case 5 -> {
+                        if (state == State.JUMP) addFrame(builder, -195, -300, -60, 45);
+                    }
+                    case 6 -> {
+                        if (state == State.JUMP) addFrame(builder, -190, -295, -70, 35);
+                    }
                 }
             }
             case ANTICIPATION -> {
@@ -428,27 +481,34 @@ public class FalseKnight extends Enemy implements IVisualizable {
     }
 
     /**
-     * Auxilia a criar o rectângulo preservando a ordem dos pontos:
-     * (x1, y1) -> (x2, y1) -> (x2, y2) -> (x1, y2)
+     * Adiciona um retângulo à HurtBox preservando a ordem dos pontos.
+     * <p>
+     * Calcula os vértices de um retângulo com base nas coordenadas fornecidas e
+     * na direção atual do chefe (invertendo o eixo X se necessário), e adiciona-os
+     * ao construtor da HurtBox.
+     * </p>
+     *
+     * @param b  o construtor da HurtBox.
+     * @param x1 a coordenada X inicial.
+     * @param x2 a coordenada X final.
+     * @param y1 a coordenada Y inicial.
+     * @param y2 a coordenada Y final.
      */
     private void addFrame(HurtBox.Builder b, int x1, int x2, int y1, int y2) {
-        b.addPoint(x1 * multValue, y1)
-                .addPoint(x2 * multValue, y1)
-                .addPoint(x2 * multValue, y2)
-                .addPoint(x1 * multValue, y2);
+        b.addPoint(x1 * multValue, y1).addPoint(x2 * multValue, y1).addPoint(x2 * multValue, y2).addPoint(x1 * multValue, y2);
     }
 
     /**
      * Renderiza o chefe no ecrã.
      * <p>
-     * Desenha a hitbox, gere mudanças de direção, executa a máquina de estados
-     * e aplica uma escala de 0.7 ao sprite. Verifica se o chefe está a morrer
-     * e marca-o como morto quando apropriado.
+     * Desenha a hitbox, atualiza a visão, gere mudanças de direção, processa
+     * ataques e a máquina de estados. Aplica as transformações gráficas
+     * (posição, escala e inversão) para desenhar o sprite correto.
      * </p>
      *
-     * @param p       o contexto gráfico do Processing
-     * @param painter o objeto LinePainter para desenhar a hitbox
-     * @param plt     o objeto SubPlot para conversão de coordenadas
+     * @param p       o contexto gráfico do Processing.
+     * @param painter o objeto auxiliar para desenho de linhas de depuração.
+     * @param plt     o objeto auxiliar para conversão de coordenadas.
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
@@ -473,8 +533,5 @@ public class FalseKnight extends Enemy implements IVisualizable {
         p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f - PIXEL_CORRECTION);
 
         p.popMatrix();
-
-
-
     }
 }

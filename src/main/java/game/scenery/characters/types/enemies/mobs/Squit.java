@@ -14,11 +14,11 @@ import processing.core.PImage;
 import processing.core.PVector;
 
 /**
- * Representa o inimigo Squit.
+ * Representa a entidade inimiga Squit.
  * <p>
- * Este mob voa em direção ao jogador e possui comportamentos de procura e vagueio.
- * Durante o ataque, roda-se em direção ao alvo e move-se numa trajetória linear.
- * Possui um estado adicional de sobressalto (startled) antes de atacar.
+ * Este inimigo voa em direção ao jogador e possui comportamentos de procura e vagueio.
+ * Durante a ofensiva, roda o corpo em direção ao alvo e move-se numa trajetória linear.
+ * Distingue-se por possuir um estado intermédio de sobressalto (startled) antes de atacar.
  * </p>
  */
 public class Squit extends Mob implements IVisualizable {
@@ -27,14 +27,15 @@ public class Squit extends Mob implements IVisualizable {
     protected boolean colliding = false;
 
     /**
-     * Constrói um novo Squit na posição especificada.
+     * Inicializa uma nova instância de Squit na posição indicada.
      * <p>
-     * Inicializa os atributos físicos (hitbox, massa, vida), velocidades,
-     * sprites e comportamentos (Seek, Wander, Attack) do inimigo.
+     * Configura os atributos físicos (caixa de colisão, massa, vida), as velocidades,
+     * os sprites e os comportamentos (procura, vagueio, ataque). Carrega também
+     * a folha de sprites necessária para a animação.
      * </p>
      *
-     * @param position a posição inicial do inimigo no mundo
-     * @param p        o contexto gráfico do Processing
+     * @param position a posição inicial do inimigo no mundo.
+     * @param p        o contexto gráfico do Processing.
      */
     public Squit(PVector position, PApplet p) {
         super(position, p);
@@ -56,6 +57,15 @@ public class Squit extends Mob implements IVisualizable {
         loadSpriteSheet("images/SquitSprites.png", p, spriteArray);
     }
 
+    /**
+     * Atualiza o estado de colisão da entidade.
+     * <p>
+     * Define se o inimigo se encontra atualmente a colidir com outra estrutura
+     * ou objeto, influenciando a sua lógica de movimento.
+     * </p>
+     *
+     * @param colliding {@code true} se houver colisão, {@code false} caso contrário.
+     */
     public void setColliding(boolean colliding) {
         this.colliding = colliding;
     }
@@ -63,9 +73,9 @@ public class Squit extends Mob implements IVisualizable {
     /**
      * Gere o estado de inatividade (idle) do inimigo.
      * <p>
-     * Verifica se as condições para iniciar um ataque estão reunidas e,
-     * caso positivo, transita para o estado de sobressalto (startled).
-     * Atualiza a animação idle com base no tempo decorrido.
+     * Verifica se as condições para iniciar uma ofensiva estão reunidas e,
+     * caso afirmativo, transita para o estado de sobressalto (startled). Atualiza a
+     * animação de repouso com base no tempo decorrido.
      * </p>
      */
     @Override
@@ -87,11 +97,11 @@ public class Squit extends Mob implements IVisualizable {
     }
 
     /**
-     * Gere o estado de viragem (turning) do inimigo.
+     * Controla a ação de viragem da personagem.
      * <p>
-     * Executa a animação de mudança de direção. Quando a animação termina,
-     * atualiza o multiplicador de escala para inverter o sprite e retorna
-     * ao estado idle.
+     * Executa a animação de mudança de direção. Quando a sequência termina,
+     * atualiza o multiplicador de escala para espelhar o sprite e retorna
+     * ao estado de repouso.
      * </p>
      */
     @Override
@@ -112,10 +122,10 @@ public class Squit extends Mob implements IVisualizable {
     }
 
     /**
-     * Gere o estado de sobressalto (startled) do inimigo.
+     * Controla o estado de sobressalto (startled).
      * <p>
-     * Executa a animação de reação inicial ao detetar o jogador. Quando a
-     * animação termina, transita para o estado de antecipação.
+     * Executa a animação de reação inicial ao detetar o jogador. Quando esta
+     * ação termina, a entidade transita para o estado de antecipação.
      * </p>
      */
     @Override
@@ -132,11 +142,10 @@ public class Squit extends Mob implements IVisualizable {
     }
 
     /**
-     * Gere o estado de antecipação antes do ataque.
+     * Gere o estado de preparação prévio ao ataque.
      * <p>
-     * Executa a animação de preparação para o ataque. No final da animação,
-     * calcula o ângulo de ataque em direção ao alvo e transita para o estado
-     * de ataque.
+     * Reproduz a animação de preparação. No final desta sequência, calcula
+     * o ângulo de ataque em direção ao alvo e avança para o estado ofensivo.
      * </p>
      */
     @Override
@@ -161,11 +170,11 @@ public class Squit extends Mob implements IVisualizable {
     }
 
     /**
-     * Gere o estado de ataque do inimigo.
+     * Controla a execução do ataque.
      * <p>
-     * Define a velocidade máxima para a velocidade de ataque e executa a
-     * animação de ataque. Quando o alvo sai do alcance de ataque, retorna
-     * ao estado idle.
+     * Ajusta a velocidade para o modo de ataque e executa a respetiva animação.
+     * Se o tempo de ataque expirar, restaura as propriedades originais e
+     * regressa ao estado de repouso.
      * </p>
      */
     @Override
@@ -186,10 +195,10 @@ public class Squit extends Mob implements IVisualizable {
     }
 
     /**
-     * Gere o estado de morte do inimigo.
+     * Processa a sequência de morte do inimigo.
      * <p>
-     * Executa a animação de morte. Quando a animação termina, marca o
-     * inimigo como morto e retorna ao estado idle.
+     * Reproduz a animação de falecimento frame a frame. Ao concluir a sequência,
+     * sinaliza a entidade como morta e redefine o estado para repouso.
      * </p>
      */
     @Override
@@ -209,15 +218,14 @@ public class Squit extends Mob implements IVisualizable {
     /**
      * Renderiza o inimigo no ecrã.
      * <p>
-     * Desenha a hitbox, atualiza o estado de ataque, gere mudanças de direção,
-     * verifica se está a morrer e executa a máquina de estados. Durante o ataque,
-     * roda o sprite em direção ao jogador. Aplica uma escala de 0.7 ao sprite
-     * para ajustar o tamanho visual.
+     * Desenha a caixa de colisão, atualiza a lógica de estados, gere a direção
+     * e verifica colisões. Durante o ataque, aplica uma rotação específica
+     * ao sprite para o alinhar com o alvo.
      * </p>
      *
-     * @param p       o contexto gráfico do Processing
-     * @param painter o objeto LinePainter para desenhar a hitbox
-     * @param plt     o objeto SubPlot para conversão de coordenadas
+     * @param p       o contexto gráfico do Processing.
+     * @param painter o objeto auxiliar para desenho de linhas de depuração.
+     * @param plt     o objeto auxiliar para conversão de coordenadas.
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
@@ -236,7 +244,6 @@ public class Squit extends Mob implements IVisualizable {
         directionChange(IDLE_SPEED);
         stateMachine();
 
-
         float spriteScale = 0.7f;
         p.pushMatrix();
 
@@ -249,7 +256,6 @@ public class Squit extends Mob implements IVisualizable {
             p.scale(spriteScale, multiplier * spriteScale);
             p.rotate(-multiplier * attackAngle + PApplet.radians(225));
         } else p.scale(multValue * spriteScale, spriteScale);
-
 
         p.image(this.sprite, -SPRITE_SIZE / 2f, -SPRITE_SIZE / 2f);
 

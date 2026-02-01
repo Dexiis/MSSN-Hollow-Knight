@@ -43,9 +43,10 @@ public class SubPlot {
     }
 
     /**
-     * Obtém as definições atuais da janela do mundo (Window).
+     * Devolve as definições atuais da janela do mundo (Window).
      * <p>
-     * Retorna o array com os limites do mundo virtual.
+     * Esta operação retorna o array com os limites do mundo virtual, permitindo
+     * acesso às coordenadas mínimas e máximas definidas para a vista atual.
      * </p>
      *
      * @return array com os limites do mundo: [minX, maxX, minY, maxY]
@@ -57,7 +58,8 @@ public class SubPlot {
     /**
      * Redefine a janela do mundo e recalcula os coeficientes de transformação.
      * <p>
-     * Permite operações de zoom ou deslocamento (pan) no mundo virtual.
+     * Esta operação permite operações de zoom ou deslocamento (pan) no mundo virtual,
+     * atualizando os limites da vista e recalculando os fatores de conversão necessários.
      * </p>
      *
      * @param window novo array de definições da janela do mundo
@@ -71,7 +73,11 @@ public class SubPlot {
     }
 
     /**
-     * Obtém as definições atuais do viewport (área do ecrã).
+     * Devolve as definições atuais do viewport (área do ecrã).
+     * <p>
+     * Esta operação retorna o array com as proporções da área do ecrã destinada
+     * a esta vista, expressas em percentagens relativas à janela total da aplicação.
+     * </p>
      *
      * @return array com as definições do viewport: [x%, y%, largura%, altura%]
      */
@@ -81,6 +87,11 @@ public class SubPlot {
 
     /**
      * Redefine o viewport e recalcula todos os coeficientes de transformação.
+     * <p>
+     * Esta operação atualiza a área do ecrã associada a esta vista e recalcula
+     * os fatores de conversão entre coordenadas do mundo e pixels, refletindo
+     * as novas proporções definidas.
+     * </p>
      *
      * @param viewport novo array de definições do viewport
      */
@@ -94,6 +105,11 @@ public class SubPlot {
 
     /**
      * Converte coordenadas do mundo virtual para coordenadas reais de pixel no ecrã.
+     * <p>
+     * Esta operação aplica a transformação linear definida pelos coeficientes calculados,
+     * convertendo um ponto do espaço do mundo virtual para a sua representação em pixels
+     * no ecrã, considerando a janela e o viewport atuais.
+     * </p>
      *
      * @param x coordenada X no mundo virtual
      * @param y coordenada Y no mundo virtual
@@ -109,7 +125,9 @@ public class SubPlot {
     /**
      * Converte coordenadas do mundo virtual para coordenadas de pixel.
      * <p>
-     * Versão sobrecarregada que aceita um array como parâmetro.
+     * Esta versão sobrecarregada aceita um array como parâmetro, facilitando
+     * a conversão de pontos representados em arrays, mantendo a mesma lógica
+     * de transformação linear aplicada.
      * </p>
      *
      * @param xy array contendo [xMundo, yMundo]
@@ -122,7 +140,9 @@ public class SubPlot {
     /**
      * Converte dimensões do mundo para pixels, sem aplicar translação.
      * <p>
-     * Útil para calcular o tamanho de objetos sem considerar a sua posição.
+     * Esta operação calcula o tamanho equivalente em pixels para dimensões do mundo virtual,
+     * aplicando apenas a escala sem considerar a posição, o que é útil para determinar
+     * tamanhos de objetos independentemente da sua localização no espaço.
      * </p>
      *
      * @param dimx largura no mundo virtual
@@ -140,8 +160,8 @@ public class SubPlot {
     /**
      * Converte coordenadas de pixel para coordenadas do mundo virtual.
      * <p>
-     * Realiza a operação inversa da conversão de coordenadas mundo-para-pixel.
-     * Útil para converter posições do rato em coordenadas do mundo.
+     * Esta operação realiza a transformação inversa da conversão de coordenadas mundo-para-pixel,
+     * permitindo mapear posições do ecrã (como cliques do rato) de volta para o espaço do mundo virtual.
      * </p>
      *
      * @param xx coordenada X em pixels
@@ -158,7 +178,8 @@ public class SubPlot {
     /**
      * Converte coordenadas de pixel para coordenadas do mundo virtual.
      * <p>
-     * Versão sobrecarregada que aceita um array de floats.
+     * Esta versão sobrecarregada aceita um array de floats como parâmetro,
+     * facilitando a conversão de pontos representados em arrays de floats.
      * </p>
      *
      * @param xy array contendo [xPixel, yPixel]
@@ -171,8 +192,9 @@ public class SubPlot {
     /**
      * Converte um vetor do mundo para pixels.
      * <p>
-     * Aplica apenas a escala (não considera translação), útil para converter
-     * direções e magnitudes sem depender da posição de origem.
+     * Esta operação aplica apenas a escala aos componentes do vetor, sem considerar
+     * translação, o que é adequado para converter direções e magnitudes independentemente
+     * da posição de origem no espaço.
      * </p>
      *
      * @param dx componente X do vetor no mundo
@@ -189,7 +211,8 @@ public class SubPlot {
     /**
      * Converte um vetor do mundo para pixels.
      * <p>
-     * Versão sobrecarregada que aceita um array como parâmetro.
+     * Esta versão sobrecarregada aceita um array como parâmetro, permitindo
+     * a conversão de vetores representados em arrays de doubles.
      * </p>
      *
      * @param dxdy array contendo [dx, dy] no mundo
@@ -201,6 +224,11 @@ public class SubPlot {
 
     /**
      * Converte uma caixa definida no mundo virtual para coordenadas de pixel.
+     * <p>
+     * Esta operação calcula as coordenadas de pixel correspondentes aos cantos
+     * da caixa no mundo virtual, retornando a posição e dimensões em pixels
+     * para renderização no ecrã.
+     * </p>
      *
      * @param cx   posição X no mundo (centro ou canto, dependente da implementação)
      * @param cy   posição Y no mundo (centro ou canto, dependente da implementação)
@@ -217,7 +245,9 @@ public class SubPlot {
     /**
      * Converte uma caixa do mundo virtual para coordenadas de pixel.
      * <p>
-     * Versão sobrecarregada que aceita um array como parâmetro.
+     * Esta versão sobrecarregada aceita um array como parâmetro, contendo
+     * a posição e dimensões da caixa no mundo, facilitando a conversão
+     * de estruturas de dados compactas.
      * </p>
      *
      * @param b array contendo [x, y, largura, altura] no mundo
@@ -228,10 +258,11 @@ public class SubPlot {
     }
 
     /**
-     * Obtém a caixa delimitadora de t.odo o viewport em pixels.
+     * Devolve a caixa delimitadora de todo o viewport em pixels.
      * <p>
-     * Calcula as coordenadas de pixel que correspondem aos limites completos
-     * da janela do mundo definida.
+     * Esta operação calcula as coordenadas de pixel que correspondem aos limites
+     * completos da janela do mundo definida, retornando a área total ocupada
+     * pelo viewport no ecrã.
      * </p>
      *
      * @return array de 4 floats: [xPixel, yPixel, larguraPixel, alturaPixel]
@@ -245,7 +276,9 @@ public class SubPlot {
     /**
      * Verifica se uma coordenada de pixel está dentro da área definida por este SubPlot.
      * <p>
-     * Útil para detetar cliques do rato dentro de uma vista específica.
+     * Esta operação converte a coordenada de pixel para o mundo virtual e verifica
+     * se ela se encontra dentro dos limites da janela definida, o que é útil
+     * para detetar interações do utilizador dentro de uma vista específica.
      * </p>
      *
      * @param xx coordenada X em pixels
@@ -260,7 +293,8 @@ public class SubPlot {
     /**
      * Verifica se uma coordenada de pixel está dentro da área definida por este SubPlot.
      * <p>
-     * Versão sobrecarregada que aceita um array como parâmetro.
+     * Esta versão sobrecarregada aceita um array como parâmetro, permitindo
+     * a verificação de pontos representados em arrays de floats.
      * </p>
      *
      * @param xy array contendo [xPixel, yPixel]

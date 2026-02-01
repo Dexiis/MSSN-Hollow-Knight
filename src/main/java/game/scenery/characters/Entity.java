@@ -1,8 +1,10 @@
 package game.scenery.characters;
 
 import game.scenery.components.hitbox.Hitbox;
+import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
+import processing.sound.SoundFile;
 
 /**
  * Classe abstrata que representa uma entidade viva ou interativa no jogo.
@@ -36,6 +38,8 @@ public abstract class Entity extends Movement implements IVisualizable {
 
     protected Hitbox hitbox;
 
+    protected static SoundFile enemyDamageSound;
+
     /**
      * Constrói uma nova entidade na posição especificada.
      * <p>
@@ -44,8 +48,10 @@ public abstract class Entity extends Movement implements IVisualizable {
      *
      * @param position o vetor de posição inicial da entidade
      */
-    protected Entity(PVector position) {
+    protected Entity(PVector position, PApplet p) {
         super(position);
+
+        enemyDamageSound = new SoundFile(p, "sounds/TheKnight/hero_fluke_cast.wav");
     }
 
     /**
@@ -130,6 +136,7 @@ public abstract class Entity extends Movement implements IVisualizable {
      */
     public void damage() {
         if (now - hitTime > I_FRAMES) {
+            enemyDamageSound.play();
             health--;
             hitTime = now;
         }

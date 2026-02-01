@@ -47,6 +47,7 @@ public class DeathPlatform extends Terrain {
     public void intersected(Entity entity) {
         if (super.intersected(entity.getHitbox())) {
             if (entity instanceof TheKnight) {
+                ((TheKnight) entity).playDamageSound();
                 entity.damage();
                 entity.setPosition(new PVector(50, 800));
                 entity.setVelocity(new PVector(0, 0));

@@ -35,6 +35,8 @@ public class Game extends PApplet {
     private GUI gui;
     private World map;
 
+    private static boolean paused = false;
+
     private final LinePainter painter = new LinePainter() {
         /**
          * Desenha uma linha convertendo coordenadas do mundo para pixels.
@@ -104,6 +106,7 @@ public class Game extends PApplet {
             lastUpdateTime = millis();
             firstLoop = false;
         }
+
         now = millis();
         float dt = (now - lastUpdateTime) / 1000f;
         lastUpdateTime = now;
@@ -123,14 +126,15 @@ public class Game extends PApplet {
             if (dist < 3000) loadedTerrains.add(terrain);
         }
 
-        background.display(player.getPosition());
         moveFlock(background.getFlock(), dt);
+
 
         handleNaturalMovements(dt);
         handleMonstersAttacks();
 
         player.move(dt);
 
+        //Chekar mortes
         for (int i = loadedEnemies.size() - 1; i >= 0; i--) {
             Enemy enemy = loadedEnemies.get(i);
 
@@ -138,9 +142,17 @@ public class Game extends PApplet {
             if (enemy.isDead()) map.removeEnemy(enemy);
         }
 
+        if (player.isDead()) {
+            fill(255);
+            text("Game Over",width / 2f, height / 2f);
+            noLoop();
+        }
+
         checkCollisions();
 
+        //Displays
         setWindow(player.getPosition());
+        background.display(player.getPosition());
         for (Terrain terrain : loadedTerrains) terrain.display(this, painter, plt);
         for (Enemy enemy : loadedEnemies) enemy.display(this, painter, plt);
         map.display(plt);
@@ -162,6 +174,17 @@ public class Game extends PApplet {
         if (key == 's' || key == 'S') player.setMovingDirection(KnightMovement.DOWN, true);
         if (key == 'a' || key == 'A') player.setMovingDirection(KnightMovement.LEFT, true);
         if (key == 'd' || key == 'D') player.setMovingDirection(KnightMovement.RIGHT, true);
+        if (key == 'p' || key == 'P') {
+            if(!paused) {
+                noLoop();
+                paused = true;
+            } else {
+                loop();
+                paused = false;
+                now = millis();
+                lastUpdateTime = now;
+            }
+        }
 
         if (key == ENTER || key == RETURN) player.playerAttack();
     }
@@ -219,8 +242,8 @@ public class Game extends PApplet {
      */
     private void handleMonstersAttacks() {
         if (loadedEnemies != null) for (Enemy enemy : loadedEnemies)
-            if (enemy.getHitbox().intersected(player.getHitbox()) && !enemy.isDying())
-                player.damage(enemy.getPosition());
+            if (enemy.getHitbox().intersected(player.getHitbox()) && !enemy.isDying()) player.damage(enemy.getPosition());
+
     }
 
     private void handleNaturalMovements(float dt) {

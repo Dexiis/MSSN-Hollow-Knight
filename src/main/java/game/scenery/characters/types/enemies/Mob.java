@@ -9,11 +9,11 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 /**
- * Classe abstrata que representa um inimigo genérico (mob) no jogo.
+ * Define a estrutura base para inimigos genéricos.
  * <p>
- * Esta classe serve de base para todos os tipos de monstros, gerindo a sua máquina de estados interna
- * (Parado, A Vaguear, A Atacar, etc.), o carregamento e manipulação de sprites, a gestão de comportamentos
- * de Inteligência Artificial (IA) e a lógica de direção visual.
+ * Esta classe abstrata estabelece os fundamentos para a criação de diferentes tipos de monstros,
+ * gerindo as máquinas de estados, comportamentos de inteligência artificial e propriedades
+ * de animação comuns.
  * </p>
  */
 public abstract class Mob extends Enemy {
@@ -27,14 +27,14 @@ public abstract class Mob extends Enemy {
     protected float ATTACK_SPEED_BOOST;
 
     /**
-     * Constrói um novo Mob na posição especificada.
+     * Inicializa uma nova instância de um inimigo genérico.
      * <p>
-     * Inicializa o contexto gráfico, cria os comportamentos padrão (Wander e Attack),
-     * define o número de sprites e os frames de invulnerabilidade.
+     * Configura o contexto gráfico, instancia os comportamentos padrão de movimento e ataque,
+     * e define as configurações iniciais de sprites e frames de invulnerabilidade.
      * </p>
      *
-     * @param position a posição inicial do inimigo no mundo
-     * @param p        o contexto gráfico do Processing
+     * @param position a posição inicial do inimigo no mundo.
+     * @param p        o contexto gráfico do Processing.
      */
     protected Mob(PVector position, PApplet p) {
         super(position, p);
@@ -47,31 +47,37 @@ public abstract class Mob extends Enemy {
     }
 
     /**
-     * Obtém o ângulo atual de vaguear (wander angle).
+     * Obtém o ângulo atual de desvio para o movimento errante.
      * <p>
-     * Usado por comportamentos de movimento aleatório suave.
+     * Devolve o valor angular utilizado pelos algoritmos de navegação para calcular
+     * trajetórias suaves e aleatórias.
      * </p>
      *
-     * @return o valor do ângulo em radianos
+     * @return o ângulo em radianos.
      */
     public float getPhiWander() {
         return phiWander;
     }
 
     /**
-     * Define o ângulo de vaguear.
+     * Atualiza o ângulo de desvio do movimento.
+     * <p>
+     * Define um novo valor para a orientação angular, influenciando a direção futura
+     * da entidade durante o comportamento de vaguear.
+     * </p>
      *
-     * @param newPhiWander o novo ângulo em radianos
+     * @param newPhiWander o novo ângulo em radianos.
      */
     public void setPhiWander(float newPhiWander) {
         this.phiWander = newPhiWander;
     }
 
     /**
-     * Gere a máquina de estados finita (FSM) do inimigo.
+     * Coordena a execução da máquina de estados finita.
      * <p>
-     * Verifica qual é o estado atual na variável {@code state} e invoca a função
-     * abstrata ou concreta correspondente. Atualiza também o registo do último estado conhecido.
+     * Avalia a condição atual da entidade e delega o processamento para a rotina
+     * específica correspondente, garantindo a transição fluida entre comportamentos
+     * como inatividade, ataque ou morte.
      * </p>
      */
     protected void stateMachine() {
@@ -99,50 +105,56 @@ public abstract class Mob extends Enemy {
     }
 
     /**
-     * Define a lógica a ser executada quando o inimigo está no estado IDLE (Parado/Vaguear).
+     * Define o comportamento durante a inatividade ou patrulha.
      * <p>
-     * Deve ser implementado pelas subclasses específicas.
+     * Especifica as ações que a entidade deve realizar quando não está envolvida em
+     * combate ou transições. Deve ser implementada pelas subclasses.
      * </p>
      */
     protected abstract void idling();
 
     /**
-     * Define a lógica a ser executada quando o inimigo está a mudar de direção.
+     * Estabelece a lógica para a mudança de direção.
      * <p>
-     * Deve ser implementado pelas subclasses específicas.
+     * Implementa as animações e ajustes físicos necessários quando a entidade inverte
+     * o seu sentido de movimento. Deve ser implementada pelas subclasses.
      * </p>
      */
     protected abstract void turning();
 
     /**
-     * Define a lógica para quando o inimigo é surpreendido ou sobressaltado.
+     * Reage a eventos de surpresa ou deteção súbita.
      * <p>
-     * A implementação base é vazia, podendo ser sobrescrita se necessário.
+     * Proporciona um gancho para comportamentos de reação imediata ao avistar o jogador.
+     * A implementação base é inócua, permitindo redefinição nas subclasses se necessário.
      * </p>
      */
     protected void startled() {
     }
 
     /**
-     * Define a lógica de antecipação antes de um ataque.
+     * Prepara a execução de uma ofensiva.
      * <p>
-     * A implementação base é vazia, podendo ser sobrescrita se necessário.
+     * Descreve os sinais visuais ou lógicos que antecedem um ataque.
+     * Deve ser implementada pelas subclasses.
      * </p>
      */
     protected abstract void anticipating();
 
     /**
-     * Define a lógica de execução do ataque.
+     * Executa a lógica de ataque ativa.
      * <p>
-     * Deve ser implementado pelas subclasses específicas.
+     * Controla a fase ofensiva, incluindo a aplicação de dano e movimento.
+     * Deve ser implementada pelas subclasses.
      * </p>
      */
     protected abstract void attacking();
 
     /**
-     * Define a lógica para a morte do inimigo.
+     * Processa a sequência de eliminação da entidade.
      * <p>
-     * A implementação base é vazia, podendo ser sobrescrita se necessário.
+     * Define as animações e procedimentos finais quando a entidade perde a vida.
+     * Deve ser implementada pelas subclasses.
      * </p>
      */
     protected abstract void death();

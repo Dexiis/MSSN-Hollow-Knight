@@ -17,21 +17,22 @@ import processing.core.PVector;
  * Representa o inimigo HuskHornhead.
  * <p>
  * Este mob possui comportamentos de procura e vagueio, e pode realizar ataques
- * investindo em direção ao jogador. Durante o ataque, altera a sua hitbox e
- * posição para refletir a animação de investida.
+ * investindo na direção do jogador. Durante o ataque, altera a sua caixa de colisão
+ * (hitbox) e posição para refletir a animação de investida.
  * </p>
  */
 public class HuskHornhead extends Mob implements IVisualizable {
 
     /**
-     * Constrói um novo HuskHornhead na posição especificada.
+     * Instancia um novo HuskHornhead na posição especificada.
      * <p>
-     * Inicializa os atributos físicos (hitbox, massa, vida), velocidades,
-     * sprites e comportamentos (Seek, Wander, Attack) do inimigo.
+     * Inicializa os atributos físicos (caixa de colisão, massa, vida), velocidades,
+     * sprites e comportamentos (Seek, Wander, Attack) do inimigo. Carrega também
+     * a folha de sprites necessária para a animação.
      * </p>
      *
-     * @param position a posição inicial do inimigo no mundo
-     * @param p        o contexto gráfico do Processing
+     * @param position a posição inicial do inimigo no mundo.
+     * @param p        o contexto gráfico do Processing.
      */
     public HuskHornhead(PVector position, PApplet p) {
         super(position, p);
@@ -58,7 +59,7 @@ public class HuskHornhead extends Mob implements IVisualizable {
      * <p>
      * Verifica se as condições para iniciar um ataque estão reunidas e,
      * caso positivo, transita para o estado de antecipação. Atualiza a
-     * animação idle com base no tempo decorrido.
+     * animação de repouso com base no tempo decorrido e aplica os comportamentos de movimento.
      * </p>
      */
     @Override
@@ -79,11 +80,11 @@ public class HuskHornhead extends Mob implements IVisualizable {
     }
 
     /**
-     * Gere o estado de viragem (turning) do inimigo.
+     * Controla a ação de viragem (turning) do inimigo.
      * <p>
      * Executa a animação de mudança de direção. Quando a animação termina,
      * atualiza o multiplicador de escala para inverter o sprite e retorna
-     * ao estado idle.
+     * ao estado de repouso.
      * </p>
      */
     @Override
@@ -103,11 +104,11 @@ public class HuskHornhead extends Mob implements IVisualizable {
     }
 
     /**
-     * Gere o estado de antecipação antes do ataque.
+     * Gere o estado de antecipação prévio ao ataque.
      * <p>
-     * Executa a animação de preparação para o ataque. No final da animação,
-     * ajusta a hitbox e a posição do inimigo para refletir a postura de
-     * investida e transita para o estado de ataque.
+     * Executa a animação de preparação. No final desta sequência, ajusta a
+     * caixa de colisão e a posição da entidade para refletir a postura de
+     * investida, define as velocidades de ataque e transita para o estado ofensivo.
      * </p>
      */
     @Override
@@ -133,11 +134,11 @@ public class HuskHornhead extends Mob implements IVisualizable {
     }
 
     /**
-     * Gere o estado de ataque do inimigo.
+     * Controla a execução do ataque do inimigo.
      * <p>
-     * Define a velocidade máxima para a velocidade de ataque e executa a
-     * animação de investida. Quando o alvo sai do alcance de ataque,
-     * restaura a hitbox e posição originais e retorna ao estado idle.
+     * Monitoriza as condições de ataque e executa a animação de investida.
+     * Ao terminar a duração do ataque ou se o alvo sair de alcance, restaura as
+     * propriedades físicas originais (velocidade, hitbox) e reinicia o estado de repouso.
      * </p>
      */
     @Override
@@ -168,10 +169,11 @@ public class HuskHornhead extends Mob implements IVisualizable {
     }
 
     /**
-     * Gere o estado de morte do inimigo.
+     * Processa a sequência de morte do inimigo.
      * <p>
-     * Executa a animação de morte. Quando a animação termina, marca o
-     * inimigo como morto e retorna ao estado idle.
+     * Reproduz a animação de falecimento frame a frame. Ao concluir a animação,
+     * marca a entidade como morta e redefine o estado para repouso, permitindo
+     * a remoção segura do jogo.
      * </p>
      */
     @Override
@@ -191,14 +193,14 @@ public class HuskHornhead extends Mob implements IVisualizable {
     /**
      * Renderiza o inimigo no ecrã.
      * <p>
-     * Desenha a hitbox, atualiza o estado de ataque, gere mudanças de direção,
-     * verifica se está a morrer e executa a máquina de estados. Aplica uma
-     * escala de 0.7 ao sprite para ajustar o tamanho visual.
+     * Atualiza a lógica interna (máquina de estados, visão, direção) e desenha
+     * o sprite atual na posição correta, aplicando as transformações de escala
+     * e translação necessárias.
      * </p>
      *
-     * @param p       o contexto gráfico do Processing
-     * @param painter o objeto LinePainter para desenhar a hitbox
-     * @param plt     o objeto SubPlot para conversão de coordenadas
+     * @param p       o contexto gráfico do Processing.
+     * @param painter o objeto responsável pelo desenho de linhas de depuração.
+     * @param plt     o objeto auxiliar para conversão de coordenadas.
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {

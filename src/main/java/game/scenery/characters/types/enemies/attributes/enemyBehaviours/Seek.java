@@ -7,32 +7,35 @@ import game.scenery.characters.types.enemies.mobs.Squit;
 import processing.core.PVector;
 
 /**
- * Representa um comportamento de procura segura (Safe Seek).
+ * Representa uma conduta de perseguição cautelosa.
  * <p>
- * A entidade persegue o alvo apenas se este estiver visível ao longe (FarSight)
- * mas não estiver demasiado perto (NearSight vazio), mantendo assim uma distância
- * de segurança.
+ * A entidade segue o alvo caso este se encontre no campo de visão distante,
+ * mas interrompe o movimento se houver aproximação excessiva (campo de visão próximo vazio),
+ * garantindo assim uma margem de segurança.
  * </p>
  */
 public class Seek extends Behaviour {
     /**
-     * Constrói um novo comportamento de procura segura com o peso especificado.
+     * Inicializa uma nova instância deste comportamento com a prioridade indicada.
+     * <p>
+     * Atribui o peso fornecido à superclasse para influenciar a decisão da entidade.
+     * </p>
      *
-     * @param weight o peso ou prioridade deste comportamento
+     * @param weight o peso ou a prioridade desta ação.
      */
     public Seek(float weight) {
         super(weight);
     }
 
     /**
-     * Calcula a velocidade desejada para alcançar o alvo.
+     * Determina a velocidade necessária para atingir o alvo.
      * <p>
-     * Se as condições de segurança forem cumpridas (alvo longe e não perto), retorna
-     * o vetor direto para o alvo. Caso contrário, a entidade para (vetor nulo).
+     * Caso as condições de segurança sejam validadas (alvo longe e nada perto), devolve
+     * o vetor direcionado ao alvo. Se não for seguro, a entidade permanece parada (vetor nulo).
      * </p>
      *
-     * @param me a entidade que está a executar o comportamento
-     * @return o vetor de direção para o alvo ou (0,0) se não for seguro avançar
+     * @param me a entidade inimiga que executa a ação.
+     * @return o vetor de direção para o alvo ou (0,0) se não for seguro avançar.
      */
     public PVector getDesiredVelocity(Enemy me) {
         if (checkBehaviour(me)) {
@@ -44,14 +47,15 @@ public class Seek extends Behaviour {
     }
 
     /**
-     * Verifica as condições do comportamento de procura segura.
+     * Avalia se as condições para a perseguição segura estão reunidas.
      * <p>
-     * O comportamento só é ativado se o alvo estiver no campo de visão distante (FarSight)
-     * e a lista de entidades no campo de visão próximo (NearSight) estiver vazia.
+     * Esta operação só permite o movimento se o alvo estiver identificado no campo de visão
+     * distante (FarSight) e a lista de entidades no campo de visão próximo (NearSight)
+     * se encontrar vazia.
      * </p>
      *
-     * @param me a entidade atual
-     * @return {@code true} se for seguro perseguir, {@code false} caso contrário
+     * @param me a entidade atual sob avaliação.
+     * @return {@code true} se a perseguição for segura, {@code false} caso contrário.
      */
     private boolean checkBehaviour(Enemy me) {
         return me.getEye().getFarSight().contains(me.getEye().getTarget()) && me.getEye().getNearSight().isEmpty();
