@@ -53,6 +53,7 @@ public class World {
         // TODO ADICIONAR FOLLIAGE NOS CANTOS, TEXTURA LATERAL NO CHÃO, TETO
 
         // Teto
+        blackTerrains.add(new BlackTerrain(new PVector(4000, 2700), 10000, 1000, p));
         roof = new Roof(new PVector(4000, 2200), 10000, 1000, p);
 
         // Secção 1

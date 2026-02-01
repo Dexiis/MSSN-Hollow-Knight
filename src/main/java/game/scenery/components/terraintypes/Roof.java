@@ -40,8 +40,6 @@ public class Roof extends Terrain {
         float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
         //draw(painter, plt);
 
-        // TODO tentar melhorar performance
-
         p.pushMatrix();
         p.translate(pp[0], pp[1]);
         p.scale(0.4f);

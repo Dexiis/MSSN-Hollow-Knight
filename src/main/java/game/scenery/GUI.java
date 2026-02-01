@@ -42,5 +42,6 @@ public class GUI {
     public void display(TheKnight player) {
         p.fill(255);
         p.text("Health: " + player.getHealth(), 10, 20);
+        p.text("FPS: " + PApplet.round(p.frameRate), 10, 50);
     }
 }

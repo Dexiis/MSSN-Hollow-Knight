@@ -69,6 +69,8 @@ public class Game extends PApplet {
     @Override
     public void settings() {
         size(1600, 900);
+        // MELHORA PERFORMANCE
+        noSmooth();
     }
 
     /**
