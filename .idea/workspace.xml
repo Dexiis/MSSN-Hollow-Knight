@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="MSSN-Hollow-Knight:jar" />
+    </artifacts-to-build>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes." />
+    <list id="35cb66f5-a107-43e2-b909-1cfb0e7d3476" name="Changes by Bernardo Aguiar" comment="" />
+    <list id="caa23359-5f65-48a1-8ee5-b34609ea65fd" name="Changes by pitad" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -11,6 +21,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -32,39 +43,72 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/Dexiis/MSSN-Hollow-Knight.git&quot;,
-    &quot;accountId&quot;: &quot;4ae81eb2-72cd-4613-8b3f-a7582ab010c8&quot;
+    &quot;accountId&quot;: &quot;d0088d2c-32c9-4b17-86c7-48b0939a96cf&quot;
   }
 }</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 8
-}</component>
+        &quot;associatedIndex&quot;: 8
+        }</component>
   <component name="ProjectId" id="37fod8n0Pl8d7ovHejJ7GePLD7Q" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.MainMenu.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/raguiar/Development",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.40386385",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.MainMenu.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;extract.method.default.visibility&quot;: &quot;private&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;BD&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/bagui/Desktop/Pastas/Faculdade/GitHub/MSSN-TP2&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.40386385&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="game.scenery.components.flock.flockbehaviours" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\bagui\Desktop\Pastas\Faculdade\GitHub\MSSN-Hollow-Knight\src\main\resources\images" />
+      <recent name="C:\Users\bagui\Desktop\Pastas\Faculdade\GitHub\MSSN-Hollow-Knight\src\main\java\game\scenery\characters\types\bosses" />
+      <recent name="C:\Users\bagui\Desktop\Pastas\Faculdade\GitHub\MSSN-Hollow-Knight\src\main\java\game\scenery\components" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\bagui\Desktop\Pastas\Faculdade\GitHub\MSSN-Hollow-Knight\src\main\resources\images" />
+      <recent name="C:\Users\bagui\Desktop\Pastas\Faculdade\GitHub\MSSN-Hollow-Knight\src\main\java\game\hitbox" />
+      <recent name="C:\Users\bagui\Desktop\Pastas\Faculdade\GitHub\MSSN-Hollow-Knight\src\main\java\game\core" />
       <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="game.scenery.characters.types.bosses" />
+      <recent name="game.scenery.characters.attributes.behaviours" />
     </key>
   </component>
   <component name="RunManager">
@@ -84,11 +128,12 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.240" />
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.29346.240" />
+        <option value="bundled-jdk-9823dce3aa75-84258761d1cc-intellij.indexing.shared.core-IU-243.28141.18" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.28141.18" />
       </set>
     </attachedChunks>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="" />
@@ -104,6 +149,38 @@
       <workItem from="1767634479108" duration="1874000" />
       <workItem from="1767821707599" duration="36000" />
       <workItem from="1768049931896" duration="109000" />
+      <workItem from="1768262067559" duration="7775000" />
+      <workItem from="1768317103072" duration="353000" />
+      <workItem from="1768317466198" duration="11188000" />
+      <workItem from="1768431156731" duration="659000" />
+      <workItem from="1768432789151" duration="1712000" />
+      <workItem from="1768528925889" duration="571000" />
+      <workItem from="1768570787993" duration="31195000" />
+      <workItem from="1768663015659" duration="6225000" />
+      <workItem from="1768669283126" duration="8024000" />
+      <workItem from="1768677917354" duration="8022000" />
+      <workItem from="1768697137644" duration="4781000" />
+      <workItem from="1768702215624" duration="185000" />
+      <workItem from="1768702409384" duration="546000" />
+      <workItem from="1768702968478" duration="755000" />
+      <workItem from="1768704058110" duration="288000" />
+      <workItem from="1768704939983" duration="2776000" />
+      <workItem from="1768828447744" duration="5306000" />
+      <workItem from="1769022437390" duration="9274000" />
+      <workItem from="1769187680214" duration="19719000" />
+      <workItem from="1769259938127" duration="301000" />
+      <workItem from="1769348769879" duration="3901000" />
+      <workItem from="1769557340242" duration="875000" />
+      <workItem from="1769610039333" duration="5828000" />
+      <workItem from="1769616456871" duration="582000" />
+      <workItem from="1769617050185" duration="15629000" />
+      <workItem from="1769717673852" duration="2344000" />
+      <workItem from="1769736236719" duration="20569000" />
+      <workItem from="1769794715366" duration="16834000" />
+      <workItem from="1769834496371" duration="586000" />
+      <workItem from="1769862771146" duration="1235000" />
+      <workItem from="1769950127448" duration="19145000" />
+      <workItem from="1769991864170" duration="2079000" />
     </task>
     <task id="LOCAL-00001" summary="File restructure.">
       <option name="closed" value="true" />
@@ -136,8 +213,18 @@
     <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="2b152cff-e80a-4bfc-9842-f5a497331d55" value="TOOL_WINDOW" />
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
+        <entry key="2b152cff-e80a-4bfc-9842-f5a497331d55">
+          <value>
+            <State />
+          </value>
+        </entry>
         <entry key="MAIN">
           <value>
             <State>
@@ -163,5 +250,9 @@
     <MESSAGE value="Correct import statements" />
     <MESSAGE value="App class renaming, packages restructure, and integration of hitbox classes." />
     <option name="LAST_COMMIT_MESSAGE" value="App class renaming, packages restructure, and integration of hitbox classes." />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
