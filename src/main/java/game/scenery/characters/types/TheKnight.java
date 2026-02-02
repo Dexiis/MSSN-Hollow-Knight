@@ -17,13 +17,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Representa a personagem principal controlada pelo jogador ("The Knight").
+ * Representa a personagem principal controlada pelo jogador.
  * <p>
- * Esta classe gere a lógica específica do herói, incluindo a carga e animação de sprites,
- * a máquina de estados de movimento, o combate, a física específica e a gestão de entradas.
+ * Esta classe encapsula o comportamento completo do cavaleiro, incluindo
+ * movimentação, combate, animações, interações físicas, gestão de estados
+ * e reprodução de efeitos sonoros associados às ações executadas.
  * </p>
  */
 public class TheKnight extends Entity implements IVisualizable {
+
     public static final float JUMP_STRENGTH = 1000f;
     public static final float SPEED = 300f;
 
@@ -60,14 +62,15 @@ public class TheKnight extends Entity implements IVisualizable {
     private static boolean isAttackSoundPlaying = false;
 
     /**
-     * Constrói uma nova instância do Cavaleiro na posição especificada.
+     * Cria uma nova instância do cavaleiro na posição indicada.
      * <p>
-     * Inicializa as propriedades físicas (hitbox, massa, vida), configura o mapa de direções
-     * e carrega a folha de sprites, dividindo-a em quadros individuais para animação.
+     * Inicializa as propriedades físicas, estados internos, direções de movimento,
+     * sprites, animações e efeitos sonoros necessários para o funcionamento
+     * completo da personagem no jogo.
      * </p>
      *
-     * @param position a posição inicial do jogador no mundo
-     * @param p        o contexto gráfico do Processing necessário para carregar imagens
+     * @param position posição inicial no mundo
+     * @param p        contexto gráfico do Processing
      */
     public TheKnight(PVector position, PApplet p) {
         super(position, p);
@@ -112,68 +115,92 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     /**
-     * Obtém o estado de movimento registado no quadro anterior.
+     * Devolve o estado registado anteriormente.
+     * <p>
+     * Este valor é usado para detetar transições de estado e reiniciar animações
+     * sempre que ocorre uma mudança.
+     * </p>
      *
-     * @return o estado {@code State} anterior
+     * @return estado anterior da personagem
      */
     public State getLatestState() {
         return this.latestState;
     }
 
     /**
-     * Obtém o estado atual de movimento da personagem.
+     * Devolve o estado atual da personagem.
+     * <p>
+     * O estado representa a ação principal em execução, como parado, a correr,
+     * a saltar, a cair ou a atacar.
+     * </p>
      *
-     * @return o estado {@code State} atual (ex: IDLE, RUNNING)
+     * @return estado atual
      */
     public State getState() {
         return this.state;
     }
 
     /**
-     * Define a caixa de dano (HurtBox) atual.
+     * Define a área de ataque ativa.
+     * <p>
+     * Quando esta referência é nula, não existe qualquer ataque em curso.
+     * </p>
      *
-     * @param attack a nova {@code HurtBox} ou {@code null} para cancelar o ataque
+     * @param attack instância da área de dano ou nulo
      */
     public void setAttack(HurtBox attack) {
         this.attack = attack;
     }
 
     /**
-     * Define o estado de contacto com o chão.
+     * Atualiza a informação de contacto com o chão.
+     * <p>
+     * Este valor influencia o comportamento de saltos, quedas e transições
+     * entre estados.
+     * </p>
      *
-     * @param grounded o novo estado de contacto
+     * @param grounded indica se a personagem está apoiada no chão
      */
     public void setGrounded(boolean grounded) {
         this.grounded = grounded;
     }
 
     /**
-     * Define manualmente o registo do estado anterior.
+     * Atualiza manualmente o estado anterior.
+     * <p>
+     * Utilizado para garantir sincronização correta entre animações
+     * e mudanças de comportamento.
+     * </p>
      *
-     * @param latestState o estado a registar como anterior
+     * @param latestState estado a registar
      */
     public void setLatestState(State latestState) {
         this.latestState = latestState;
     }
 
     /**
-     * Atualiza o estado de uma direção de movimento específica.
+     * Regista o estado de uma direção de movimento.
+     * <p>
+     * Este registo reflete as ações do utilizador através do teclado
+     * e influencia a movimentação da personagem.
+     * </p>
      *
-     * @param direction a direção a atualizar no mapa
-     * @param aux       {@code true} se a tecla foi premida, {@code false} se foi solta
+     * @param direction direção associada
+     * @param aux       valor do estado da tecla
      */
     public void setMovingDirection(KnightMovement direction, boolean aux) {
         directions.put(direction, aux);
     }
 
     /**
-     * Aplica dano à entidade e gere a reação física.
+     * Aplica dano à personagem.
      * <p>
-     * Se o período de invencibilidade tiver passado, reduz a vida, aplica uma força de
-     * repulsão (knockback) na direção oposta ao dano e coloca a entidade em estado de atordoamento.
+     * Caso o período de invulnerabilidade tenha terminado, a vida é reduzida,
+     * é aplicada uma força de recuo e a personagem entra temporariamente
+     * num estado de incapacidade.
      * </p>
      *
-     * @param other o vetor de posição da origem do dano
+     * @param other posição da origem do impacto
      */
     public void damage(PVector other) {
         if (now - hitTime > I_FRAMES) {
@@ -193,14 +220,21 @@ public class TheKnight extends Entity implements IVisualizable {
         }
     }
 
+    /**
+     * Reproduz o efeito sonoro de dano.
+     * <p>
+     * Este som é tocado sempre que a personagem sofre um impacto válido.
+     * </p>
+     */
     public void playDamageSound() {
         damageSound.play(1.0f, 0.3f);
     }
 
     /**
-     * Executa a ação de saltar.
+     * Executa um salto vertical.
      * <p>
-     * Aplica uma velocidade vertical instantânea definida pela constante de força de salto.
+     * A velocidade vertical é ajustada instantaneamente de acordo
+     * com a força de salto definida.
      * </p>
      */
     public void jump() {
@@ -210,7 +244,7 @@ public class TheKnight extends Entity implements IVisualizable {
     /**
      * Move a personagem para a esquerda.
      * <p>
-     * Decrementa a velocidade horizontal até atingir o limite máximo definido.
+     * A velocidade horizontal é reduzida até ao limite máximo permitido.
      * </p>
      */
     public void moveLeft() {
@@ -220,7 +254,7 @@ public class TheKnight extends Entity implements IVisualizable {
     /**
      * Move a personagem para a direita.
      * <p>
-     * Incrementa a velocidade horizontal até atingir o limite máximo definido.
+     * A velocidade horizontal é aumentada até ao limite máximo permitido.
      * </p>
      */
     public void moveRight() {
@@ -228,9 +262,10 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     /**
-     * Inicia a lógica de ataque do jogador.
+     * Inicia uma ação ofensiva.
      * <p>
-     * Verifica se o tempo de recarga já expirou antes de gerar uma nova caixa de ataque.
+     * Verifica se o tempo de recarga terminou antes de criar
+     * uma nova área de ataque.
      * </p>
      */
     public void playerAttack() {
@@ -242,12 +277,10 @@ public class TheKnight extends Entity implements IVisualizable {
         }
     }
 
-
     /**
-     * Interrompe o movimento horizontal da personagem.
+     * Reduz progressivamente o movimento horizontal.
      * <p>
-     * Aplica uma força de atrito reduzindo a velocidade pela metade a cada chamada,
-     * até que a personagem pare.
+     * Simula atrito, diminuindo a velocidade até à imobilização.
      * </p>
      */
     public void stopMovement() {
@@ -255,13 +288,13 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     /**
-     * Constrói a geometria da caixa de ataque (HurtBox).
+     * Cria a área geométrica do ataque.
      * <p>
-     * Determina a direção do ataque com base nas teclas premidas e define os vértices
-     * do polígono de colisão correspondente.
+     * A forma e orientação são definidas com base na direção atual
+     * da personagem e nas entradas ativas.
      * </p>
      *
-     * @return uma nova instância de {@code HurtBox} configurada
+     * @return nova área de dano configurada
      */
     private HurtBox attack() {
         HurtBox.Builder builder = new HurtBox.Builder();
@@ -301,10 +334,11 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     /**
-     * Gere a lógica de movimento do jogador baseada nas entradas (inputs).
+     * Processa as entradas de movimento.
      * <p>
-     * Controla a máquina de estados de movimento (IDLE, RUNNING, JUMPING, FALLING)
-     * e aplica as ações correspondentes como mover para os lados ou saltar.
+     * Atualiza velocidades, estados e ações associadas às teclas
+     * de deslocação e salto.
+     * </p>
      */
     private void handleInputMovements() {
         if ((!(directions.get(KnightMovement.RIGHT)) && !(directions.get(KnightMovement.LEFT))) || (directions.get(KnightMovement.RIGHT)) && (directions.get(KnightMovement.LEFT))) {
@@ -331,14 +365,18 @@ public class TheKnight extends Entity implements IVisualizable {
             directions.put(KnightMovement.UP, false);
             if (this.velocity.y > 0) this.velocity = new PVector(this.velocity.x, 0);
         }
-
     }
 
     /**
-     * Gere a lógica de combate do jogador.
+     * Gere a lógica de colisões ofensivas.
      * <p>
-     * Atualiza a posição da área de ataque (hitbox), verifica interseções com inimigos,
-     * aplica dano e remove inimigos derrotados.
+     * Atualiza a posição da área de ataque, verifica interseções
+     * com inimigos e aplica os efeitos correspondentes.
+     * </p>
+     *
+     * @param p       contexto gráfico
+     * @param painter utilitário de desenho
+     * @param plt     gestor de coordenadas
      */
     private void handleAttack(PApplet p, LinePainter painter, SubPlot plt) {
         if (attack != null) {
@@ -360,6 +398,12 @@ public class TheKnight extends Entity implements IVisualizable {
         }
     }
 
+    /**
+     * Atualiza o comportamento com base no estado atual.
+     * <p>
+     * Encaminha a execução para a lógica correspondente ao estado ativo.
+     * </p>
+     */
     private void stateMachine() {
         switch (state) {
             case State.IDLE:
@@ -380,12 +424,24 @@ public class TheKnight extends Entity implements IVisualizable {
         }
     }
 
+    /**
+     * Processa o comportamento parado.
+     * <p>
+     * Atualiza o sprite base e verifica transições para outros estados.
+     * </p>
+     */
     private void idling() {
         if (moving) state = State.RUNNING;
         if (!grounded) state = State.JUMPING;
         this.sprite = spriteArray[0][0];
     }
 
+    /**
+     * Processa o comportamento de corrida.
+     * <p>
+     * Atualiza animações, sons e transições associadas ao deslocamento horizontal.
+     * </p>
+     */
     private void running() {
         if (!isRunSoundPlaying) {
             runSound.loop();
@@ -409,6 +465,12 @@ public class TheKnight extends Entity implements IVisualizable {
         }
     }
 
+    /**
+     * Processa o comportamento de salto.
+     * <p>
+     * Controla a transição entre subida e queda.
+     * </p>
+     */
     private void jumping() {
         if (!isJumpSoundPlaying) {
             jumpSound.play();
@@ -420,8 +482,14 @@ public class TheKnight extends Entity implements IVisualizable {
         }
     }
 
+    /**
+     * Processa o comportamento de queda.
+     * <p>
+     * Atualiza animações, sons e verifica o contacto com o chão.
+     * </p>
+     */
     private void falling() {
-        if(!isFallingSoundPlaying) {
+        if (!isFallingSoundPlaying) {
             fallingSound.loop(1.0f, 0.4f);
             isFallingSoundPlaying = true;
         }
@@ -439,8 +507,14 @@ public class TheKnight extends Entity implements IVisualizable {
         }
     }
 
+    /**
+     * Processa o comportamento ofensivo.
+     * <p>
+     * Atualiza a animação do ataque e gere a sua conclusão.
+     * </p>
+     */
     private void attacking() {
-        if(!isAttackSoundPlaying) {
+        if (!isAttackSoundPlaying) {
             attackSound.play(1.0f, 0.4f);
             isAttackSoundPlaying = true;
         }
@@ -456,8 +530,19 @@ public class TheKnight extends Entity implements IVisualizable {
         }
     }
 
+    /**
+     * Desenha visualmente a área de ataque.
+     * <p>
+     * Aplica transformações gráficas necessárias para alinhar
+     * o sprite do ataque com a posição e direção corretas.
+     * </p>
+     *
+     * @param p       contexto gráfico
+     * @param painter utilitário de desenho
+     * @param plt     gestor de coordenadas
+     */
     private void displayAttack(PApplet p, LinePainter painter, SubPlot plt) {
-        if(attack == null) return;
+        if (attack == null) return;
 
         float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
 
@@ -474,22 +559,21 @@ public class TheKnight extends Entity implements IVisualizable {
     }
 
     /**
-     * Renderiza o jogador no ecrã.
+     * Desenha a personagem no ecrã.
      * <p>
-     * Esta função gere a seleção de sprites baseada no estado e no tempo, converte
-     * coordenadas do mundo para pixéis e desenha a personagem com as transformações
-     * adequadas (escala e direção).
+     * Atualiza estados, animações, lógica de combate e converte
+     * coordenadas do mundo para o sistema gráfico antes do desenho.
      * </p>
      *
-     * @param p       o contexto gráfico do Processing
-     * @param painter o objeto auxiliar para desenho de linhas
-     * @param plt     o objeto de gestão de coordenadas
+     * @param p       contexto gráfico
+     * @param painter utilitário de desenho
+     * @param plt     gestor de coordenadas
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         if (stunned && now - stunnedTime >= 500 && grounded) this.stunned = false;
 
-        if(isDying()) setDead(true);
+        if (isDying()) setDead(true);
 
         if (getState() != getLatestState()) {
             resetAnimation();

@@ -7,11 +7,11 @@ import processing.core.PVector;
 import processing.sound.SoundFile;
 
 /**
- * Classe abstrata que representa uma entidade viva ou interativa no jogo.
+ * Representa uma entidade base com comportamento físico e visual.
  * <p>
- * Estende a classe de movimento para herdar capacidades físicas e implementa a interface
- * de visualização. Serve como base para o Jogador e para os Inimigos, gerindo propriedades
- * comuns como vida, colisão (Hitbox), visão e atributos físicos.
+ * Serve como fundação para personagens jogáveis e adversários,
+ * concentrando propriedades comuns como vida, animações, colisões,
+ * temporização e interação com o mundo do jogo.
  * </p>
  */
 public abstract class Entity extends Movement implements IVisualizable {
@@ -41,12 +41,14 @@ public abstract class Entity extends Movement implements IVisualizable {
     protected static SoundFile enemyDamageSound;
 
     /**
-     * Constrói uma nova entidade na posição especificada.
+     * Cria uma nova entidade numa posição específica.
      * <p>
-     * Inicializa a posição base invocando o construtor da superclasse.
+     * Inicializa a posição base através da superclasse e prepara
+     * os recursos sonoros comuns associados a impactos recebidos.
      * </p>
      *
-     * @param position o vetor de posição inicial da entidade
+     * @param position vetor que define a posição inicial
+     * @param p        contexto gráfico do Processing
      */
     protected Entity(PVector position, PApplet p) {
         super(position);
@@ -55,66 +57,78 @@ public abstract class Entity extends Movement implements IVisualizable {
     }
 
     /**
-     * Obtém o valor atual da vida da entidade.
+     * Devolve a quantidade atual de vida.
+     * <p>
+     * Este valor representa a resistência restante antes de a entidade
+     * entrar em estado de eliminação.
+     * </p>
      *
-     * @return a quantidade de vida restante
+     * @return valor atual da vida
      */
     public int getHealth() {
         return health;
     }
 
     /**
-     * Obtém a área de colisão (Hitbox) associada a esta entidade.
+     * Devolve a caixa de colisão associada.
+     * <p>
+     * A estrutura retornada é utilizada para deteção de interseções
+     * com outras entidades e com o cenário.
+     * </p>
      *
-     * @return o objeto Hitbox atual
+     * @return instância da área de colisão
      */
     public Hitbox getHitbox() {
         return hitbox;
     }
 
     /**
-     * Verifica se a entidade está marcada como morta.
+     * Indica se a entidade se encontra marcada como morta.
      * <p>
-     * Este estado indica tipicamente que a animação de morte já terminou e a entidade
-     * pode ser removida ou desativada.
+     * Este estado normalmente significa que o ciclo final de animação
+     * já terminou e que a entidade pode ser removida do jogo.
      * </p>
      *
-     * @return {@code true} se a entidade estiver morta, {@code false} caso contrário
+     * @return verdadeiro se estiver marcada como morta
      */
     public boolean isDead() {
         return this.dead;
     }
 
     /**
-     * Verifica se a entidade perdeu toda a sua vida.
+     * Indica se a entidade ficou sem vida.
      * <p>
-     * Difere da verificação de morte final, pois indica apenas que a saúde chegou a zero,
-     * o que normalmente despoleta a animação de morte.
+     * Este estado sinaliza que a saúde chegou a zero ou menos,
+     * sendo habitualmente utilizado para iniciar animações finais.
      * </p>
      *
-     * @return {@code true} se a saúde for menor ou igual a zero
+     * @return verdadeiro se a vida for menor ou igual a zero
      */
     public boolean isDying() {
         return health <= 0;
     }
 
     /**
-     * Marca a entidade como morta.
+     * Atualiza o estado de morte da entidade.
+     * <p>
+     * Permite marcar explicitamente quando a entidade deixa de
+     * participar nas interações do jogo.
+     * </p>
      *
-     * @param dead o novo estado de morte
+     * @param dead novo valor do estado de morte
      */
     public void setDead(boolean dead) {
         this.dead = dead;
     }
 
     /**
-     * Define manualmente a posição da entidade no mundo.
+     * Atualiza a posição da entidade no mundo.
      * <p>
-     * Sobrescreve a rotina da superclasse para garantir que a caixa de colisão (Hitbox)
-     * é sincronizada imediatamente para a nova localização.
+     * Garante que a caixa de colisão acompanha imediatamente
+     * a nova localização atribuída.
      * </p>
      *
-     * @param position o novo vetor de posição
+     * @param position novo vetor de posição
      */
     @Override
     public void setPosition(PVector position) {
@@ -122,16 +136,26 @@ public abstract class Entity extends Movement implements IVisualizable {
         this.hitbox.setPosition(position);
     }
 
+    /**
+     * Atualiza os valores temporais internos.
+     * <p>
+     * Estes valores são utilizados para cálculos de movimento,
+     * animações e controlo de intervalos entre ações.
+     * </p>
+     *
+     * @param dt  intervalo de tempo decorrido
+     * @param now instante temporal atual
+     */
     public void updateTime(float dt, int now) {
         this.dt = dt;
         this.now = now;
     }
 
     /**
-     * Aplica dano à entidade de forma genérica.
+     * Aplica dano genérico à entidade.
      * <p>
-     * Implementa um sistema de "invencibilidade temporária" (I-Frames). A vida só é reduzida
-     * se tiver passado tempo suficiente desde o último golpe recebido.
+     * Implementa um período de invulnerabilidade após impacto,
+     * evitando perdas consecutivas de vida num curto espaço de tempo.
      * </p>
      */
     public void damage() {
@@ -143,13 +167,13 @@ public abstract class Entity extends Movement implements IVisualizable {
     }
 
     /**
-     * Atualiza a posição física da entidade baseada no intervalo de tempo.
+     * Atualiza a posição física com base no tempo decorrido.
      * <p>
-     * Sobrescreve a rotina da superclasse para garantir que a caixa de colisão (Hitbox)
-     * acompanha sempre a nova posição da entidade após o cálculo do movimento.
+     * Após o cálculo do deslocamento, sincroniza a posição
+     * da caixa de colisão com a nova localização.
      * </p>
      *
-     * @param dt o intervalo de tempo decorrido
+     * @param dt intervalo de tempo utilizado no cálculo
      */
     @Override
     public void move(float dt) {
@@ -158,12 +182,11 @@ public abstract class Entity extends Movement implements IVisualizable {
     }
 
     /**
-     * Reinicia o ciclo de animação do sprite.
+     * Reinicia a sequência de animação do sprite.
      * <p>
-     * Coloca o índice do sprite a zero e define o tempo de referência da animação
-     * para o valor atual fornecido.
+     * Coloca o índice da animação no início e redefine
+     * o instante de referência para o ciclo atual.
      * </p>
-     *
      */
     public void resetAnimation() {
         this.spriteIndex = 0;

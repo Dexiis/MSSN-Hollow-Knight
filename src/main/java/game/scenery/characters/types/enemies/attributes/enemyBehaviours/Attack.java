@@ -19,6 +19,7 @@ public class Attack extends Behaviour {
      * <p>
      * Cria uma instância do comportamento Attack com o peso fornecido, que determina a prioridade no sistema de decisão de movimento.
      * </p>
+     *
      * @param weight o peso ou prioridade deste comportamento
      */
     public Attack(float weight) {
@@ -30,6 +31,7 @@ public class Attack extends Behaviour {
      * <p>
      * Se existir uma direção de carga definida, retorna essa direção; caso contrário, retorna um vetor vazio.
      * </p>
+     *
      * @param me o inimigo que está a executar o comportamento
      * @return o vetor de velocidade de ataque ou um vetor vazio
      */
@@ -44,6 +46,7 @@ public class Attack extends Behaviour {
      * <p>
      * O ataque é considerado possível se o alvo estiver contido na lista de entidades da visão próxima.
      * </p>
+     *
      * @param me o inimigo atual
      * @return verdadeiro se o alvo estiver ao alcance, falso caso contrário
      */
@@ -56,6 +59,7 @@ public class Attack extends Behaviour {
      * <p>
      * Armazena a posição atual do alvo e calcula a velocidade de carga correspondente.
      * </p>
+     *
      * @param me o inimigo que guarda a posição
      */
     public void saveTargetPosition(Enemy me) {
@@ -68,6 +72,7 @@ public class Attack extends Behaviour {
      * <p>
      * Determina a direção normalizada da carga multiplicada pela velocidade máxima do inimigo.
      * </p>
+     *
      * @param me o inimigo para o qual a velocidade é calculada
      */
     private void saveVelocity(Enemy me) {

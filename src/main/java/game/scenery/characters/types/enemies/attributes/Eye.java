@@ -1,8 +1,8 @@
 package game.scenery.characters.types.enemies.attributes;
 
 import game.core.SubPlot;
-import game.scenery.characters.types.Enemy;
 import game.scenery.characters.Entity;
+import game.scenery.characters.types.Enemy;
 import processing.core.PApplet;
 import processing.core.PVector;
 

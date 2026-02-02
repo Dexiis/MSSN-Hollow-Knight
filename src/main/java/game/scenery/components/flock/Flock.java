@@ -7,7 +7,6 @@ import game.scenery.characters.types.enemies.attributes.DNA;
 import game.scenery.components.flock.flockbehaviours.Align;
 import game.scenery.components.flock.flockbehaviours.Cohesion;
 import game.scenery.components.flock.flockbehaviours.Separate;
-import game.scenery.components.hitbox.Hitbox;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
@@ -16,10 +15,11 @@ import processing.core.PVector;
 import java.util.ArrayList;
 
 /**
- * Representa um bando de entidades que se movem coletivamente.
+ * Representa uma entidade pertencente a um sistema de bando.
  * <p>
- * Esta classe gere um conjunto de comportamentos coletivos como alinhamento,
- * coesão e separação, permitindo simular movimentos de rebanho ou cardume.
+ * Esta classe integra comportamentos coletivos como alinhamento, coesão
+ * e separação, permitindo simular deslocações coordenadas em ambientes
+ * toroidais com controlo físico e genético do movimento.
  * </p>
  */
 public class Flock extends Movement {
@@ -31,15 +31,16 @@ public class Flock extends Movement {
     private final int SPRITE_SIZE = 150;
 
     /**
-     * Constrói um novo Flock na posição especificada.
+     * Cria uma nova entidade de bando numa posição específica.
      * <p>
-     * Inicializa os atributos físicos, comportamentos coletivos (Align, Cohesion, Separate),
-     * sprites e DNA específico para este bando.
+     * Inicializa os atributos físicos herdados, associa o ADN responsável
+     * pelos limites de movimento, configura os comportamentos coletivos
+     * base e prepara o sprite utilizado na representação visual.
      * </p>
      *
-     * @param position a posição inicial do bando no mundo
-     * @param plt      o subplot onde o bando se move
-     * @param p        o contexto gráfico do Processing
+     * @param position posição inicial no mundo
+     * @param plt      subplot que define os limites do espaço toroidal
+     * @param p        contexto gráfico do Processing
      */
     public Flock(PVector position, SubPlot plt, PApplet p) {
         super(position);
@@ -58,36 +59,52 @@ public class Flock extends Movement {
     }
 
     /**
-     * Devolve o DNA do bando.
+     * Devolve a informação genética associada.
+     * <p>
+     * O ADN define limites como velocidade máxima e força máxima
+     * aplicável durante o movimento.
+     * </p>
      *
-     * @return o DNA associado ao bando
+     * @return instância de ADN associada
      */
     public DNA getDna() {
         return dna;
     }
 
     /**
-     * Devolve o olho do bando.
+     * Devolve o sistema de perceção do bando.
+     * <p>
+     * O olho é responsável por identificar entidades vizinhas
+     * em diferentes alcances de visão.
+     * </p>
      *
-     * @return o olho associado ao bando
+     * @return instância do olho do bando
      */
     public FlockEye getEye() {
         return eye;
     }
 
     /**
-     * Define o olho do bando.
+     * Associa um sistema de perceção à entidade.
+     * <p>
+     * Este componente permite analisar o espaço envolvente
+     * e recolher informação sobre entidades próximas.
+     * </p>
      *
-     * @param eye o olho a definir
+     * @param eye sistema de perceção a associar
      */
     public void setEye(FlockEye eye) {
         this.eye = eye;
     }
 
     /**
-     * Define manualmente a posição do bando.
+     * Atualiza diretamente a posição no espaço.
+     * <p>
+     * Esta atribuição ignora cálculos físicos intermédios,
+     * sendo utilizada para reposicionamentos imediatos.
+     * </p>
      *
-     * @param position o novo vetor de posição
+     * @param position novo vetor de posição
      */
     @Override
     public void setPosition(PVector position) {
@@ -95,13 +112,14 @@ public class Flock extends Movement {
     }
 
     /**
-     * Aplica os comportamentos coletivos ao bando.
+     * Aplica os comportamentos coletivos ativos.
      * <p>
-     * Calcula a velocidade desejada baseada nos comportamentos ativos,
-     * normaliza e aplica as forças necessárias para o movimento.
+     * Calcula a velocidade desejada resultante da combinação
+     * ponderada dos comportamentos disponíveis e aplica
+     * as forças necessárias para ajustar o movimento.
      * </p>
      *
-     * @param dt o intervalo de tempo decorrido
+     * @param dt intervalo de tempo decorrido
      */
     public void applyBehaviours(float dt) {
         if (eye != null) eye.look();
@@ -119,13 +137,14 @@ public class Flock extends Movement {
     }
 
     /**
-     * Exibe o bando no ecrã.
+     * Desenha a entidade de bando no ecrã.
      * <p>
-     * Desenha o sprite do bando com transparência e escala reduzida.
+     * O sprite é apresentado com escala reduzida e transparência,
+     * sendo convertido das coordenadas do mundo para píxeis.
      * </p>
      *
-     * @param p   o contexto gráfico do Processing
-     * @param plt o subplot onde desenhar
+     * @param p   contexto gráfico do Processing
+     * @param plt subplot onde ocorre o desenho
      */
     public void display(PApplet p, SubPlot plt) {
         float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
@@ -144,13 +163,14 @@ public class Flock extends Movement {
     }
 
     /**
-     * Calcula o vetor de distância toroidal para uma posição alvo.
+     * Calcula o vetor de distância considerando um mundo toroidal.
      * <p>
-     * Considera as bordas do mundo toroidal para calcular a distância mais curta.
+     * O cálculo garante que é escolhida a menor distância possível,
+     * tendo em conta a continuidade das bordas do espaço.
      * </p>
      *
-     * @param targetPosition a posição alvo
-     * @return o vetor de distância toroidal
+     * @param targetPosition posição alvo
+     * @return vetor de distância toroidal
      */
     public PVector getToroidalDistanceVector(PVector targetPosition) {
         PVector distance = PVector.sub(targetPosition, position);
@@ -172,13 +192,14 @@ public class Flock extends Movement {
     }
 
     /**
-     * Move o bando com a velocidade desejada.
+     * Atualiza o movimento com base numa velocidade pretendida.
      * <p>
-     * Normaliza a velocidade desejada, aplica forças e gere o movimento toroidal.
+     * A velocidade desejada é normalizada, limitada pelos valores
+     * genéticos e aplicada respeitando a dinâmica do espaço toroidal.
      * </p>
      *
-     * @param dt o intervalo de tempo decorrido
-     * @param vd a velocidade desejada
+     * @param dt intervalo de tempo decorrido
+     * @param vd vetor de velocidade pretendida
      */
     public void move(float dt, PVector vd) {
         vd.normalize().mult(dna.getMaxSpeed());
@@ -194,9 +215,13 @@ public class Flock extends Movement {
     }
 
     /**
-     * Atualiza a posição física do bando baseada no tempo delta.
+     * Atualiza a posição física com base no tempo decorrido.
+     * <p>
+     * Executa apenas o cálculo físico herdado, sem aplicação
+     * direta de comportamentos coletivos.
+     * </p>
      *
-     * @param dt o intervalo de tempo decorrido
+     * @param dt intervalo de tempo decorrido
      */
     @Override
     public void move(float dt) {

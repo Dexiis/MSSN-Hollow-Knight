@@ -7,10 +7,11 @@ import processing.core.PVector;
 import java.util.ArrayList;
 
 /**
- * Gere a perceção visual de um agente do bando.
+ * Responsável pela perceção visual de uma entidade pertencente a um bando.
  * <p>
- * Esta classe funciona como um sensor que analisa o ambiente em redor da entidade,
- * identificando outros agentes dentro do campo de visão e zona de proximidade.
+ * Esta classe atua como um sensor, analisando o espaço envolvente da entidade
+ * proprietária e identificando outras entidades dentro de diferentes zonas de visão,
+ * permitindo suportar comportamentos coletivos como alinhamento, coesão e separação.
  * </p>
  */
 public class FlockEye {
@@ -21,13 +22,14 @@ public class FlockEye {
     protected Flock target;
 
     /**
-     * Constrói uma nova instância do sensor visual.
+     * Cria um sensor visual associado a uma entidade do bando.
      * <p>
-     * Inicializa a referência para a entidade proprietária e a lista de corpos a rastrear.
+     * Inicializa a ligação à entidade proprietária e regista as restantes entidades
+     * que podem ser observadas no ambiente, definindo também um alvo inicial.
      * </p>
      *
-     * @param me      a entidade a quem este sensor pertence
-     * @param targets a lista inicial de outras entidades no ambiente
+     * @param me      a entidade à qual o sensor pertence
+     * @param targets a lista inicial de entidades presentes no ambiente
      */
     public FlockEye(Flock me, ArrayList<Flock> targets) {
         this.me = me;
@@ -36,40 +38,50 @@ public class FlockEye {
     }
 
     /**
-     * Obtém a lista de todas as entidades que estão configuradas para serem rastreadas.
+     * Devolve todas as entidades configuradas para observação.
+     * <p>
+     * Esta lista representa o conjunto completo de entidades que podem ser
+     * analisadas pelo sensor durante o processo de perceção.
+     * </p>
      *
-     * @return a lista de entidades
+     * @return a lista de entidades monitorizadas
      */
     public ArrayList<Flock> getAllTrackingBodies() {
         return allTrackingBodies;
     }
 
     /**
-     * Obtém a lista de vizinhos detetados no campo de visão alargado.
+     * Fornece as entidades detetadas na zona de visão alargada.
      * <p>
-     * Estes vizinhos são usados para calcular comportamentos de coesão e alinhamento.
+     * As entidades presentes nesta lista encontram-se dentro do campo de visão
+     * normal e são utilizadas para cálculos de alinhamento e coesão do bando.
      * </p>
      *
-     * @return uma lista de entidades visíveis
+     * @return a lista de entidades visíveis à distância
      */
     public ArrayList<Flock> getFarSight() {
         return farSight;
     }
 
     /**
-     * Obtém a lista de vizinhos detetados na zona de proximidade imediata.
+     * Fornece as entidades detetadas na zona de proximidade imediata.
      * <p>
-     * Estes vizinhos são usados para calcular comportamentos de separação.
+     * Esta zona representa uma área crítica em redor da entidade, sendo usada
+     * para evitar colisões e suportar comportamentos de separação.
      * </p>
      *
-     * @return uma lista de entidades demasiado próximas
+     * @return a lista de entidades demasiado próximas
      */
     public ArrayList<Flock> getNearSight() {
         return nearSight;
     }
 
     /**
-     * Obtém a referência para o alvo atual da entidade.
+     * Devolve a entidade atualmente definida como alvo.
+     * <p>
+     * O alvo pode ser usado para orientar decisões específicas ou comportamentos
+     * prioritários da entidade proprietária.
+     * </p>
      *
      * @return a entidade alvo
      */
@@ -78,30 +90,39 @@ public class FlockEye {
     }
 
     /**
-     * Define a lista completa de todas as entidades que este olho deve monitorizar.
+     * Atualiza o conjunto completo de entidades a observar.
+     * <p>
+     * Substitui a lista atual de entidades monitorizadas por uma nova lista,
+     * redefinindo os potenciais vizinhos a considerar durante a perceção.
+     * </p>
      *
-     * @param allTrackingBodies a lista de entidades rastreáveis
+     * @param allTrackingBodies a nova lista de entidades observáveis
      */
     public void setAllTrackingBodies(ArrayList<Flock> allTrackingBodies) {
         this.allTrackingBodies = allTrackingBodies;
     }
 
     /**
-     * Define o alvo específico que a entidade deve focar.
+     * Define uma nova entidade como alvo principal.
+     * <p>
+     * Esta referência passa a ser utilizada como foco preferencial para
+     * comportamentos que dependam de um alvo específico.
+     * </p>
      *
-     * @param target a entidade alvo
+     * @param target a entidade a definir como alvo
      */
     public void setTarget(Flock target) {
         this.target = target;
     }
 
     /**
-     * Adiciona um conjunto de entidades à lista de corpos rastreáveis pelo sensor.
+     * Adiciona novas entidades ao conjunto de observação.
      * <p>
-     * Filtra a lista para garantir que a própria entidade não é incluída.
+     * As entidades fornecidas são registadas como possíveis vizinhos,
+     * garantindo que a própria entidade proprietária não é incluída.
      * </p>
      *
-     * @param targets a lista de novos potenciais vizinhos
+     * @param targets a lista de entidades a adicionar
      */
     public void addTarget(ArrayList<Flock> targets) {
         for (Flock target : targets) {
@@ -110,13 +131,14 @@ public class FlockEye {
     }
 
     /**
-     * Renderiza a representação gráfica do campo de visão.
+     * Desenha a representação visual do campo de visão.
      * <p>
-     * Desenha os cones de visão para auxiliar na visualização do comportamento.
+     * Este desenho tem como objetivo auxiliar a depuração, ilustrando os ângulos
+     * e alcances das diferentes zonas de perceção definidas no DNA da entidade.
      * </p>
      *
      * @param p   o contexto gráfico do Processing
-     * @param plt o objeto SubPlot para conversão de coordenadas
+     * @param plt o objeto responsável pela conversão de coordenadas
      */
     public void display(PApplet p, SubPlot plt) {
         p.pushStyle();
@@ -156,10 +178,10 @@ public class FlockEye {
     }
 
     /**
-     * Executa o processo de perceção sensorial.
+     * Atualiza a perceção do ambiente envolvente.
      * <p>
-     * Percorre todas as entidades rastreáveis e determina se estão visíveis,
-     * considerando a distância toroidal e os ângulos de visão.
+     * Percorre todas as entidades monitorizadas e classifica-as de acordo com
+     * a sua posição relativa, preenchendo as listas de visão distante e próxima.
      * </p>
      */
     public void look() {
@@ -172,25 +194,30 @@ public class FlockEye {
     }
 
     /**
-     * Verifica se uma posição específica está dentro do alcance de visão distante.
-     * Utiliza a distância e ângulo de visão definidos no DNA da entidade.
+     * Determina se uma posição se encontra na zona de visão alargada.
+     * <p>
+     * A verificação tem em conta a distância máxima e o ângulo de visão definidos
+     * no DNA da entidade proprietária.
+     * </p>
      *
-     * @param t O vetor de posição a verificar.
-     * @return {@code true} se estiver visível, {@code false} caso contrário.
+     * @param t o vetor de posição a analisar
+     * @return {@code true} se a posição estiver visível, {@code false} caso contrário
      */
     private boolean farSight(PVector t) {
         return inSight(t, me.getDna().getVisionDistance(), me.getDna().getVisionAngle());
     }
 
     /**
-     * Verifica se uma entidade específica está na zona crítica de proximidade.
+     * Avalia se uma posição se encontra dentro de um determinado cone de visão.
      * <p>
-     * Semelhante à verificação de visão distante, mas utiliza o raio de "ataque"
-     * (separação) e o ângulo correspondente definidos no DNA.
+     * O cálculo considera a distância entre a entidade e a posição alvo, bem como
+     * o ângulo formado com a direção atual do movimento.
      * </p>
      *
-     * @param t a entidade a verificar
-     * @return {@code true} se a entidade estiver na zona próxima, {@code false} caso contrário
+     * @param t           o vetor de posição a analisar
+     * @param maxDistance a distância máxima considerada visível
+     * @param maxAngle    o ângulo máximo permitido
+     * @return {@code true} se a posição estiver dentro do cone definido, {@code false} caso contrário
      */
     private boolean inSight(PVector t, float maxDistance, float maxAngle) {
         PVector r = PVector.sub(t, me.getPosition());
@@ -200,15 +227,14 @@ public class FlockEye {
     }
 
     /**
-     * Verifica se uma entidade específica está dentro do cone de visão geral.
+     * Determina se uma posição se encontra na zona de proximidade crítica.
      * <p>
-     * Calcula o vetor de distância toroidal e verifica se a magnitude é inferior
-     * à distância de visão definida no DNA. Se estiver perto o suficiente, verifica
-     * se o ângulo entre a direção atual e o alvo está dentro do ângulo de visão permitido.
+     * Esta verificação utiliza os parâmetros de alcance e ângulo definidos para
+     * a zona de separação, permitindo identificar entidades demasiado próximas.
      * </p>
      *
-     * @param t a entidade a verificar
-     * @return {@code true} se a entidade estiver visível, {@code false} caso contrário
+     * @param t o vetor de posição a analisar
+     * @return {@code true} se a posição estiver na zona próxima, {@code false} caso contrário
      */
     private boolean nearSight(PVector t) {
         return inSight(t, me.getDna().getVisionAttack(), me.getDna().getVisionAttackAngle());

@@ -18,6 +18,7 @@ public class JumpFlee extends Behaviour {
      * <p>
      * Cria uma instância do comportamento JumpFlee com o peso especificado, herdando do comportamento base.
      * </p>
+     *
      * @param weight o peso do comportamento
      */
     public JumpFlee(float weight) {
@@ -29,6 +30,7 @@ public class JumpFlee extends Behaviour {
      * <p>
      * Esta operação determina a velocidade que o inimigo deve ter para executar o salto de fuga, considerando se está encurralado ou não.
      * </p>
+     *
      * @param me o inimigo que executa o comportamento
      */
     public PVector getDesiredVelocity(Enemy me) {
@@ -67,6 +69,7 @@ public class JumpFlee extends Behaviour {
      * <p>
      * Avalia se o alvo está dentro do campo de visão distante do inimigo, determinando se o comportamento de fuga deve ser executado.
      * </p>
+     *
      * @param me o inimigo que verifica o comportamento
      * @return verdadeiro se o comportamento deve ser ativado, falso caso contrário
      */

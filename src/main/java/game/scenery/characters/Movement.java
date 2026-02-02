@@ -3,10 +3,11 @@ package game.scenery.characters;
 import processing.core.PVector;
 
 /**
- * Classe abstrata que define a base para a física de movimento das entidades.
+ * Define a base do comportamento físico de deslocação.
  * <p>
- * Gere as grandezas cinemáticas fundamentais (posição, velocidade e aceleração)
- * e implementa a lógica de integração para simular o movimento e a resposta a forças.
+ * Centraliza o controlo das grandezas cinemáticas essenciais, nomeadamente
+ * posição, velocidade, aceleração e massa, fornecendo a lógica necessária
+ * para simular deslocações e resposta a forças ao longo do tempo.
  * </p>
  */
 public abstract class Movement {
@@ -17,101 +18,130 @@ public abstract class Movement {
     protected float mass = 1;
 
     /**
-     * Constrói uma nova instância de movimento na posição especificada.
+     * Cria uma nova instância com uma posição inicial definida.
      * <p>
-     * Cria uma cópia do vetor de posição para garantir a independência da referência.
+     * É criada uma cópia do vetor recebido de forma a evitar dependências
+     * externas sobre a referência original da posição.
      * </p>
      *
-     * @param position o vetor de posição inicial
+     * @param position vetor que representa a posição inicial
      */
     protected Movement(PVector position) {
         this.position = position.copy();
     }
 
     /**
-     * Obtém a posição atual da entidade.
+     * Devolve a posição atual.
+     * <p>
+     * O vetor retornado representa a localização da entidade no espaço
+     * de coordenadas do mundo.
+     * </p>
      *
-     * @return o vetor de posição
+     * @return vetor da posição atual
      */
     public PVector getPosition() {
         return position;
     }
 
     /**
-     * Define manualmente a posição da entidade no mundo.
+     * Atualiza diretamente a posição no mundo.
+     * <p>
+     * Esta atribuição não aplica qualquer cálculo físico intermédio,
+     * sendo útil para reposicionamentos imediatos.
+     * </p>
      *
-     * @param position o novo vetor de posição
+     * @param position novo vetor de posição
      */
     public void setPosition(PVector position) {
         this.position = position;
     }
 
     /**
-     * Obtém a velocidade atual da entidade.
+     * Devolve a velocidade atual.
+     * <p>
+     * Este vetor indica a variação da posição ao longo do tempo,
+     * sendo utilizado nos cálculos de deslocação.
+     * </p>
      *
-     * @return o vetor de velocidade
+     * @return vetor da velocidade atual
      */
     public PVector getVelocity() {
         return velocity;
     }
 
     /**
-     * Define manualmente a velocidade da entidade.
+     * Atualiza diretamente a velocidade.
+     * <p>
+     * A nova velocidade substitui o valor anterior, influenciando
+     * imediatamente o deslocamento futuro.
+     * </p>
      *
-     * @param velocity o novo vetor de velocidade
+     * @param velocity novo vetor de velocidade
      */
     public void setVelocity(PVector velocity) {
         this.velocity = velocity;
     }
 
     /**
-     * Obtém a aceleração atual da entidade.
+     * Devolve a aceleração atual.
+     * <p>
+     * Representa a acumulação de forças aplicadas durante o ciclo atual.
+     * </p>
      *
-     * @return o vetor de aceleração
+     * @return vetor da aceleração atual
      */
     public PVector getAcceleration() {
         return acceleration;
     }
 
     /**
-     * Define manualmente a aceleração da entidade.
+     * Atualiza diretamente a aceleração.
+     * <p>
+     * Este valor será utilizado no próximo cálculo de deslocação
+     * antes de ser reiniciado.
+     * </p>
      *
-     * @param acceleration o novo vetor de aceleração
+     * @param acceleration novo vetor de aceleração
      */
     public void setAcceleration(PVector acceleration) {
         this.acceleration = acceleration;
     }
 
     /**
-     * Obtém a massa da entidade.
+     * Devolve o valor da massa.
+     * <p>
+     * A massa influencia a forma como forças externas afetam
+     * a aceleração resultante.
+     * </p>
      *
-     * @return o valor da massa
+     * @return valor da massa
      */
     public float getMass() {
         return mass;
     }
 
     /**
-     * Aplica uma força física à entidade.
+     * Aplica uma força física ao sistema.
      * <p>
-     * Divide a força aplicada pela massa da entidade (segunda lei de Newton) e adiciona
-     * o resultado ao vetor de aceleração acumulada.
+     * A força recebida é convertida em aceleração através da divisão
+     * pela massa, sendo depois acumulada para o próximo cálculo.
      * </p>
      *
-     * @param force o vetor da força a aplicar
+     * @param force vetor que representa a força aplicada
      */
     public void applyForce(PVector force) {
         acceleration.add(PVector.div(force, mass));
     }
 
     /**
-     * Atualiza o estado físico da entidade com base no intervalo de tempo fornecido.
+     * Atualiza o estado físico com base no tempo decorrido.
      * <p>
-     * Atualiza a velocidade com base na aceleração acumulada e atualiza a posição
-     * com base na nova velocidade. No final, reinicia a aceleração a zero para o próximo ciclo.
+     * A velocidade é atualizada a partir da aceleração acumulada
+     * e a posição é ajustada com base na nova velocidade. No final,
+     * a aceleração é reiniciada para o ciclo seguinte.
      * </p>
      *
-     * @param dt o intervalo de tempo decorrido
+     * @param dt intervalo de tempo considerado no cálculo
      */
     public void move(float dt) {
         velocity.add(PVector.mult(acceleration, dt));

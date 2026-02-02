@@ -16,6 +16,7 @@ public class NormalAttack extends Behaviour {
      * <p>
      * Cria uma instância do comportamento NormalAttack com o peso especificado, herdando do comportamento base.
      * </p>
+     *
      * @param weight o peso do comportamento
      */
     public NormalAttack(float weight) {
@@ -27,6 +28,7 @@ public class NormalAttack extends Behaviour {
      * <p>
      * Avalia se o alvo está dentro do campo de visão próxima do inimigo, determinando se o comportamento de ataque deve ser executado.
      * </p>
+     *
      * @param me o inimigo que verifica o comportamento
      * @return verdadeiro se o comportamento deve ser ativado, falso caso contrário
      */

@@ -1,9 +1,11 @@
 package game.scenery.components.hitbox;
 
 /**
- * Define a representação matemática de uma reta no formato y = kx + a.
+ * Representa matematicamente uma reta no plano cartesiano.
  * <p>
- * Gere a lógica algébrica para cálculos de declives e interseções, tratando retas verticais.
+ * Esta classe encapsula os cálculos necessários para trabalhar com uma reta
+ * definida a partir de um segmento, permitindo obter valores, coeficientes
+ * e pontos de interseção, incluindo o tratamento de situações verticais.
  * </p>
  */
 public class LineEquation {
@@ -17,12 +19,14 @@ public class LineEquation {
     private boolean isVertical;
 
     /**
-     * Inicializa a estrutura da equação linear com base num segmento de reta.
+     * Cria uma representação linear a partir de um segmento de reta.
      * <p>
-     * Armazena as referências para os pontos de início e fim, e a posição global.
+     * São guardadas as referências aos pontos inicial e final do segmento,
+     * bem como a posição global associada, servindo de base para os cálculos
+     * posteriores da equação.
      * </p>
      *
-     * @param segment o segmento de reta que fornece os dados geométricos
+     * @param segment segmento de reta que fornece a informação geométrica
      */
     public LineEquation(LineSegment segment) {
         this.position = segment.getPosition();
@@ -31,19 +35,25 @@ public class LineEquation {
     }
 
     /**
-     * Determina o valor da coordenada Y para um dado X.
+     * Obtém o valor da coordenada vertical para uma coordenada horizontal dada.
+     * <p>
+     * O cálculo é realizado com base nos coeficientes atualmente definidos,
+     * assumindo que a reta não se encontra numa configuração vertical.
+     * </p>
      *
-     * @param x a coordenada horizontal de entrada
-     * @return o valor resultante de Y
+     * @param x valor da coordenada horizontal
+     * @return valor correspondente da coordenada vertical
      */
     public float calculate(float x) {
         return k * x + a;
     }
 
     /**
-     * Computa os coeficientes da equação da reta.
+     * Calcula os parâmetros algébricos que definem a reta.
      * <p>
-     * Analisa as coordenadas atuais para determinar a inclinação e deteta retas verticais.
+     * A partir das coordenadas dos pontos inicial e final, já ajustadas à posição
+     * global, são determinados o declive e a ordenada na origem, sendo também
+     * identificada a situação de uma reta vertical.
      * </p>
      */
     public void formEquation() {
@@ -65,22 +75,28 @@ public class LineEquation {
     }
 
     /**
-     * Atualiza o ponto de referência global da equação.
+     * Define uma nova posição global para a equação.
+     * <p>
+     * A atualização deste ponto altera a referência espacial utilizada
+     * nos cálculos da reta, influenciando os valores obtidos posteriormente.
+     * </p>
      *
-     * @param position o novo ponto de posição no mundo
+     * @param position novo ponto de referência no espaço
      */
     public void setPosition(Point position) {
         this.position = position;
     }
 
     /**
-     * Calcula as coordenadas de interseção entre esta reta e uma outra equação.
+     * Determina o ponto de cruzamento entre duas representações lineares.
      * <p>
-     * Resolve o sistema de equações lineares considerando cenários geométricos.
+     * São analisadas as equações envolvidas, considerando casos de paralelismo
+     * e retas verticais, devolvendo a coordenada exata de interseção quando
+     * esta existe.
      * </p>
      *
-     * @param other a outra equação linear para verificar a convergência
-     * @return o ponto exato da interseção, ou {@code null} se as retas forem paralelas
+     * @param other outra representação linear a comparar
+     * @return ponto de interseção ou {@code null} caso não exista cruzamento
      */
     public Point solveIntersectionPoint(LineEquation other) {
         this.formEquation();

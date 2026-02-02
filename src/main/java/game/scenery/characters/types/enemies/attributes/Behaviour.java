@@ -90,9 +90,9 @@ public abstract class Behaviour {
      * ângulo e distância. O resultado é aplicado diretamente na velocidade da entidade fornecida.
      * </p>
      *
-     * @param me a entidade que sofrerá a alteração de velocidade.
-     * @param g o valor da aceleração gravitacional a considerar.
-     * @param theta o ângulo de lançamento em radianos.
+     * @param me        a entidade que sofrerá a alteração de velocidade.
+     * @param g         o valor da aceleração gravitacional a considerar.
+     * @param theta     o ângulo de lançamento em radianos.
      * @param xDistance a distância horizontal até ao alvo.
      * @param direction a direção do movimento (1 ou -1).
      */

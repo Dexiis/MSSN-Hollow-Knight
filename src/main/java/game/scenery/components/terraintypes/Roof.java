@@ -7,17 +7,30 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 
+/**
+ * Representa um tipo de terreno correspondente a um telhado.
+ * <p>
+ * Esta classe é responsável por definir a aparência visual e o comportamento
+ * gráfico de um telhado no cenário do jogo, utilizando um sprite e as
+ * funcionalidades herdadas da classe Terrain.
+ * </p>
+ */
 public class Roof extends Terrain {
     private static final float PIXEL_CORRECTION = 100f;
     private static PImage sprite;
 
     /**
-     * Constrói um objeto de terreno retangular.
+     * Cria uma nova instância de um telhado com dimensões e posição definidas.
+     * <p>
+     * Inicializa o terreno com base na posição central, largura e altura
+     * fornecidas, bem como no contexto gráfico do Processing, carregando
+     * também o sprite associado ao telhado.
+     * </p>
      *
-     * @param center a posição central do terreno
-     * @param width  a largura total
-     * @param height a altura total
-     * @param p      o contexto gráfico do Processing
+     * @param center a posição central do telhado no mundo do jogo
+     * @param width  a largura total do telhado
+     * @param height a altura total do telhado
+     * @param p      o contexto gráfico do Processing utilizado para renderização
      */
     public Roof(PVector center, float width, float height, PApplet p) {
         super(center, width, height, p);
@@ -26,19 +39,21 @@ public class Roof extends Terrain {
     }
 
     /**
-     * Desenha a parede no ecrã.
+     * Desenha o telhado no ecrã.
      * <p>
-     * Renderiza o sprite em fatias e delega o desenho da hitbox.
+     * Converte as coordenadas do mundo para coordenadas de píxeis,
+     * desenha a forma base do terreno e renderiza o sprite do telhado
+     * com as transformações necessárias, delegando ainda o desenho
+     * da hitbox ao objeto responsável.
      * </p>
      *
-     * @param p o contexto gráfico
-     * @param painter o objeto responsável pelo desenho das linhas
-     * @param plt o objeto SubPlot para conversão de coordenadas
+     * @param p       o contexto gráfico do Processing
+     * @param painter o objeto responsável pelo desenho das linhas da hitbox
+     * @param plt     o objeto SubPlot utilizado para conversão de coordenadas
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
-        //draw(painter, plt);
 
         p.fill(0);
         p.noStroke();
@@ -48,7 +63,7 @@ public class Roof extends Terrain {
 
         p.translate(pp[0], pp[1]);
         p.scale(0.4f);
-        p.image(sprite,-getWidth() / 2f, getHeight() - PIXEL_CORRECTION);
+        p.image(sprite, -getWidth() / 2f, getHeight() - PIXEL_CORRECTION);
 
         p.popMatrix();
     }

@@ -6,6 +6,13 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 
+/**
+ * Representa um elemento decorativo de vegetação no cenário.
+ * <p>
+ * Esta classe gere a posição e a representação gráfica de um arbusto,
+ * recorrendo a um sprite para a sua visualização no mundo do jogo.
+ * </p>
+ */
 public class Bush {
 
     private static PImage sprite;
@@ -13,10 +20,14 @@ public class Bush {
     private final PVector position;
 
     /**
-     * Constrói um objeto de arbusto.
+     * Cria uma nova instância de arbusto numa posição específica.
+     * <p>
+     * A posição central é armazenada e o recurso gráfico necessário
+     * é carregado através do contexto fornecido.
+     * </p>
      *
-     * @param center a posição central do arbusto
-     * @param p      o contexto gráfico do Processing
+     * @param center posição central do arbusto no espaço
+     * @param p      contexto gráfico do Processing
      */
     public Bush(PVector center, PApplet p) {
         this.position = center;
@@ -25,14 +36,15 @@ public class Bush {
     }
 
     /**
-     * Desenha o arbusto no ecrã.
+     * Apresenta graficamente o arbusto no ecrã.
      * <p>
-     * Renderiza o sprite e delega o desenho da hitbox.
+     * A posição é convertida para coordenadas de píxeis e o sprite
+     * é desenhado com a transformação adequada para o tamanho pretendido.
      * </p>
      *
-     * @param p       o contexto gráfico do Processing
-     * @param painter o objeto responsável pelo desenho das linhas
-     * @param plt     o objeto SubPlot para conversão de coordenadas
+     * @param p       contexto gráfico do Processing
+     * @param painter objeto responsável pelo desenho de linhas auxiliares
+     * @param plt     sistema de conversão entre coordenadas do mundo e píxeis
      */
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         float[] pp = plt.getPixelCoord(position.x, position.y);
@@ -45,5 +57,4 @@ public class Bush {
 
         p.popMatrix();
     }
-
 }

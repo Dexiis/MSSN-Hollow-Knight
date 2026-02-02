@@ -13,9 +13,11 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 /**
- * Representa um elemento físico estático do ambiente.
+ * Representa um elemento físico estático do cenário.
  * <p>
- * Estende Hitbox para incluir lógica de resolução de colisões físicas.
+ * Esta classe estende a funcionalidade de Hitbox para permitir a interação
+ * física com entidades do jogo, tratando colisões, ajustes de posição e
+ * respostas físicas, além de permitir a sua visualização gráfica.
  * </p>
  */
 public class Terrain extends Hitbox implements IVisualizable {
@@ -23,11 +25,16 @@ public class Terrain extends Hitbox implements IVisualizable {
     protected PApplet p;
 
     /**
-     * Constrói um objeto de terreno retangular.
+     * Cria um novo elemento de terreno retangular.
+     * <p>
+     * Inicializa a hitbox associada ao terreno a partir da posição central,
+     * largura e altura fornecidas, guardando também o contexto gráfico do
+     * Processing para efeitos de renderização.
+     * </p>
      *
-     * @param center a posição central do terreno
-     * @param width  a largura total
-     * @param height a altura total
+     * @param center a posição central do terreno no mundo do jogo
+     * @param width  a largura total do terreno
+     * @param height a altura total do terreno
      * @param p      o contexto gráfico do Processing
      */
     public Terrain(PVector center, float width, float height, PApplet p) {
@@ -38,7 +45,9 @@ public class Terrain extends Hitbox implements IVisualizable {
     /**
      * Desenha o terreno no ecrã.
      * <p>
-     * Delega a renderização para a classe pai Hitbox.
+     * Utiliza a funcionalidade de desenho herdada da classe Hitbox para
+     * representar visualmente o terreno, recorrendo ao objeto responsável
+     * pelo desenho das linhas e à conversão de coordenadas.
      * </p>
      *
      * @param p       o contexto gráfico do Processing
@@ -47,18 +56,19 @@ public class Terrain extends Hitbox implements IVisualizable {
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
-        //TODO SPRITES???
         draw(painter, plt);
     }
 
     /**
-     * Calcula e resolve a resposta física à colisão com uma entidade.
+     * Resolve a colisão física entre o terreno e uma entidade.
      * <p>
-     * Reposiciona a entidade fora do terreno e anula a velocidade no eixo da colisão.
-     * Deteta se o cavaleiro ou chefe aterrou.
+     * Analisa a interseção entre a hitbox do terreno e a da entidade,
+     * ajustando a posição da entidade para fora do terreno, anulando a
+     * velocidade no eixo correspondente e atualizando estados específicos
+     * consoante o tipo de entidade envolvida na colisão.
      * </p>
      *
-     * @param entity a entidade que será verificada e ajustada fisicamente
+     * @param entity a entidade que interage fisicamente com o terreno
      */
     public void elaborateIntersects(Entity entity) {
         Hitbox otherHitbox = entity.getHitbox();
@@ -85,7 +95,8 @@ public class Terrain extends Hitbox implements IVisualizable {
                     PIXEL_CORRECTION = 1;
                 }
                 float newX;
-                if (dx > 0) newX = this.getPosition().x + this.width / 2 + otherHitbox.getWidth() / 2 - PIXEL_CORRECTION;
+                if (dx > 0)
+                    newX = this.getPosition().x + this.width / 2 + otherHitbox.getWidth() / 2 - PIXEL_CORRECTION;
                 else newX = this.getPosition().x - this.width / 2 - otherHitbox.getWidth() / 2 + PIXEL_CORRECTION;
 
                 entity.setPosition(new PVector(newX, entity.getPosition().y));

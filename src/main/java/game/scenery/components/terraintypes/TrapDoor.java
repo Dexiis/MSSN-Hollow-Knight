@@ -10,21 +10,30 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 
+/**
+ * Representa um tipo de terreno que funciona como uma porta de armadilha.
+ * <p>
+ * Esta classe define um elemento do cenário que desaparece quando é tocado
+ * pelo cavaleiro, permitindo controlar a progressão do jogo, enquanto continua
+ * a comportar-se como terreno sólido para outras entidades.
+ * </p>
+ */
 public class TrapDoor extends Terrain {
 
     private static PImage sprite;
 
     /**
-     * Representa uma armadilha que remove-se ao ser tocada pelo cavaleiro.
+     * Cria uma nova porta de armadilha com posição e dimensões definidas.
      * <p>
-     * Permite passagem para inimigos, mas desaparece para o cavaleiro, atuando como
-     * um mecanismo de progressão no jogo.
+     * Inicializa o terreno com base na posição central, largura e altura
+     * fornecidas, utilizando o contexto gráfico do Processing e carregando
+     * o sprite associado à armadilha.
      * </p>
      *
-     * @param center a posição central
-     * @param width a largura
-     * @param height a altura
-     * @param p o contexto gráfico
+     * @param center a posição central da armadilha no mundo do jogo
+     * @param width  a largura total da armadilha
+     * @param height a altura total da armadilha
+     * @param p      o contexto gráfico do Processing
      */
     public TrapDoor(PVector center, float width, float height, PApplet p) {
         super(center, width, height, p);
@@ -33,12 +42,14 @@ public class TrapDoor extends Terrain {
     }
 
     /**
-     * Processa a interseção com uma entidade.
+     * Gere a interação entre a armadilha e uma entidade.
      * <p>
-     * Remove a armadilha se for o cavaleiro, caso contrário processa normalmente.
+     * Verifica se a entidade corresponde ao cavaleiro e, em caso de interseção,
+     * remove a armadilha do cenário e adiciona novos elementos de terreno ao
+     * mundo do jogo; para outras entidades, o comportamento padrão é mantido.
      * </p>
      *
-     * @param entity a entidade que interseta
+     * @param entity a entidade que entra em contacto com a armadilha
      */
     @Override
     public void elaborateIntersects(Entity entity) {
@@ -56,19 +67,19 @@ public class TrapDoor extends Terrain {
     }
 
     /**
-     * Desenha a plataforma no ecrã.
+     * Desenha a porta de armadilha no ecrã.
      * <p>
-     * Renderiza o sprite e delega o desenho da hitbox.
+     * Converte as coordenadas do mundo para píxeis e renderiza o sprite
+     * correspondente à armadilha na posição adequada.
      * </p>
      *
      * @param p       o contexto gráfico do Processing
      * @param painter o objeto responsável pelo desenho das linhas
-     * @param plt     o objeto SubPlot para conversão de coordenadas
+     * @param plt     o objeto SubPlot utilizado para conversão de coordenadas
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
-        // draw(painter, plt);
 
         p.image(sprite, pp[0] - getWidth() / 2f, pp[1] - getHeight() / 2f);
     }

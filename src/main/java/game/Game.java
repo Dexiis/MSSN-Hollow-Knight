@@ -19,9 +19,11 @@ import processing.core.PVector;
 import java.util.ArrayList;
 
 /**
- * Classe principal do jogo.
+ * Classe principal responsável pela execução do jogo.
  * <p>
- * Controla o loop principal, inicialização, atualização e renderização do jogo.
+ * Gere o ciclo de vida da aplicação, incluindo inicialização,
+ * atualização do estado, processamento de entradas e desenho
+ * de todos os elementos visuais.
  * </p>
  */
 public class Game extends PApplet {
@@ -38,14 +40,19 @@ public class Game extends PApplet {
     private static boolean paused = false;
 
     private final LinePainter painter = new LinePainter() {
+
         /**
-         * Desenha uma linha convertendo coordenadas do mundo para pixels.
+         * Desenha uma linha no ecrã a partir de coordenadas do mundo.
+         * <p>
+         * Converte as coordenadas do espaço do jogo para coordenadas
+         * em píxeis antes de efetuar o desenho gráfico.
+         * </p>
          *
          * @param x1 coordenada X inicial no mundo
          * @param y1 coordenada Y inicial no mundo
          * @param x2 coordenada X final no mundo
          * @param y2 coordenada Y final no mundo
-         * @param plt o objeto SubPlot para conversão de coordenadas
+         * @param plt objeto responsável pela conversão de coordenadas
          */
         @Override
         public void paintLine(float x1, float y1, float x2, float y2, SubPlot plt) {
@@ -55,6 +62,7 @@ public class Game extends PApplet {
             line(p1[0], p1[1], p2[0], p2[1]);
         }
     };
+
     private SubPlot plt;
     private TheKnight player;
 
@@ -63,9 +71,10 @@ public class Game extends PApplet {
     private boolean firstLoop = true;
 
     /**
-     * Define as configurações iniciais da janela.
+     * Define as configurações iniciais da janela da aplicação.
      * <p>
-     * Define a resolução da janela para 1600x900 pixels.
+     * Estabelece a resolução gráfica e desativa suavização
+     * para melhorar o desempenho.
      * </p>
      */
     @Override
@@ -78,7 +87,8 @@ public class Game extends PApplet {
     /**
      * Executa a configuração inicial do jogo.
      * <p>
-     * Inicializa o sistema de coordenadas, mapa, GUI e fundo.
+     * Inicializa o sistema de coordenadas, cria o mapa,
+     * a interface gráfica e o fundo animado.
      * </p>
      */
     @Override
@@ -95,9 +105,10 @@ public class Game extends PApplet {
     }
 
     /**
-     * Executa o ciclo principal do jogo.
+     * Controla o ciclo principal de execução.
      * <p>
-     * Atualiza o tempo, fundo, movimentos, ataques, colisões e renderiza tudo.
+     * Atualiza o tempo, gere movimentos, ataques,
+     * colisões e apresenta todos os elementos visuais.
      * </p>
      */
     @Override
@@ -128,7 +139,6 @@ public class Game extends PApplet {
 
         moveFlock(background.getFlock(), dt);
 
-
         handleNaturalMovements(dt);
         handleMonstersAttacks();
 
@@ -144,7 +154,7 @@ public class Game extends PApplet {
 
         if (player.isDead()) {
             fill(255);
-            text("Game Over",width / 2f, height / 2f);
+            text("Game Over", width / 2f, height / 2f);
             noLoop();
         }
 
@@ -162,7 +172,8 @@ public class Game extends PApplet {
     /**
      * Processa o pressionamento de teclas.
      * <p>
-     * Atualiza as direções de movimento do jogador ou inicia ataques.
+     * Atualiza as direções de movimento do jogador,
+     * ativa ataques e permite pausar a execução.
      * </p>
      */
     @Override
@@ -175,7 +186,7 @@ public class Game extends PApplet {
         if (key == 'a' || key == 'A') player.setMovingDirection(KnightMovement.LEFT, true);
         if (key == 'd' || key == 'D') player.setMovingDirection(KnightMovement.RIGHT, true);
         if (key == 'p' || key == 'P') {
-            if(!paused) {
+            if (!paused) {
                 noLoop();
                 paused = true;
             } else {
@@ -192,7 +203,7 @@ public class Game extends PApplet {
     /**
      * Processa a libertação de teclas.
      * <p>
-     * Para as direções de movimento do jogador.
+     * Interrompe as direções de movimento previamente ativadas.
      * </p>
      */
     @Override
@@ -204,9 +215,10 @@ public class Game extends PApplet {
     }
 
     /**
-     * Processa cliques do mouse.
+     * Processa interações com o rato.
      * <p>
-     * Teletransporta o jogador para a posição clicada ou inicia ataque.
+     * Permite teletransporte do jogador ou execução de ataque,
+     * consoante o botão pressionado.
      * </p>
      */
     @Override
@@ -218,16 +230,30 @@ public class Game extends PApplet {
         } else if (mouseButton == LEFT) player.playerAttack();
     }
 
+    /**
+     * Atualiza o comportamento do bando.
+     * <p>
+     * Aplica as regras de movimento coletivo a cada entidade
+     * com base no intervalo de tempo.
+     * </p>
+     *
+     * @param flock conjunto de entidades do bando
+     * @param dt    intervalo de tempo desde a última atualização
+     */
     private void moveFlock(ArrayList<Flock> flock, float dt) {
         for (int i = flock.size() - 1; i >= 0; i--)
             flock.get(i).applyBehaviours(dt);
     }
 
     /**
-     * Calcula a força gravitacional a ser aplicada a uma entidade.
+     * Calcula a força gravitacional aplicada a uma entidade.
+     * <p>
+     * A força depende da massa e é limitada por uma velocidade
+     * terminal definida.
+     * </p>
      *
-     * @param entity A entidade aonde será aplicada a gravidade.
-     * @return Um vetor {@link PVector} representando a força da gravidade (ou vetor nulo se a velocidade terminal for atingida).
+     * @param entity entidade alvo da força
+     * @return vetor que representa a força da gravidade
      */
     private PVector gravity(Entity entity) {
         if (entity.getAcceleration().y < 12.8f) return new PVector(0, -1280 * entity.getMass());
@@ -235,17 +261,27 @@ public class Game extends PApplet {
     }
 
     /**
-     * Atualiza o comportamento e ataques dos inimigos.
+     * Processa ataques e interações ofensivas dos inimigos.
      * <p>
-     * Executa a inteligência artificial (Behaviour) de cada inimigo e verifica
-     * colisão física entre o inimigo e o jogador para aplicar dano ao jogador.
+     * Verifica colisões entre inimigos e o jogador
+     * para aplicar dano quando apropriado.
+     * </p>
      */
     private void handleMonstersAttacks() {
         if (loadedEnemies != null) for (Enemy enemy : loadedEnemies)
-            if (enemy.getHitbox().intersected(player.getHitbox()) && !enemy.isDying()) player.damage(enemy.getPosition());
-
+            if (enemy.getHitbox().intersected(player.getHitbox()) && !enemy.isDying())
+                player.damage(enemy.getPosition());
     }
 
+    /**
+     * Atualiza movimentos naturais das entidades.
+     * <p>
+     * Aplica forças físicas, atualiza tempo interno
+     * e trata comportamentos especiais de inimigos.
+     * </p>
+     *
+     * @param dt intervalo de tempo desde a última atualização
+     */
     private void handleNaturalMovements(float dt) {
         player.updateTime(dt, now);
         player.applyForce(gravity(player));
@@ -261,10 +297,11 @@ public class Game extends PApplet {
     }
 
     /**
-     * Verifica e resolve colisões entre entidades e o terreno.
+     * Verifica e resolve colisões físicas.
      * <p>
-     * Itera sobre todas as entidades e todos os elementos de terreno para impedir
-     * que as entidades atravessem paredes ou chão.
+     * Garante que entidades não atravessam
+     * terrenos, teto ou plataformas letais.
+     * </p>
      */
     private void checkCollisions() {
         player.setGrounded(false);
@@ -283,9 +320,13 @@ public class Game extends PApplet {
     }
 
     /**
-     * Atualiza a janela de visualização (Câmara) para seguir o jogador.
+     * Atualiza a área visível do jogo.
+     * <p>
+     * Ajusta a câmara para acompanhar a posição
+     * atual do jogador.
+     * </p>
      *
-     * @param playerPosition A posição atual do jogador no mundo.
+     * @param playerPosition posição atual do jogador no mundo
      */
     private void setWindow(PVector playerPosition) {
         window[0] = playerPosition.x - 800;

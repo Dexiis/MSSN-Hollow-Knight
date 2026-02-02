@@ -5,6 +5,14 @@ import game.scenery.components.hitbox.LinePainter;
 import processing.core.PApplet;
 import processing.core.PVector;
 
+/**
+ * Representa uma área de terreno retangular de cor preta.
+ * <p>
+ * Esta classe define uma plataforma estática posicionada no espaço,
+ * caracterizada pelas suas dimensões e utilizada como elemento visual
+ * e físico no cenário do jogo.
+ * </p>
+ */
 public class BlackTerrain {
 
     private final PVector position;
@@ -12,12 +20,17 @@ public class BlackTerrain {
     private final float height;
 
     /**
-     * Constrói um objeto de terreno retangular.
+     * Cria uma nova instância de terreno com forma retangular.
+     * <p>
+     * A posição central e as dimensões fornecidas são armazenadas
+     * para permitir o cálculo correto da área ocupada e a sua
+     * representação gráfica no cenário.
+     * </p>
      *
-     * @param center a posição central do terreno
-     * @param width  a largura total
-     * @param height a altura total
-     * @param p      o contexto gráfico do Processing
+     * @param center posição central do terreno no espaço
+     * @param width  largura total do terreno
+     * @param height altura total do terreno
+     * @param p      contexto gráfico do Processing
      */
     public BlackTerrain(PVector center, float width, float height, PApplet p) {
         this.position = center;
@@ -26,18 +39,19 @@ public class BlackTerrain {
     }
 
     /**
-     * Desenha a plataforma no ecrã.
+     * Apresenta graficamente o terreno no ecrã.
      * <p>
-     * Renderiza o sprite e delega o desenho da hitbox.
+     * As coordenadas do terreno são convertidas para o sistema de pixéis
+     * e é desenhado um retângulo preenchido, representando visualmente
+     * a área ocupada pela plataforma.
      * </p>
      *
-     * @param p       o contexto gráfico do Processing
-     * @param painter o objeto responsável pelo desenho das linhas
-     * @param plt     o objeto SubPlot para conversão de coordenadas
+     * @param p       contexto gráfico do Processing
+     * @param painter objeto responsável pelo desenho de linhas auxiliares
+     * @param plt     sistema de conversão entre coordenadas do mundo e pixéis
      */
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         float[] pp = plt.getPixelCoord(position.x, position.y);
-        // draw(painter, plt);
 
         p.fill(0);
         p.noStroke();

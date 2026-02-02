@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Define uma estrutura de colisão geométrica.
+ * Representa uma estrutura geométrica usada para deteção de colisões.
  * <p>
- * Suporta formas poligonais e retangulares, com lógica de interseção em duas fases.
+ * Esta classe suporta formas poligonais e retangulares, recorrendo a uma abordagem
+ * em duas fases: uma verificação aproximada através de uma caixa delimitadora e,
+ * caso necessário, uma verificação precisa baseada em segmentos de reta.
  * </p>
  */
 public class Hitbox {
@@ -21,9 +23,11 @@ public class Hitbox {
     protected float width, height;
 
     /**
-     * Instancia uma nova Hitbox baseada numa forma poligonal.
+     * Cria uma área de colisão definida por uma forma poligonal.
      * <p>
-     * Constrói a geometria interna e a caixa delimitadora a partir de uma lista de vértices.
+     * A geometria interna é construída a partir da lista de vértices fornecida,
+     * sendo igualmente calculadas as dimensões globais e a respetiva caixa
+     * delimitadora aproximada.
      * </p>
      *
      * @param points lista de pontos que definem os vértices da forma
@@ -35,26 +39,10 @@ public class Hitbox {
     }
 
     /**
-     * Cria uma Hitbox a partir de uma lista de vetores do Processing.
+     * Cria uma área de colisão com formato retangular.
      * <p>
-     * Converte os vetores para o sistema interno antes de processar.
-     * </p>
-     *
-     * @param points lista de vetores que representam os vértices
-     */
-    public Hitbox(ArrayList<PVector> points) {
-        List<Point> newPoints = new ArrayList<>();
-        for (PVector point : points) newPoints.add(new Point(point.x, point.y));
-
-        formLines(newPoints);
-        calculateDimensions(newPoints);
-        roughHitbox = new RoughHitbox(newPoints, position);
-    }
-
-    /**
-     * Inicializa uma Hitbox com formato retangular.
-     * <p>
-     * Gera automaticamente os vértices baseando-se nas dimensões fornecidas.
+     * Os vértices são gerados automaticamente com base na posição central
+     * e nas dimensões fornecidas.
      * </p>
      *
      * @param position o ponto central da área de colisão
@@ -81,6 +69,10 @@ public class Hitbox {
 
     /**
      * Devolve a altura total da área de colisão.
+     * <p>
+     * O valor corresponde à extensão vertical máxima da forma,
+     * calculada a partir dos seus vértices.
+     * </p>
      *
      * @return a altura em unidades do mundo
      */
@@ -89,27 +81,39 @@ public class Hitbox {
     }
 
     /**
-     * Disponibiliza a lista de segmentos de reta que compõem o perímetro da Hitbox.
+     * Disponibiliza os segmentos de reta que definem o perímetro.
+     * <p>
+     * Cada segmento liga dois vértices consecutivos da forma,
+     * permitindo testes de interseção precisos.
+     * </p>
      *
-     * @return lista de objetos LineSegment
+     * @return a lista de segmentos que compõem a área de colisão
      */
     public List<LineSegment> getLines() {
         return lines;
     }
 
     /**
-     * Obtém a coordenada atual da Hitbox.
+     * Devolve a posição atual da área de colisão.
+     * <p>
+     * Esta posição representa o ponto central usado como referência
+     * para todos os cálculos geométricos.
+     * </p>
      *
-     * @return o ponto que representa a posição central
+     * @return o ponto central da área de colisão
      */
     public Point getPosition() {
         return position;
     }
 
     /**
-     * Recupera a estrutura de colisão aproximada.
+     * Fornece a caixa delimitadora aproximada associada.
+     * <p>
+     * Esta estrutura é utilizada para uma verificação rápida de possíveis
+     * colisões antes de proceder a cálculos mais detalhados.
+     * </p>
      *
-     * @return o objeto RoughHitbox associado
+     * @return a instância de RoughHitbox associada
      */
     public RoughHitbox getRoughHitbox() {
         return roughHitbox;
@@ -117,6 +121,10 @@ public class Hitbox {
 
     /**
      * Devolve a largura total da área de colisão.
+     * <p>
+     * O valor corresponde à extensão horizontal máxima da forma,
+     * calculada a partir dos seus vértices.
+     * </p>
      *
      * @return a largura em unidades do mundo
      */
@@ -125,9 +133,10 @@ public class Hitbox {
     }
 
     /**
-     * Atualiza a posição espacial da Hitbox.
+     * Atualiza a posição da área de colisão.
      * <p>
-     * Propaga a alteração para a caixa delimitadora e para todos os segmentos de reta.
+     * A nova posição é propagada para a caixa delimitadora aproximada
+     * e para todos os segmentos que compõem o perímetro.
      * </p>
      *
      * @param position o novo ponto de posição
@@ -139,7 +148,11 @@ public class Hitbox {
     }
 
     /**
-     * Define a posição utilizando um vetor do Processing.
+     * Atualiza a posição usando um vetor do Processing.
+     * <p>
+     * O vetor fornecido é convertido internamente para um ponto
+     * antes de atualizar a posição global da área de colisão.
+     * </p>
      *
      * @param position o novo vetor de posição
      */
@@ -148,13 +161,15 @@ public class Hitbox {
     }
 
     /**
-     * Analisa a existência de colisão com outra instância de Hitbox.
+     * Avalia a existência de interseção com outra área de colisão.
      * <p>
-     * Executa um teste rápido de sobreposição de caixas delimitadoras, seguido de verificação precisa.
+     * A verificação inicia-se com um teste rápido entre caixas
+     * delimitadoras aproximadas e, se necessário, prossegue com
+     * testes detalhados entre os segmentos de ambas as formas.
      * </p>
      *
-     * @param other a outra geometria a ser testada
-     * @return {@code true} se houver interseção física, caso contrário {@code false}
+     * @param other a outra área de colisão a analisar
+     * @return {@code true} se existir interseção física, {@code false} caso contrário
      */
     public boolean intersected(Hitbox other) {
         if (!this.roughHitbox.isIntersecting(other.getRoughHitbox())) return false;
@@ -166,9 +181,10 @@ public class Hitbox {
     }
 
     /**
-     * Calcula as dimensões baseando-se nos vértices fornecidos.
+     * Calcula as dimensões globais da forma.
      * <p>
-     * Define os valores internos de largura e altura.
+     * A largura e a altura são determinadas com base nos valores
+     * mínimos e máximos dos vértices fornecidos.
      * </p>
      *
      * @param points a lista de vértices da forma
@@ -188,9 +204,10 @@ public class Hitbox {
     }
 
     /**
-     * Gera os segmentos de reta ligando sequencialmente os vértices fornecidos.
+     * Constrói os segmentos que ligam os vértices da forma.
      * <p>
-     * Fecha a forma conectando o último ponto ao primeiro.
+     * Os pontos são ligados de forma sequencial, sendo garantido
+     * o fecho da forma ao conectar o último vértice ao primeiro.
      * </p>
      *
      * @param points a lista de vértices da forma
@@ -206,14 +223,15 @@ public class Hitbox {
     }
 
     /**
-     * Renderiza a representação visual da Hitbox e da sua caixa delimitadora.
+     * Apresenta visualmente a área de colisão e a sua caixa delimitadora.
      * <p>
-     * Útil para fins de depuração.
+     * Esta representação gráfica é usada principalmente para apoio
+     * à análise e validação do comportamento de colisões.
      * </p>
      *
      * @param p       referência para o contexto gráfico do Processing
-     * @param painter objeto responsável pelo desenho das linhas
-     * @param plt     sistema de conversão de coordenadas do mundo para pixéis
+     * @param painter objeto responsável pelo desenho dos segmentos
+     * @param plt     sistema de conversão de coordenadas
      */
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         draw(painter, plt);
@@ -221,9 +239,13 @@ public class Hitbox {
     }
 
     /**
-     * Executa o desenho vetorial dos segmentos de reta que compõem a Hitbox.
+     * Desenha os segmentos que compõem o perímetro da área de colisão.
+     * <p>
+     * Cada segmento é convertido para coordenadas de ecrã antes
+     * de ser representado graficamente.
+     * </p>
      *
-     * @param painter objeto responsável pelo desenho das linhas
+     * @param painter objeto responsável pelo desenho dos segmentos
      * @param plt     sistema de conversão de coordenadas
      */
     public void draw(LinePainter painter, SubPlot plt) {
@@ -231,17 +253,25 @@ public class Hitbox {
     }
 
     /**
-     * Implementa uma caixa delimitadora alinhada ao eixo para otimização espacial.
+     * Representa uma caixa delimitadora alinhada aos eixos.
+     * <p>
+     * Esta estrutura permite uma verificação rápida de sobreposição
+     * espacial, reduzindo o custo de cálculos de colisão detalhados.
+     * </p>
      */
     public static class RoughHitbox {
         Point position;
         float minX, maxX, minY, maxY;
 
         /**
-         * Inicializa a RoughHitbox calculando os limites extremos.
+         * Cria a caixa delimitadora a partir dos vértices da forma.
+         * <p>
+         * Os limites extremos são calculados relativamente à posição
+         * global da área de colisão associada.
+         * </p>
          *
-         * @param points   lista de pontos da forma original
-         * @param position a posição global da Hitbox
+         * @param points   lista de vértices da forma original
+         * @param position a posição global da área de colisão
          */
         RoughHitbox(List<Point> points, Point position) {
             this.position = position;
@@ -260,10 +290,14 @@ public class Hitbox {
         }
 
         /**
-         * Verifica a sobreposição entre esta caixa delimitadora e outra.
+         * Avalia a sobreposição entre duas caixas delimitadoras.
+         * <p>
+         * A verificação é feita de forma independente nos eixos
+         * horizontal e vertical.
+         * </p>
          *
-         * @param other a outra instância de RoughHitbox
-         * @return {@code true} se as caixas se sobrepuserem, {@code false} caso contrário
+         * @param other a outra caixa delimitadora a comparar
+         * @return {@code true} se existir sobreposição, {@code false} caso contrário
          */
         public boolean isIntersecting(RoughHitbox other) {
             float thisLeft = this.position.x + this.minX;
@@ -283,7 +317,11 @@ public class Hitbox {
         }
 
         /**
-         * Desenha os limites da caixa no ecrã para efeitos de visualização.
+         * Desenha visualmente os limites da caixa delimitadora.
+         * <p>
+         * Esta representação é utilizada para efeitos de depuração
+         * e análise do comportamento de colisões.
+         * </p>
          *
          * @param p   referência para o contexto gráfico
          * @param plt sistema de conversão de coordenadas

@@ -5,32 +5,38 @@ import game.scenery.components.flock.Flock;
 import processing.core.PVector;
 
 /**
- * Implementa o comportamento de Coesão (Cohesion) para agentes de bando.
+ * Define o comportamento de coesão em sistemas de bando.
  * <p>
- * Este comportamento faz com que a entidade se sinta atraída para a posição média
- * (centro de massa) dos seus vizinhos locais, mantendo o grupo unido.
+ * Este comportamento conduz a entidade na direção do centro geométrico
+ * das entidades vizinhas, promovendo a proximidade entre os elementos
+ * do grupo e evitando a sua dispersão.
  * </p>
  */
 public class Cohesion extends Behaviour {
 
     /**
-     * Constrói uma nova instância do comportamento de Coesão.
+     * Cria uma nova instância do comportamento de coesão.
+     * <p>
+     * O peso recebido determina o grau de influência desta regra
+     * no cálculo final da deslocação da entidade.
+     * </p>
      *
-     * @param weight o peso de influência deste comportamento na decisão final de movimento
+     * @param weight peso associado à influência da coesão
      */
     public Cohesion(float weight) {
         super(weight);
     }
 
     /**
-     * Calcula a direção para o centro geométrico dos vizinhos locais.
+     * Determina a direção em relação ao centro do grupo vizinho.
      * <p>
-     * Soma as posições de todos os vizinhos visíveis para encontrar o ponto médio
-     * e devolve o vetor que aponta da posição atual da entidade para esse centro.
+     * Soma as posições das entidades visíveis no alcance distante,
+     * calcula a posição média e devolve o vetor que aponta da posição
+     * atual da entidade para esse ponto central.
      * </p>
      *
-     * @param me a entidade do bando que está a ser atualizada
-     * @return o vetor que aponta para o centro de massa do grupo vizinho
+     * @param me entidade do bando que está a ser avaliada
+     * @return vetor orientado para o centro geométrico do grupo vizinho
      */
     public PVector getDesiredVelocity(Flock me) {
         PVector target = me.getPosition().copy();

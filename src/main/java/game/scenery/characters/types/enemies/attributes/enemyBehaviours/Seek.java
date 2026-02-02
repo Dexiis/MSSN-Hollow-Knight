@@ -1,9 +1,8 @@
 package game.scenery.characters.types.enemies.attributes.enemyBehaviours;
 
-import game.scenery.characters.types.Enemy;
 import game.scenery.characters.Entity;
+import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.enemies.attributes.Behaviour;
-import game.scenery.characters.types.enemies.mobs.Squit;
 import processing.core.PVector;
 
 /**

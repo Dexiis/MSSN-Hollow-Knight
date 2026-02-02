@@ -5,32 +5,38 @@ import game.scenery.components.flock.Flock;
 import processing.core.PVector;
 
 /**
- * Implementa o comportamento de Alinhamento (Alignment) para agentes de bando.
+ * Define o comportamento de alinhamento em sistemas de bando.
  * <p>
- * Este comportamento dita que uma entidade deve tentar mover-se na mesma direção
- * e velocidade média que os seus vizinhos locais, promovendo um movimento de grupo coordenado.
+ * Este comportamento orienta uma entidade a ajustar a sua deslocação
+ * de acordo com a direção e velocidade médias das entidades vizinhas,
+ * promovendo um movimento coletivo uniforme e sincronizado.
  * </p>
  */
 public class Align extends Behaviour {
 
     /**
-     * Constrói uma nova instância do comportamento de Alinhamento.
+     * Cria uma nova instância do comportamento de alinhamento.
+     * <p>
+     * O valor de peso recebido determina a influência relativa deste
+     * comportamento no cálculo final da deslocação da entidade.
+     * </p>
      *
-     * @param weight o peso de influência deste comportamento na decisão final de movimento
+     * @param weight peso associado à influência do alinhamento
      */
     public Align(float weight) {
         super(weight);
     }
 
     /**
-     * Calcula a velocidade desejada baseada na média das velocidades dos vizinhos.
+     * Determina a velocidade pretendida com base nos vizinhos próximos.
      * <p>
-     * Itera sobre todas as entidades visíveis no alcance distante, soma as suas velocidades
-     * e calcula a média para determinar a direção de fluxo do grupo.
+     * Soma as velocidades das entidades visíveis no alcance distante e
+     * calcula a média, incluindo a própria entidade, de forma a obter
+     * a direção predominante do movimento do grupo.
      * </p>
      *
-     * @param me a entidade do bando que está a ser atualizada
-     * @return o vetor de velocidade média do grupo vizinho
+     * @param me entidade do bando que está a ser avaliada
+     * @return vetor representativo da velocidade média dos vizinhos
      */
     public PVector getDesiredVelocity(Flock me) {
         PVector desiredVelocity = me.getVelocity().copy();

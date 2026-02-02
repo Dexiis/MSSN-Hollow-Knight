@@ -1,8 +1,8 @@
 package game.scenery;
 
 import game.core.SubPlot;
-import game.scenery.characters.types.Enemy;
 import game.scenery.characters.Entity;
+import game.scenery.characters.types.Enemy;
 import game.scenery.characters.types.TheKnight;
 import game.scenery.characters.types.enemies.FalseKnight;
 import game.scenery.characters.types.enemies.attributes.Eye;
@@ -19,7 +19,9 @@ import java.util.ArrayList;
 /**
  * Representa o mapa ou nível do jogo.
  * <p>
- * Atua como contentor para terrenos, jogador e inimigos.
+ * Esta classe funciona como um contentor central de todos os elementos do nível,
+ * incluindo terrenos, jogador, inimigos e chefe, sendo responsável pela sua
+ * inicialização, gestão e visualização, seguindo o padrão singleton.
  * </p>
  */
 public class World {
@@ -39,13 +41,15 @@ public class World {
     private final ArrayList<Bush> bushes = new ArrayList<>();
 
     /**
-     * Constrói o mapa do jogo.
+     * Cria e inicializa o mapa do jogo.
      * <p>
-     * Inicializa terrenos, jogador e inimigos.
+     * Define todos os terrenos, plataformas, elementos decorativos,
+     * jogador, inimigos e chefe, bem como as respetivas relações e
+     * comportamentos, preparando o nível para ser jogado.
      * </p>
      *
      * @param p       o contexto gráfico do Processing
-     * @param painter o objeto auxiliar para desenho de linhas
+     * @param painter o objeto auxiliar para o desenho de linhas e hitboxes
      */
     private World(PApplet p, LinePainter painter) {
         this.p = p;
@@ -100,7 +104,6 @@ public class World {
         enemies.add(new Squit(new PVector(4790, 1800), p));
         entities.add(enemies.getLast());
 
-
         enemies.add(new HuskHornhead(new PVector(300, 200), p));
         entities.add(enemies.getLast());
         enemies.add(new HuskHornhead(new PVector(2600, 875), p));
@@ -113,6 +116,15 @@ public class World {
             enemy.setEye(new Eye(enemy, player));
     }
 
+    /**
+     * Devolve a instância atual do mapa.
+     * <p>
+     * Permite aceder à instância única do mundo do jogo, apresentando
+     * uma mensagem de aviso caso ainda não tenha sido inicializada.
+     * </p>
+     *
+     * @return a instância única de World
+     */
     public static World getInstance() {
         if (world == null)
             System.out.println(Thread.currentThread().getStackTrace()[2] + ": É necessário inicializar o mapa primeiro");
@@ -120,6 +132,17 @@ public class World {
         return world;
     }
 
+    /**
+     * Inicializa a instância única do mapa.
+     * <p>
+     * Cria o mundo do jogo caso ainda não exista, garantindo sincronização
+     * para evitar múltiplas inicializações concorrentes.
+     * </p>
+     *
+     * @param p       o contexto gráfico do Processing
+     * @param painter o objeto auxiliar para o desenho de linhas
+     * @return a instância criada de World
+     */
     public synchronized static World init(PApplet p, LinePainter painter) {
         if (world != null)
             System.err.println("Mapa já foi inicializado");
@@ -129,34 +152,49 @@ public class World {
     }
 
     /**
-     * Devolve o chefe.
+     * Devolve o chefe do nível.
+     * <p>
+     * Permite aceder à entidade que representa o inimigo principal
+     * do mapa atual.
+     * </p>
      *
-     * @return o FalseKnight chefe
+     * @return o chefe do tipo FalseKnight
      */
     public FalseKnight getBoss() {
         return boss;
     }
 
     /**
-     * Obtém a lista de inimigos.
+     * Devolve a lista de inimigos do mapa.
+     * <p>
+     * Contém todas as entidades hostis atualmente presentes no nível,
+     * excluindo o jogador.
+     * </p>
      *
-     * @return a lista de objetos Enemy
+     * @return a lista de inimigos
      */
     public ArrayList<Enemy> getEnemies() {
         return enemies;
     }
 
     /**
-     * Obtém a lista de todas as entidades.
+     * Devolve a lista de todas as entidades do mapa.
+     * <p>
+     * Inclui o jogador, inimigos e quaisquer outras entidades ativas
+     * que interagem no mundo do jogo.
+     * </p>
      *
-     * @return a lista de objetos Entity
+     * @return a lista de entidades
      */
     public ArrayList<Entity> getEntities() {
         return entities;
     }
 
     /**
-     * Obtém a referência para o jogador.
+     * Devolve a referência para o jogador.
+     * <p>
+     * Permite aceder à instância do cavaleiro controlado pelo utilizador.
+     * </p>
      *
      * @return a instância de TheKnight
      */
@@ -165,18 +203,25 @@ public class World {
     }
 
     /**
-     * Obtém a lista de terrenos.
+     * Devolve a lista de terrenos sólidos.
+     * <p>
+     * Contém todos os terrenos com colisão ativa presentes no mapa.
+     * </p>
      *
-     * @return a lista de objetos Terrain
+     * @return a lista de terrenos
      */
     public ArrayList<Terrain> getTerrains() {
         return terrains;
     }
 
     /**
-     * Renderiza todos os elementos do mapa.
+     * Desenha os elementos visuais principais do mapa.
+     * <p>
+     * Renderiza o jogador, plataformas letais, terrenos especiais,
+     * elementos decorativos e o teto do nível.
+     * </p>
      *
-     * @param plt o objeto SubPlot para conversão de coordenadas
+     * @param plt o objeto SubPlot utilizado para conversão de coordenadas
      */
     public void display(SubPlot plt) {
         player.display(p, painter, plt);
@@ -187,12 +232,13 @@ public class World {
     }
 
     /**
-     * Remove um inimigo do jogo.
+     * Remove um inimigo do mapa.
      * <p>
-     * Elimina o inimigo das listas de inimigos e entidades.
+     * Elimina o inimigo das listas de inimigos e de entidades ativas
+     * quando este deixa de estar presente no jogo.
      * </p>
      *
-     * @param enemy o inimigo a ser removido
+     * @param enemy o inimigo a remover
      */
     public void removeEnemy(Enemy enemy) {
         enemies.remove(enemy);
@@ -201,43 +247,77 @@ public class World {
 
     /**
      * Remove um terreno do mapa.
+     * <p>
+     * Elimina o terreno da lista de terrenos sólidos, deixando de
+     * participar nas colisões e visualização.
+     * </p>
      *
-     * @param terrain o terreno a ser removido
+     * @param terrain o terreno a remover
      */
     public void removeTerrain(Terrain terrain) {
         terrains.remove(terrain);
     }
 
     /**
-     * Adiciona um terreno do mapa.
+     * Adiciona um terreno sólido ao mapa.
+     * <p>
+     * Insere um novo terreno na lista de terrenos ativos,
+     * passando este a integrar o cenário.
+     * </p>
      *
-     * @param terrain o terreno a ser adicionado
+     * @param terrain o terreno a adicionar
      */
     public void addTerrain(Terrain terrain) {
         terrains.add(terrain);
     }
 
     /**
-     * Adiciona um terreno vazio do mapa.
+     * Adiciona um terreno vazio ao mapa.
+     * <p>
+     * Insere um elemento de terreno sem colisão visível,
+     * normalmente utilizado para limitar áreas do nível.
+     * </p>
      *
-     * @param blackTerrain o terreno a ser adicionado
+     * @param blackTerrain o terreno vazio a adicionar
      */
     public void addBlackTerrain(BlackTerrain blackTerrain) {
         blackTerrains.add(blackTerrain);
     }
 
     /**
-     * Adiciona o chefe às listas de inimigos e entidades.
+     * Adiciona o chefe ao mapa.
+     * <p>
+     * Insere o chefe nas listas de inimigos e entidades,
+     * tornando-o ativo no jogo.
+     * </p>
      */
     public void spawnBoss() {
         enemies.add(boss);
         entities.add(boss);
     }
 
+    /**
+     * Devolve a plataforma letal do mapa.
+     * <p>
+     * Permite aceder ao elemento responsável por eliminar entidades
+     * que atinjam a zona inferior do nível.
+     * </p>
+     *
+     * @return a plataforma letal
+     */
     public DeathPlatform getDeathPlatform() {
         return deathPlatform;
     }
 
+    /**
+     * Devolve o teto do mapa.
+     * <p>
+     * Permite aceder ao elemento superior que limita o espaço
+     * vertical do nível.
+     * </p>
+     *
+     * @return o teto do mapa
+     */
     public Roof getRoof() {
         return roof;
     }

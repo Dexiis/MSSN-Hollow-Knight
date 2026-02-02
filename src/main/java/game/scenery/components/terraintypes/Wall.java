@@ -31,9 +31,9 @@ public class Wall extends Terrain {
      * </p>
      *
      * @param center o centro da parede no mundo
-     * @param width a largura da parede
+     * @param width  a largura da parede
      * @param height a altura da parede
-     * @param p o contexto gráfico do Processing
+     * @param p      o contexto gráfico do Processing
      */
     public Wall(PVector center, float width, float height, PApplet p, SIDE side) {
         super(center, width, height, p);
@@ -48,14 +48,13 @@ public class Wall extends Terrain {
      * Renderiza o sprite em fatias e delega o desenho da hitbox.
      * </p>
      *
-     * @param p o contexto gráfico
+     * @param p       o contexto gráfico
      * @param painter o objeto responsável pelo desenho das linhas
-     * @param plt o objeto SubPlot para conversão de coordenadas
+     * @param plt     o objeto SubPlot para conversão de coordenadas
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
         float[] pp = plt.getPixelCoord(getPosition().x, getPosition().y);
-        // draw(painter, plt);
 
         float pixelCorrectionX = getWidth() - sprite.pixelWidth + 12;
         int slices = PApplet.ceil(getHeight() / SPRITE_HEIGHT);
@@ -64,29 +63,26 @@ public class Wall extends Terrain {
         p.noStroke();
         p.rect(pp[0] - getWidth() / 2f, pp[1] - getHeight() / 2f, getWidth(), getHeight());
 
-        if(side == SIDE.LEFT) {
+        if (side == SIDE.LEFT) {
             p.pushMatrix();
             p.translate(pp[0], pp[1]);
             p.scale(-1, 1);
-            for(int i = 0; i < slices; i++) {
-                if(i == slices - 1) {
+            for (int i = 0; i < slices; i++) {
+                if (i == slices - 1) {
                     PImage cropped = sprite.get(0, 0, sprite.pixelWidth, (int) ((pp[1] + getHeight() / 2f) - (pp[1] - getHeight() / 2f + i * SPRITE_HEIGHT)));
-                    p.image(cropped, - getWidth() / 2f + pixelCorrectionX, - getHeight() / 2f + i * SPRITE_HEIGHT);
-                } else {
-                    p.image(sprite, - getWidth() / 2f + pixelCorrectionX, - getHeight() / 2f + i * SPRITE_HEIGHT);
-                }
+                    p.image(cropped, -getWidth() / 2f + pixelCorrectionX, -getHeight() / 2f + i * SPRITE_HEIGHT);
+                } else p.image(sprite, -getWidth() / 2f + pixelCorrectionX, -getHeight() / 2f + i * SPRITE_HEIGHT);
+
             }
             p.popMatrix();
         } else {
-            for(int i = 0; i < slices; i++) {
-                if(i == slices - 1) {
+            for (int i = 0; i < slices; i++) {
+                if (i == slices - 1) {
                     PImage cropped = sprite.get(0, 0, sprite.pixelWidth, (int) ((pp[1] + getHeight() / 2f) - (pp[1] - getHeight() / 2f + i * SPRITE_HEIGHT)));
                     p.image(cropped, pp[0] - getWidth() / 2f + pixelCorrectionX, pp[1] - getHeight() / 2f + i * SPRITE_HEIGHT);
-                } else {
+                } else
                     p.image(sprite, pp[0] - getWidth() / 2f + pixelCorrectionX, pp[1] - getHeight() / 2f + i * SPRITE_HEIGHT);
-                }
             }
         }
     }
-
 }

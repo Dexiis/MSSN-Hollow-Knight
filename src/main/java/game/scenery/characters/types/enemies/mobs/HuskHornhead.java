@@ -143,7 +143,7 @@ public class HuskHornhead extends Mob implements IVisualizable {
      */
     @Override
     protected void attacking() {
-        if(!attackBehaviour.checkBehaviour(this)){
+        if (!attackBehaviour.checkBehaviour(this)) {
             state = State.IDLE;
             resetAnimation();
         }

@@ -5,33 +5,38 @@ import game.scenery.components.flock.Flock;
 import processing.core.PVector;
 
 /**
- * Implementa o comportamento de Separação (Separation) para agentes de bando.
+ * Define o comportamento de separação em sistemas de bando.
  * <p>
- * Este comportamento evita colisões e sobrelotação, gerando uma força de repulsão
- * que afasta a entidade dos vizinhos que estejam demasiado próximos.
+ * Este comportamento introduz uma força de afastamento entre entidades
+ * próximas, prevenindo colisões e reduzindo a concentração excessiva
+ * de elementos numa mesma zona.
  * </p>
  */
 public class Separate extends Behaviour {
 
     /**
-     * Constrói uma nova instância do comportamento de Separação.
+     * Cria uma nova instância do comportamento de separação.
+     * <p>
+     * O peso recebido controla a intensidade com que a força de repulsão
+     * influencia a deslocação final da entidade.
+     * </p>
      *
-     * @param weight o peso de influência deste comportamento na decisão final de movimento
+     * @param weight peso associado à influência da separação
      */
     public Separate(float weight) {
         super(weight);
     }
 
     /**
-     * Calcula o vetor de repulsão para afastar a entidade dos vizinhos imediatos.
+     * Determina o vetor de afastamento relativamente aos vizinhos imediatos.
      * <p>
-     * Para cada vizinho na zona de visão próxima, calcula um vetor oposto à sua posição.
-     * A magnitude da repulsão é inversamente proporcional à distância (quanto mais perto,
-     * mais forte é a força de afastamento).
+     * Para cada entidade visível no alcance próximo, é calculado um vetor
+     * oposto à sua posição, cuja intensidade aumenta à medida que a distância
+     * diminui, promovendo a dispersão local.
      * </p>
      *
-     * @param me a entidade do bando que está a ser atualizada
-     * @return o vetor de velocidade desejada para evitar colisão
+     * @param me entidade do bando que está a ser avaliada
+     * @return vetor representativo da força de repulsão aplicada
      */
     public PVector getDesiredVelocity(Flock me) {
         PVector desiredVelocity = new PVector();
