@@ -41,7 +41,7 @@ public class HuskHornhead extends Mob implements IVisualizable {
         this.health = 5;
 
         ATTACK_COOLDOWN = 2000f;
-        ATTACK_DURATION = 3000f;
+        ATTACK_DURATION = 2000f;
 
         SPRITE_SIZE = 150;
         PIXEL_CORRECTION = 7;

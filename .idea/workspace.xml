@@ -9,42 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/Background.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/Background.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/GUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/GUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/Entity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/Movement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/Movement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/TheKnight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/Behaviour.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/Behaviour.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/Eye.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/Eye.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/bossBehaviours/JumpFlee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/bossBehaviours/JumpFlee.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/bossBehaviours/NormalAttack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/bossBehaviours/NormalAttack.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/enemyBehaviours/Attack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/enemyBehaviours/Attack.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/enemyBehaviours/Seek.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/attributes/enemyBehaviours/Seek.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/mobs/HuskHornhead.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/characters/types/enemies/mobs/HuskHornhead.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/Terrain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/Terrain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/flock/Flock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/flock/Flock.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/flock/FlockEye.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/flock/FlockEye.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/flock/flockbehaviours/Align.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/flock/flockbehaviours/Align.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/flock/flockbehaviours/Cohesion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/flock/flockbehaviours/Cohesion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/flock/flockbehaviours/Separate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/flock/flockbehaviours/Separate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/Hitbox.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/Hitbox.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/HurtBox.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/HurtBox.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/LineEquation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/LineEquation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/LineSegment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/LineSegment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/Point.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/hitbox/Point.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/BlackTerrain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/BlackTerrain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/Bush.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/Bush.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/DeathPlatform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/DeathPlatform.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/Floor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/Floor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/MidWall.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/MidWall.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/Platform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/Platform.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/Roof.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/Roof.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/SpawnPlatform.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/SpawnPlatform.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/TrapDoor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/TrapDoor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/Wall.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/game/scenery/components/terraintypes/Wall.java" afterDir="false" />
-    </list>
+    <list default="true" id="9fbdfb04-fbce-42dc-a5c1-ba621a2b3642" name="Changes" comment="App class renaming, packages restructure, and integration of hitbox classes." />
     <list id="35cb66f5-a107-43e2-b909-1cfb0e7d3476" name="Changes by Bernardo Aguiar" comment="" />
     <list id="caa23359-5f65-48a1-8ee5-b34609ea65fd" name="Changes by pitad" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -215,7 +180,7 @@
       <workItem from="1769834496371" duration="586000" />
       <workItem from="1769862771146" duration="1235000" />
       <workItem from="1769950127448" duration="19145000" />
-      <workItem from="1769991864170" duration="1731000" />
+      <workItem from="1769991864170" duration="2079000" />
     </task>
     <task id="LOCAL-00001" summary="File restructure.">
       <option name="closed" value="true" />
