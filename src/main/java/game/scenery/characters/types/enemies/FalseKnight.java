@@ -154,7 +154,6 @@ public class FalseKnight extends Enemy implements IVisualizable {
             attack.setPosition(this.position);
             TheKnight player = World.getInstance().getPlayer();
             if (attack.intersected(player.getHitbox())) player.damage(this.position);
-            attack.display(p, painter, plt);
         }
     }
 
@@ -512,7 +511,6 @@ public class FalseKnight extends Enemy implements IVisualizable {
      */
     @Override
     public void display(PApplet p, LinePainter painter, SubPlot plt) {
-        this.hitbox.draw(painter, plt);
         float[] pp = plt.getPixelCoord(this.getPosition().x, this.getPosition().y);
 
         if (isDying()) {
