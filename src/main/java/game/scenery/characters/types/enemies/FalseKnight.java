@@ -366,14 +366,18 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * </p>
      */
     private void fallDeath() {
-        if (now - spriteTime > 80) {
+        setVelocity(new PVector(0, 0));
+        if (now - spriteTime > 160) {
             this.sprite = spriteArray[spriteIndex][7];
             spriteTime = now;
             spriteIndex++;
             if (spriteIndex > 2) spriteIndex = 2;
         }
 
-        if (grounded) state = State.LAND_DEATH;
+        if (grounded) {
+            spriteIndex = 0;
+            state = State.LAND_DEATH;
+        }
     }
 
     /**
@@ -384,7 +388,8 @@ public class FalseKnight extends Enemy implements IVisualizable {
      * </p>
      */
     private void landDeath() {
-        if (now - spriteTime > 80) {
+        setVelocity(new PVector(0, 0));
+        if (now - spriteTime > 160) {
             this.sprite = spriteArray[spriteIndex][8];
             spriteTime = now;
             spriteIndex++;

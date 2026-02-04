@@ -381,7 +381,6 @@ public class TheKnight extends Entity implements IVisualizable {
     private void handleAttack(PApplet p, LinePainter painter, SubPlot plt) {
         if (attack != null) {
             attack.setPosition(this.position);
-
             if (World.getInstance().getEnemies() != null)
                 for (int i = World.getInstance().getEnemies().size() - 1; i >= 0; i--) {
                     Enemy enemy = World.getInstance().getEnemies().get(i);
